@@ -15,6 +15,13 @@ const RESOURCES = [
     description: "Use a concise reference for stronger, clearer, and more interesting writing.",
     icon: "📖",
     category: "Reference guide"
+  },
+  {
+    title: "Bar Model Algebra Lab",
+    url: "tools/sentence-workbench/algebra-bar-models.html",
+    description: "Learn five algebra bar-model patterns and practice writing expressions.",
+    icon: "🧮",
+    category: "Interactive practice"
   }
 ];
 

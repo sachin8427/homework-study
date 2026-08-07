@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn five algebra bar-model patterns and practice writing expressions.">
 <title>Bar Model Algebra Lab</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#FAF7EF;
@@ -50,6 +49,16 @@
     gap:8px;
   }
   .eyebrow::before{content:"";width:20px;height:2px;background:var(--amber);display:inline-block;}
+  .home-link{
+    display:inline-block;
+    margin-bottom:18px;
+    color:var(--navy);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:14px;
+    font-weight:700;
+    text-decoration:none;
+  }
+  .home-link:hover,.home-link:focus-visible{text-decoration:underline;}
   h1{
     font-family:'Space Grotesk',sans-serif;
     font-size:clamp(28px,7vw,40px);
@@ -222,6 +231,7 @@
 <body>
 
 <header>
+  <a class="home-link" href="../../">&larr; Home</a>
   <div class="eyebrow">Unit 1 &middot; Algebra</div>
   <h1>Bar Model <span>Algebra Lab</span></h1>
   <p class="sub">The five patterns behind every "express the answer in terms of&nbsp;x" question &mdash; plus practice pulled straight from today's worksheet.</p>
