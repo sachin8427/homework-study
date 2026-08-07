@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bar Model Algebra Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF7EF;
+    --paper-line:#E7E0D0;
+    --ink:#22262B;
+    --ink-soft:#5B6169;
+    --navy:#26415E;
+    --navy-soft:#DCE5EE;
+    --amber:#D98E32;
+    --amber-soft:#F7E6C9;
+    --teal:#3E8079;
+    --teal-soft:#DCEBE8;
+    --coral:#C1503E;
+    --coral-soft:#F5DED9;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0/100% 32px,
+      var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  header{
+    padding:36px 20px 20px;
+    max-width:760px;
+    margin:0 auto;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--navy);
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{content:"";width:20px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(28px,7vw,40px);
+    font-weight:700;
+    margin:10px 0 6px;
+    letter-spacing:-0.01em;
+  }
+  h1 span{color:var(--navy);}
+  .sub{color:var(--ink-soft);font-size:15px;line-height:1.5;max-width:56ch;}
+
+  .tabs{
+    display:flex;
+    gap:8px;
+    max-width:760px;
+    margin:22px auto 0;
+    padding:0 20px;
+  }
+  .tab{
+    flex:1;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    padding:12px 10px;
+    border-radius:10px;
+    border:1.5px solid var(--paper-line);
+    background:#fff;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .tab.active{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+  }
+
+  main{max-width:760px;margin:0 auto;padding:22px 20px 0;}
+  section{display:none;}
+  section.active{display:block;}
+
+  .card{
+    background:#fff;
+    border:1.5px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:0 1px 0 rgba(0,0,0,.02);
+  }
+  .cat-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:600;
+    padding:3px 9px;
+    border-radius:20px;
+    display:inline-block;
+    margin-bottom:10px;
+  }
+  .cat-add .cat-label{background:var(--teal-soft);color:var(--teal);}
+  .cat-sub .cat-label{background:var(--coral-soft);color:var(--coral);}
+  .cat-mul .cat-label{background:var(--amber-soft);color:#8a5a17;}
+  .cat-div .cat-label{background:var(--navy-soft);color:var(--navy);}
+  .cat-eq  .cat-label{background:#EEE7F5;color:#6A4A94;}
+
+  .pattern-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;margin:0 0 4px;}
+  .formula{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:15px;
+    font-weight:600;
+    background:var(--paper);
+    border:1px dashed var(--paper-line);
+    border-radius:8px;
+    padding:8px 12px;
+    display:inline-block;
+    margin:6px 0 10px;
+  }
+  .clue-words{font-size:13.5px;color:var(--ink-soft);margin-bottom:10px;}
+  .clue-words b{color:var(--ink);font-weight:600;}
+  .examples{font-size:13.5px;color:var(--ink-soft);line-height:1.7;}
+  .examples code{
+    font-family:'IBM Plex Mono',monospace;
+    background:var(--paper);
+    padding:1px 6px;
+    border-radius:5px;
+    color:var(--ink);
+    font-weight:600;
+  }
+
+  /* bar model */
+  .bar-model{margin:14px 0 6px;}
+  .bar-row{display:flex;align-items:stretch;height:40px;margin-bottom:6px;position:relative;}
+  .bar-seg{
+    border:1.5px solid var(--navy);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    font-size:13px;
+    color:var(--navy);
+    background:var(--navy-soft);
+    margin-right:-1.5px;
+  }
+  .bar-seg.unknown{background:var(--amber-soft);color:#8a5a17;border-color:var(--amber);}
+  .brace-label{
+    text-align:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+
+  /* practice */
+  .qcounter{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
+  .question-text{font-size:16px;line-height:1.5;margin:6px 0 14px;}
+  .question-text b{color:var(--navy);}
+  input[type=text]{
+    width:100%;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:16px;
+    padding:12px 14px;
+    border:1.5px solid var(--paper-line);
+    border-radius:10px;
+    background:var(--paper);
+    color:var(--ink);
+    margin-bottom:10px;
+  }
+  input[type=text]:focus{outline:2px solid var(--navy);border-color:var(--navy);}
+  .btn-row{display:flex;gap:10px;}
+  button{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    padding:11px 18px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+  }
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-ghost{background:#fff;border:1.5px solid var(--paper-line);color:var(--ink);}
+  .feedback{
+    margin-top:12px;
+    padding:11px 14px;
+    border-radius:10px;
+    font-size:14.5px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.correct{background:var(--teal-soft);color:#215952;}
+  .feedback.wrong{background:var(--coral-soft);color:#8c392b;}
+  .feedback .answer{font-family:'IBM Plex Mono',monospace;font-weight:600;}
+
+  .score-strip{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-bottom:14px;
+    padding:0 2px;
+  }
+  .score-strip b{color:var(--navy);font-weight:600;}
+  .reset-link{
+    background:none;border:none;color:var(--ink-soft);
+    text-decoration:underline;font-family:'IBM Plex Mono',monospace;
+    font-size:12px;cursor:pointer;padding:0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Unit 1 &middot; Algebra</div>
+  <h1>Bar Model <span>Algebra Lab</span></h1>
+  <p class="sub">The five patterns behind every "express the answer in terms of&nbsp;x" question &mdash; plus practice pulled straight from today's worksheet.</p>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="reference">Reference</button>
+  <button class="tab" data-tab="practice">Practice</button>
+</div>
+
+<main>
+  <!-- REFERENCE -->
+  <section id="reference" class="active"></section>
+
+  <!-- PRACTICE -->
+  <section id="practice">
+    <div class="score-strip">
+      <span>Score: <b id="scoreText">0 / 0</b></span>
+      <button class="reset-link" id="resetBtn">reset progress</button>
+    </div>
+    <div class="card" id="quizCard">
+      <div class="qcounter" id="qcounter"></div>
+      <div id="barModelSlot"></div>
+      <div class="question-text" id="qtext"></div>
+      <input type="text" id="answerInput" placeholder="Type your answer, e.g. x-7 or n+5">
+      <div class="btn-row">
+        <button class="btn-primary" id="checkBtn">Check</button>
+        <button class="btn-ghost" id="nextBtn">Skip &rarr;</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ---------------- DATA ---------------- */
+const patterns = [
+  {
+    cat:"cat-add", label:"Add",
+    title:"\u201c...more than\u201d / totals",
+    formula:"bigger = smaller + difference",
+    clue:"Clue words: <b>more than</b>, <b>total</b>, <b>altogether</b>, <b>combined weight</b>",
+    bars:[{w:60,t:"n",u:false},{w:22,t:"+5",u:true}],
+    braceTotal:null,
+    examples:["Cain has <code>k</code> songs, 5 fewer than Steve &rarr; Steve = <code>k + 5</code>","A bag (20g) holds grapes (<code>p</code>g) &rarr; total = <code>p + 20</code>"]
+  },
+  {
+    cat:"cat-sub", label:"Subtract",
+    title:"\u201c...fewer / shorter / less than\u201d",
+    formula:"smaller = bigger \u2212 difference",
+    clue:"Clue words: <b>fewer than</b>, <b>shorter</b>, <b>change from a payment</b>",
+    bars:[{w:60,t:"x",u:false},{w:22,t:"7",u:true}],
+    braceTotal:null,
+    examples:["Miguel has 7 fewer than Rick (<code>x</code>) &rarr; Miguel = <code>x \u2212 7</code>","Abby pays with $10 for a $<code>m</code> book &rarr; change = <code>10 \u2212 m</code>"]
+  },
+  {
+    cat:"cat-mul", label:"Multiply",
+    title:"\u201c...times as much\u201d / equal groups",
+    formula:"total = number of groups \u00d7 amount per group",
+    clue:"Clue words: <b>twice</b>, <b>3 times as much</b>, <b>each</b>, <b>every</b>",
+    bars:[{w:14,t:"m",u:false},{w:14,t:"m",u:false},{w:14,t:"m",u:false}],
+    braceTotal:"3m",
+    examples:["3 plants in each of <code>m</code> rows &rarr; <code>3m</code> plants","4 chairs at $<code>y</code> each &rarr; <code>4y</code>","Sean saves <code>p</code>, twice Eve &rarr; Holly (2\u00d7 Sean) = <code>2p</code>"]
+  },
+  {
+    cat:"cat-div", label:"Divide",
+    title:"\u201cshared / packed equally\u201d",
+    formula:"amount per share = total \u00f7 number of shares",
+    clue:"Clue words: <b>divides equally</b>, <b>each bag</b>, <b>each niece receives</b>",
+    bars:[{w:88,t:"z",u:false}],
+    braceTotal:"z \u00f7 6",
+    examples:["<code>z</code> gel pens shared among 6 nieces &rarr; each gets <code>z \u00f7 6</code>","<code>d</code> muffins packed into 4 bags &rarr; each bag has <code>d \u00f7 4</code>","Sean saves <code>p</code>, twice as much as Eve &rarr; Eve = <code>p \u00f7 2</code>"]
+  },
+  {
+    cat:"cat-eq", label:"Solve",
+    title:"Bar model \u2192 equation \u2192 answer",
+    formula:"read the bars, write the equation, undo the operation",
+    clue:"Whole bar split into parts that <b>add up</b>, or repeated equal bars that <b>multiply</b>.",
+    bars:[{w:60,t:"d",u:false},{w:22,t:"11",u:true}],
+    braceTotal:"44 total",
+    examples:["Bar split into <code>d</code> and 11, total 44 &rarr; <code>d + 11 = 44</code> &rarr; <code>d = 33</code>","5 equal bars of <code>w</code>, total 45 &rarr; <code>5w = 45</code> &rarr; <code>w = 9</code>"]
+  }
+];
+
+// question bank — fresh names/numbers (NOT the worksheet's), same underlying patterns
+const quiz = [
+  {q:"Priya has <b>b</b> dollars saved. Jorge has 9 fewer dollars than Priya. Jorge has ___ dollars.", a:["b-9"]},
+  {q:"Devon has <b>h</b> baseball cards, 6 fewer than his brother. His brother has ___ cards.", a:["h+6"]},
+  {q:"A puppy weighs <b>t</b> kg today. Last month it weighed 3 kg less. Last month it weighed ___ kg.", a:["t-3"]},
+  {q:"A lamp costs $22. Nina resells it for $<b>c</b> profit. She sells it for $___.", a:["22+c","c+22"]},
+  {q:"A melon weighs <b>k</b> g, packed in a crate that weighs 35 g. Total weight = ___ g.", a:["k+35","35+k"]},
+  {q:"A toy costs $<b>g</b>. Liam pays with a $20 bill. His change is $___.", a:["20-g"]},
+  {q:"Owen has <b>r</b> marbles. Sasha has 6 more than Owen. Sasha has ___ marbles.", a:["r+6"]},
+  {q:"Theo has 5 fewer marbles than Owen (<b>r</b>). Theo has ___ marbles.", a:["r-5"]},
+  {q:"Sasha (r+6) and Owen (r) together have ___ marbles (simplify).", a:["2r+6"]},
+  {q:"8 shelves each hold <b>b</b> books. Total number of books = ___.", a:["8b"]},
+  {q:"Ravi has <b>j</b> stickers shared equally among 8 friends. Each friend gets ___ stickers.", a:["j/8","j÷8"]},
+  {q:"A baker has <b>v</b> muffins packed equally into 3 boxes. Each box has ___ muffins.", a:["v/3","v÷3"]},
+  {q:"A garden has <b>s</b> rows with 5 tulips in each row. Total tulips = ___.", a:["5s"]},
+  {q:"A ticket costs $<b>c</b>. A family buys 5 tickets. They pay $___.", a:["5c"]},
+  {q:"Maya saves $<b>c</b> a month, twice as much as Priya. Priya saves $___.", a:["c/2","c÷2"]},
+  {q:"Owen saves twice as much as Maya ($<b>c</b>) each month. Owen saves $___.", a:["2c"]},
+  {q:"Bar model: one part <b>e</b>, one part 9, total 52. Solve for e. e = ___", a:["43"], bar:{parts:[{t:"e",u:false,w:70},{t:"9",u:true,w:18}], total:"52"}},
+  {q:"Bar model: six equal parts of <b>w</b>, total 54. Solve for w. w = ___", a:["9"], bar:{parts:[{t:"w",u:false,w:14},{t:"w",u:false,w:14},{t:"w",u:false,w:14},{t:"w",u:false,w:14},{t:"w",u:false,w:14},{t:"w",u:false,w:14}], total:"54"}},
+  {q:"Bar model: nine equal parts of <b>a</b>, total 63. Solve for a. a = ___", a:["7"], bar:{parts:Array.from({length:9},()=>({t:"a",u:false,w:9.5})), total:"63"}},
+  {q:"Bar model: two equal rows, each split into <b>f</b> and 8, combined total 40. Solve for f. f = ___", a:["12"], bar:{parts:[{t:"f",u:false,w:55},{t:"8",u:true,w:22}], total:"40 \u00d7 2 rows"}}
+];
+
+/* ---------------- REFERENCE RENDER ---------------- */
+const refSection = document.getElementById('reference');
+patterns.forEach(p=>{
+  const barsHtml = p.bars.map(b=>`<div class="bar-seg${b.u?' unknown':''}" style="width:${b.w}%">${b.t}</div>`).join('');
+  const card = document.createElement('div');
+  card.className = `card ${p.cat}`;
+  card.innerHTML = `
+    <span class="cat-label">${p.label}</span>
+    <div class="pattern-title">${p.title}</div>
+    <div class="formula">${p.formula}</div>
+    <div class="clue-words">${p.clue}</div>
+    <div class="bar-model">
+      <div class="bar-row">${barsHtml}</div>
+      ${p.braceTotal ? `<div class="brace-label">total = ${p.braceTotal}</div>` : ''}
+    </div>
+    <div class="examples">${p.examples.map(e=>'&bull; '+e).join('<br>')}</div>
+  `;
+  refSection.appendChild(card);
+});
+
+/* ---------------- TABS ---------------- */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('main > section').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------------- PRACTICE LOGIC ---------------- */
+let order = [...Array(quiz.length).keys()];
+let idx = 0;
+let score = JSON.parse(localStorage.getItem('algebraLabScore')||'{"correct":0,"attempted":0}');
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+shuffle(order);
+
+function normalize(s){
+  return s.toLowerCase().replace(/\s+/g,'').replace(/×/g,'*').replace(/÷/g,'/').replace(/\$/g,'');
+}
+
+function renderBar(spec){
+  if(!spec) return '';
+  const segs = spec.parts.map(p=>`<div class="bar-seg${p.u?' unknown':''}" style="width:${p.w}%">${p.t}</div>`).join('');
+  return `<div class="bar-model"><div class="bar-row">${segs}</div><div class="brace-label">total = ${spec.total}</div></div>`;
+}
+
+function updateScore(){
+  document.getElementById('scoreText').textContent = `${score.correct} / ${score.attempted}`;
+  localStorage.setItem('algebraLabScore', JSON.stringify(score));
+}
+
+function loadQuestion(){
+  const q = quiz[order[idx]];
+  document.getElementById('qcounter').textContent = `Question ${idx+1} of ${quiz.length}`;
+  document.getElementById('qtext').innerHTML = q.q;
+  document.getElementById('barModelSlot').innerHTML = renderBar(q.bar);
+  document.getElementById('answerInput').value = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('answerInput').focus();
+}
+
+document.getElementById('checkBtn').addEventListener('click', ()=>{
+  const q = quiz[order[idx]];
+  const given = normalize(document.getElementById('answerInput').value);
+  const ok = q.a.some(a=>normalize(a)===given);
+  const fb = document.getElementById('feedback');
+  score.attempted++;
+  if(ok){
+    score.correct++;
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `Correct &mdash; <span class="answer">${q.a[0]}</span>`;
+  } else {
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `Not quite. Answer: <span class="answer">${q.a[0]}</span>`;
+  }
+  updateScore();
+});
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  idx = (idx+1) % quiz.length;
+  loadQuestion();
+});
+
+document.getElementById('answerInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ document.getElementById('checkBtn').click(); }
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  score = {correct:0, attempted:0};
+  updateScore();
+});
+
+updateScore();
+loadQuestion();
+</script>
+</body>
+</html>
