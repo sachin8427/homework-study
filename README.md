@@ -2,21 +2,22 @@
 
 A GitHub Pages site for writing references and interactive study tools.
 
-## Add a page to the home page
+## Add a subject resource
 
-Add one object to the `RESOURCES` list in `assets/home.js`:
+Add one object to the `resources` list in `assets/catalog.js`:
 
 ```javascript
 {
   title: "Page title",
-  url: "path-to-page/",
+  category: "math",
+  url: "tools/math/path-to-page/",
   description: "A short explanation of the resource.",
-  icon: "📝",
-  category: "Reference guide"
+  type: "Reference guide",
+  featured: false
 }
 ```
 
-The home-page grid adapts automatically to the number of entries. Relative URLs work both in VS Code Live Server and on the GitHub Pages project site.
+The matching subject page updates automatically. Set `featured` to `true` only when the resource should also appear directly on the home page. Relative URLs work both in VS Code Live Server and on the GitHub Pages project site.
 
 ## Run basic tests
 

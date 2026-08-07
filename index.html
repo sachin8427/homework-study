@@ -6,6 +6,7 @@
   <meta name="description" content="Writing references and interactive study tools.">
   <title>Homework Study</title>
   <link rel="stylesheet" href="assets/home.css">
+  <script src="assets/catalog.js" defer></script>
   <script src="assets/home.js" defer></script>
 </head>
 <body>
@@ -23,21 +24,20 @@
       <p>Writing references and interactive tools gathered in one place. Choose a resource and return here whenever you want to switch activities.</p>
     </section>
 
-    <section aria-labelledby="resources-title">
-      <h2 id="resources-title" class="section-title">Resources</h2>
-      <div id="resource-grid" class="resource-grid"></div>
+    <section aria-labelledby="categories-title">
+      <h2 id="categories-title" class="section-title">Subjects</h2>
+      <div id="category-grid" class="resource-grid"></div>
+    </section>
+
+    <section aria-labelledby="featured-title">
+      <h2 id="featured-title" class="section-title">Featured resources</h2>
+      <div id="featured-grid" class="resource-grid compact-grid"></div>
     </section>
 
     <noscript>
       <div class="resource-grid">
-        <a class="resource-card" href="tools/sentence-workbench/">
-          <span class="resource-category">Interactive practice</span>
-          <strong>Sentence Workbench</strong>
-        </a>
-        <a class="resource-card" href="dress-ups-reference.html">
-          <span class="resource-category">Reference guide</span>
-          <strong>Dress-Ups &amp; Sentence Openers</strong>
-        </a>
+        <a class="resource-card" href="subjects/math/"><strong>Math</strong></a>
+        <a class="resource-card" href="subjects/writing/"><strong>Writing</strong></a>
       </div>
     </noscript>
   </main>

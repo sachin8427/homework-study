@@ -53,13 +53,13 @@ test("standalone page uses its local stylesheet and script without CDN dependenc
 });
 
 test("algebra lab is standalone and linked from the home catalog", () => {
-  const algebraPath = path.join(toolRoot, "algebra-bar-models.html");
+  const algebraPath = path.join(projectRoot, "tools", "math", "algebra-bar-models", "index.html");
   const algebra = fs.readFileSync(algebraPath, "utf8");
-  const homeCatalog = fs.readFileSync(path.join(projectRoot, "assets", "home.js"), "utf8");
+  const homeCatalog = fs.readFileSync(path.join(projectRoot, "assets", "catalog.js"), "utf8");
   const scripts = [...algebra.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  assert.match(algebra, /href="\.\.\/\.\.\/"/);
+  assert.match(algebra, /href="\.\.\/\.\.\/\.\.\/subjects\/math\/"/);
   assert.doesNotMatch(algebra, /https?:\/\//);
-  assert.match(homeCatalog, /tools\/sentence-workbench\/algebra-bar-models\.html/);
+  assert.match(homeCatalog, /tools\/math\/algebra-bar-models\//);
   assert.equal(scripts.length, 1);
   assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
 });
