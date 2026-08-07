@@ -1,4 +1,13 @@
+---
+layout: default
+title: Dress-Ups & Sentence Openers
+description: A pocket reference for making writing clearer, stronger, and more interesting.
+nav_order: 10
+---
+
 # Dress-Ups & Sentence Openers Pocket Reference
+
+[← Back to Homework Study]({{ '/' | relative_url }})
 
 *A quick guide for making writing clearer, stronger, and more interesting.*
 

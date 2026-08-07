@@ -1,5 +1,10 @@
 title: Homework Study
 description: Writing references and study guides
+url: "https://sachin8427.github.io"
+baseurl: "/homework-study"
 theme: jekyll-theme-minimal
 markdown: kramdown
 
+exclude:
+  - tests
+  - README.md
