@@ -12,8 +12,8 @@ window.STUDY_CATALOG = {
     { id: "writing", title: "Writing", description: "References and practice for clear, strong writing.", marker: "WR" }
   ],
   resources: [
-    { title: "Bar Model Algebra Lab", category: "math", url: "tools/math/algebra-bar-models/", description: "Learn five algebra bar-model patterns and practice writing expressions.", type: "Interactive practice", featured: true },
-    { title: "Sentence Workbench", category: "writing", url: "tools/sentence-workbench/", description: "Practice sentence dress-ups and openers with flashcards and writing exercises.", type: "Interactive practice", featured: true },
-    { title: "Dress-Ups & Sentence Openers", category: "writing", url: "dress-ups-reference.html", description: "Use a concise reference for stronger, clearer, and more interesting writing.", type: "Reference guide", featured: false }
+    { title: "Bar Model Algebra Lab", category: "math", url: "tools/math/algebra-bar-models/", description: "Learn five algebra bar-model patterns and practice writing expressions.", type: "Interactive practice" },
+    { title: "Sentence Workbench", category: "writing", url: "tools/sentence-workbench/", description: "Practice sentence dress-ups and openers with flashcards and writing exercises.", type: "Interactive practice" },
+    { title: "Dress-Ups & Sentence Openers", category: "writing", url: "dress-ups-reference.html", description: "Use a concise reference for stronger, clearer, and more interesting writing.", type: "Reference guide" }
   ]
 };

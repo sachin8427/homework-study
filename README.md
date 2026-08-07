@@ -12,12 +12,11 @@ Add one object to the `resources` list in `assets/catalog.js`:
   category: "math",
   url: "tools/math/path-to-page/",
   description: "A short explanation of the resource.",
-  type: "Reference guide",
-  featured: false
+  type: "Reference guide"
 }
 ```
 
-The matching subject page updates automatically. Set `featured` to `true` only when the resource should also appear directly on the home page. Relative URLs work both in VS Code Live Server and on the GitHub Pages project site.
+The matching subject page updates automatically. The home page links only to subjects, keeping individual resources organized one level below. Relative URLs work both in VS Code Live Server and on the GitHub Pages project site.
 
 ## Run basic tests
 
