@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Grade 5 United States history reference and quiz covering 1763 through the early 1900s.">
+<title>Grade 5 — Dispatch: 1763 to 1900s</title>
+<style>
+  :root{
+    --navy:#1c2f4a;
+    --paper:#faf6ee;
+    --paper-line:#ded2b8;
+    --ink:#2a2420;
+    --ink-soft:#6b5f52;
+    --teal:#2f8f7a;
+    --teal-soft:#dcefe9;
+    --coral:#c0533e;
+    --coral-soft:#f6ddd3;
+    --gold:#b8862e;
+    --gold-soft:#f3e7cd;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Space Grotesk',sans-serif;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(180,160,120,0.10) 28px);
+  }
+  header{
+    max-width:900px;margin:0 auto;padding:34px 20px 18px;
+    border-bottom:2px solid var(--paper-line);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--gold);font-weight:600;
+  }
+  h1{
+    font-family:'Fraunces',serif;font-weight:600;font-size:clamp(28px,5vw,42px);
+    margin:6px 0 4px;color:var(--navy);letter-spacing:-0.01em;
+  }
+  h1 span{color:var(--coral);font-style:italic;}
+  .sub{color:var(--ink-soft);font-size:14.5px;margin:0 0 18px;max-width:560px;}
+
+  nav.tabs{
+    display:flex;gap:6px;flex-wrap:wrap;max-width:900px;margin:0 auto;padding:14px 20px 0;
+  }
+  .tab-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;
+    padding:9px 14px;border-radius:8px 8px 0 0;border:1.5px solid var(--paper-line);
+    border-bottom:none;background:#fff;color:var(--ink-soft);cursor:pointer;
+    letter-spacing:.02em;
+  }
+  .tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+  main{max-width:900px;margin:0 auto;padding:0 20px 60px;}
+  .panel{
+    background:#fff;border:1.5px solid var(--paper-line);border-radius:0 10px 10px 10px;
+    padding:24px;margin-top:0;
+  }
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .section-title{
+    font-family:'Fraunces',serif;font-weight:600;font-size:21px;color:var(--navy);margin:0 0 4px;
+  }
+  .section-note{color:var(--ink-soft);font-size:13.5px;margin:0 0 20px;}
+
+  /* --- Story timeline --- */
+  .era-block{margin-bottom:30px;}
+  .era-head{
+    display:flex;align-items:center;gap:10px;margin-bottom:12px;
+  }
+  .era-badge{
+    width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;
+    font-size:12px;font-weight:700;flex-shrink:0;
+  }
+  .era-title{font-family:'Fraunces',serif;font-weight:600;font-size:17px;color:var(--navy);}
+  .era-range{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-soft);}
+
+  .chain{position:relative;margin-left:15px;padding-left:26px;border-left:2px dashed var(--paper-line);}
+  .chain-step{position:relative;padding-bottom:18px;}
+  .chain-step:last-child{padding-bottom:0;}
+  .chain-step::before{
+    content:"";position:absolute;left:-33px;top:4px;width:12px;height:12px;border-radius:50%;
+    background:var(--teal);border:2px solid #fff;box-shadow:0 0 0 1.5px var(--teal);
+  }
+  .chain-step .yr{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--coral);font-weight:700;}
+  .chain-step .ev{font-weight:600;font-size:14.5px;margin:2px 0 2px;}
+  .chain-step .why{font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+  .arrow-because{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--teal);
+    text-transform:uppercase;letter-spacing:.06em;margin-top:3px;display:inline-block;
+  }
+
+  /* --- Mnemonics --- */
+  .mnemo-card{
+    background:var(--gold-soft);border:1px solid #e3cd9a;border-radius:10px;padding:16px 18px;margin-bottom:16px;
+  }
+  .mnemo-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+  .mnemo-phrase{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--navy);margin:6px 0 8px;}
+  .mnemo-key{font-size:13px;color:var(--ink-soft);line-height:1.6;}
+  .mnemo-key b{color:var(--ink);}
+
+  /* --- Build the timeline --- */
+  .bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;min-height:44px;
+    padding:12px;background:var(--paper);border:1px dashed var(--paper-line);border-radius:8px;}
+  .card-chip{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:#fff;border:1.5px solid var(--navy);
+    color:var(--navy);padding:8px 12px;border-radius:7px;cursor:pointer;font-weight:600;
+  }
+  .card-chip.selected{background:var(--navy);color:#fff;}
+  .card-chip.placed{opacity:.25;cursor:default;}
+  .slots{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+  .slot{
+    display:flex;align-items:center;gap:10px;min-height:42px;border:1.5px solid var(--paper-line);
+    border-radius:7px;padding:6px 12px;cursor:pointer;background:#fff;
+  }
+  .slot .num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);width:16px;}
+  .slot.filled{background:var(--paper);}
+  .slot.correct{border-color:var(--teal);background:var(--teal-soft);}
+  .slot.wrong{border-color:var(--coral);background:var(--coral-soft);}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .btn{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;padding:10px 16px;
+    border-radius:8px;border:1.5px solid var(--navy);cursor:pointer;background:#fff;color:var(--navy);}
+  .btn.primary{background:var(--navy);color:#fff;}
+  .result-msg{font-size:13.5px;margin-top:12px;padding:10px 12px;border-radius:8px;display:none;}
+  .result-msg.show{display:block;}
+  .result-msg.good{background:var(--teal-soft);color:#1d5c4c;}
+  .result-msg.bad{background:var(--coral-soft);color:#8c392b;}
+
+  /* --- You are there --- */
+  .scenario{border:1.5px solid var(--paper-line);border-radius:10px;padding:18px;margin-bottom:18px;}
+  .scenario-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--coral);font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+  .scenario-text{font-size:14.5px;line-height:1.6;margin:8px 0 14px;}
+  .choice-btn{
+    display:block;width:100%;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:14px;
+    padding:11px 14px;margin-bottom:8px;border:1.5px solid var(--paper-line);border-radius:8px;
+    background:#fff;cursor:pointer;color:var(--ink);
+  }
+  .choice-btn:hover{border-color:var(--navy);}
+  .outcome{
+    display:none;margin-top:10px;padding:12px 14px;background:var(--teal-soft);border-radius:8px;
+    font-size:13.5px;line-height:1.6;color:#1d5c4c;
+  }
+  .outcome.show{display:block;}
+
+  /* --- Quiz --- */
+  .score-strip{
+    display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;color:var(--ink-soft);margin-bottom:16px;
+  }
+  .score-strip b{color:var(--navy);}
+  .reset-link{background:none;border:none;color:var(--ink-soft);text-decoration:underline;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;cursor:pointer;padding:0;}
+  .quiz-q{border:1.5px solid var(--paper-line);border-radius:10px;padding:16px 18px;margin-bottom:14px;}
+  .quiz-q .qtext{font-weight:600;font-size:14.5px;margin-bottom:10px;}
+  .quiz-q .feedback{margin-top:10px;padding:9px 12px;border-radius:7px;font-size:13px;display:none;}
+  .quiz-q .feedback.show{display:block;}
+  .quiz-q .feedback.correct{background:var(--teal-soft);color:#1d5c4c;}
+  .quiz-q .feedback.wrong{background:var(--coral-soft);color:#8c392b;}
+
+  @media (max-width:600px){
+    .panel{padding:18px;}
+    header{padding:26px 16px 14px;}
+    nav.tabs{padding:14px 16px 0;}
+  }
+  .breadcrumb{display:flex;gap:8px;margin-bottom:18px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  .breadcrumb a{color:var(--navy);text-decoration:none;}
+  .breadcrumb a:hover,.breadcrumb a:focus-visible{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../">Home</a><span aria-hidden="true">/</span><a href="../../../subjects/social-science/">Social Science</a></nav>
+  <div class="eyebrow">Field Dispatch · Grade 5</div>
+  <h1>United States, <span>1763 &ndash; 1900s</span></h1>
+  <p class="sub">From taxes and tea to railroads and cities &mdash; how a set of British colonies became an industrial nation. Follow the causes, not just the dates.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="story">Story Timeline</button>
+  <button class="tab-btn" data-tab="mnemo">Memory Tricks</button>
+  <button class="tab-btn" data-tab="build">Build the Timeline</button>
+  <button class="tab-btn" data-tab="there">You Are There</button>
+  <button class="tab-btn" data-tab="quiz">Quick Check</button>
+</nav>
+
+<main>
+
+  <!-- ============ STORY TIMELINE ============ -->
+  <section class="panel active" id="panel-story">
+    <div class="section-title">The chain of events</div>
+    <p class="section-note">Every arrow means "which caused." Read down each chain like a story, not a list of dates to memorize.</p>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">1</div>
+        <div><div class="era-title">The American Revolution</div><div class="era-range">1754 &ndash; 1783</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">1754</div><div class="ev">French and Indian War begins</div>
+          <div class="why">Britain and France go to war over control of North American land and the fur trade; American colonists fight alongside British troops.</div>
+          <span class="arrow-because">Britain wins, but at a cost &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1763</div><div class="ev">War ends &mdash; Britain is deep in debt</div>
+          <div class="why">Britain now controls huge new territory but is broke from the war. Under <b>mercantilism</b> &mdash; the idea that colonies exist to enrich the mother country &mdash; Britain decides the colonies should help pay the bill.</div>
+          <span class="arrow-because">Britain starts taxing directly &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1765</div><div class="ev">Britain passes the Stamp Act</div>
+          <div class="why">The first direct tax on the colonies, on paper goods &mdash; but colonists have no vote in Parliament to object.</div>
+          <span class="arrow-because">because of this &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1770</div><div class="ev">Boston Massacre</div>
+          <div class="why">Anger over taxes and British troops in Boston boils over into a deadly clash in the streets.</div>
+          <span class="arrow-because">which fed into &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1773</div><div class="ev">Boston Tea Party</div>
+          <div class="why">Colonists dump British tea into the harbor to protest "no taxation without representation."</div>
+          <span class="arrow-because">Britain punishes them &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1774</div><div class="ev">Intolerable Acts</div>
+          <div class="why">Britain closes Boston's port and cracks down &mdash; colonies respond by forming the Continental Congress.</div>
+          <span class="arrow-because">tension explodes into war &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1775</div><div class="ev">Lexington &amp; Concord</div>
+          <div class="why">The first shots of the war are fired when British troops try to seize colonial weapons.</div>
+          <span class="arrow-because">the colonies declare why &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1776</div><div class="ev">Declaration of Independence</div>
+          <div class="why">Written mainly by Thomas Jefferson, it lays out the colonies' reasons for breaking away from Britain.</div>
+          <span class="arrow-because">war continues, France joins the colonists &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1781</div><div class="ev">British surrender at Yorktown</div>
+          <div class="why">With French help, Washington's army traps the British army &mdash; effectively ending the fighting.</div>
+          <span class="arrow-because">peace is made official &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1783</div><div class="ev">Treaty of Paris</div>
+          <div class="why">Britain formally recognizes the United States as an independent nation.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">2</div>
+        <div><div class="era-title">Building a Government</div><div class="era-range">1781 &ndash; 1791</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">1781</div><div class="ev">Articles of Confederation take effect</div>
+          <div class="why">The first American government &mdash; deliberately weak, with no power to tax or enforce laws, because states feared another king.</div>
+          <span class="arrow-because">too weak to work &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1787</div><div class="ev">Constitutional Convention</div>
+          <div class="why">Leaders meet in Philadelphia and write a new Constitution creating three branches of government that check each other's power.</div>
+          <span class="arrow-because">states demand a promise &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1791</div><div class="ev">Bill of Rights ratified</div>
+          <div class="why">The first 10 amendments guarantee individual freedoms &mdash; the price of getting states to approve the Constitution.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">3</div>
+        <div><div class="era-title">Westward Expansion</div><div class="era-range">1803 &ndash; 1849</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">1803</div><div class="ev">Louisiana Purchase</div>
+          <div class="why">The U.S. buys land from France, instantly doubling the size of the country.</div>
+          <span class="arrow-because">settlers push into Native land &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1830</div><div class="ev">Indian Removal Act</div>
+          <div class="why">The government forces Native nations off their homelands; thousands die on the Trail of Tears.</div>
+          <span class="arrow-because">belief in "Manifest Destiny" grows &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1846</div><div class="ev">U.S.&ndash;Mexican War begins</div>
+          <div class="why">Disputes over Texas and the idea that the U.S. was destined to stretch coast to coast lead to war with Mexico.</div>
+          <span class="arrow-because">U.S. wins new territory &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1849</div><div class="ev">California Gold Rush</div>
+          <div class="why">Gold is discovered on land just won from Mexico, drawing waves of settlers west almost overnight.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">4</div>
+        <div><div class="era-title">The Civil War Era</div><div class="era-range">1850 &ndash; 1865</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">1850s</div><div class="ev">North and South grow apart</div>
+          <div class="why">The North industrializes with factories and free labor; the South's economy depends on enslaved labor and cash crops like cotton.</div>
+          <span class="arrow-because">disputes over new territories &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1850s</div><div class="ev">Compromises over slavery fail to hold</div>
+          <div class="why">Deals like the Compromise of 1850 try to balance free and slave states, but the arguments keep resurfacing.</div>
+          <span class="arrow-because">a president is elected &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1860</div><div class="ev">Lincoln elected president</div>
+          <div class="why">Southern states fear he'll end slavery, even though he hadn't yet proposed to at that point.</div>
+          <span class="arrow-because">states secede &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1861</div><div class="ev">Fort Sumter is attacked</div>
+          <div class="why">Confederate forces fire on a Union fort in South Carolina &mdash; the war begins.</div>
+          <span class="arrow-because">the war's purpose sharpens &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1863</div><div class="ev">Emancipation Proclamation</div>
+          <div class="why">Lincoln declares enslaved people in Confederate states free, reframing the war around ending slavery.</div>
+          <span class="arrow-because">the Union wins &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1865</div><div class="ev">War ends; 13th Amendment ratified</div>
+          <div class="why">The Union wins, and the 13th Amendment abolishes slavery across the entire United States.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">5</div>
+        <div><div class="era-title">Industrialization &amp; Immigration</div><div class="era-range">1865 &ndash; 1900s</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">1869</div><div class="ev">Transcontinental Railroad completed</div>
+          <div class="why">Rail lines connect the whole country, making it fast and cheap to move goods and people.</div>
+          <span class="arrow-because">factories multiply &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1870s&ndash;90s</div><div class="ev">Inventions accelerate industry</div>
+          <div class="why">The telephone, electric light, and new machinery let factories run faster and cities grow taller.</div>
+          <span class="arrow-because">factories need workers &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1892</div><div class="ev">Ellis Island opens</div>
+          <div class="why">Millions of immigrants arrive seeking factory jobs and a new life, becoming the workforce of American industry.</div>
+          <span class="arrow-because">cities can't keep up &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">1900s</div><div class="ev">Rapid urbanization</div>
+          <div class="why">Cities grow faster than housing and sanitation can handle, crowding immigrant and worker families into tenements &mdash; setting the stage for reform movements.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MNEMONICS ============ -->
+  <section class="panel" id="panel-mnemo">
+    <div class="section-title">Memory tricks</div>
+    <p class="section-note">Real mnemonic devices for the parts of this era that are hardest to keep straight.</p>
+
+    <div class="mnemo-card">
+      <div class="mnemo-tag">The setup, before Sam even shows up</div>
+      <div class="mnemo-phrase">War &rarr; Debt &rarr; Mercantilism &rarr; Tax</div>
+      <div class="mnemo-key">Four words, one domino chain: the French and Indian <b>War</b> (1754&ndash;63) leaves Britain in <b>Debt</b>. <b>Mercantilism</b> &mdash; the belief that colonies exist to make money for the home country &mdash; means Britain expects the colonies to help pay it off. That's why the very next thing that happens is a <b>Tax</b> (the Stamp Act, 1765). Every "why did Britain tax the colonies?" question traces back to these four words.</div>
+    </div>
+
+    <div class="mnemo-card">
+      <div class="mnemo-tag">Order of events &middot; road to revolution</div>
+      <div class="mnemo-phrase">"Sam Brews Tea In Lexington"</div>
+      <div class="mnemo-key"><b>S</b>tamp Act (1765) &rarr; <b>B</b>oston Massacre (1770) &rarr; <b>T</b>ea Party (1773) &rarr; <b>I</b>ntolerable Acts (1774) &rarr; <b>L</b>exington &amp; Concord (1775). Bonus: it's even named after Samuel Adams, a real Son of Liberty who helped organize the Tea Party. (This picks up right where "War &rarr; Debt &rarr; Mercantilism &rarr; Tax" leaves off.)</div>
+    </div>
+
+    <div class="mnemo-card">
+      <div class="mnemo-tag">3 branches of government</div>
+      <div class="mnemo-phrase">Legislative &middot; Executive &middot; Judicial</div>
+      <div class="mnemo-key">Each branch's job starts with the <b>same sound</b> as its name: <b>L</b>egislative makes <b>L</b>aws, <b>E</b>xecutive <b>E</b>nforces them, <b>J</b>udicial <b>J</b>udges them. You don't need a separate rhyme &mdash; the name IS the clue.</div>
+    </div>
+
+    <div class="mnemo-card">
+      <div class="mnemo-tag">Order of events &middot; westward push</div>
+      <div class="mnemo-phrase">"Lewis Ran Manifest Miles Gladly"</div>
+      <div class="mnemo-key"><b>L</b>ouisiana Purchase (1803) &rarr; <b>R</b>emoval Act (1830) &rarr; <b>M</b>anifest Destiny belief spreads (1840s) &rarr; <b>M</b>exican War (1846) &rarr; <b>G</b>old Rush (1849). "Lewis" nods to Lewis &amp; Clark, who explored the Louisiana Purchase first.</div>
+    </div>
+
+    <div class="mnemo-card">
+      <div class="mnemo-tag">Dates worth anchoring</div>
+      <div class="mnemo-phrase">1776 &middot; 1787 &middot; 1861&ndash;1865</div>
+      <div class="mnemo-key"><b>1776</b> = Declaration of Independence (tie it to July 4th fireworks you already know). <b>1787</b> = the Constitution is written (think: "17-87, we wrote the laws" &mdash; four years after the war officially ended in 1783). <b>1861&ndash;1865</b> = Civil War (exactly the years between Lincoln's election and his second term).</div>
+    </div>
+
+    <div class="mnemo-card">
+      <div class="mnemo-tag">The number that matters</div>
+      <div class="mnemo-phrase">13th Amendment = ends slavery</div>
+      <div class="mnemo-key">Trick: the original 1<b>3</b> colonies started the country, and the 1<b>3</b>th Amendment finished the job of making it a country where slavery was illegal everywhere. Same number, bookends of the story.</div>
+    </div>
+  </section>
+
+  <!-- ============ BUILD THE TIMELINE ============ -->
+  <section class="panel" id="panel-build">
+    <div class="section-title">Put it in order</div>
+    <p class="section-note">Tap an event card, then tap the numbered slot where it belongs. Check your work when all 9 are placed.</p>
+
+    <div class="bank" id="bank"></div>
+    <div class="slots" id="slots"></div>
+    <div class="btn-row">
+      <button class="btn primary" id="checkOrderBtn">Check order</button>
+      <button class="btn" id="resetOrderBtn">Shuffle again</button>
+    </div>
+    <div class="result-msg" id="orderResult"></div>
+  </section>
+
+  <!-- ============ YOU ARE THERE ============ -->
+  <section class="panel" id="panel-there">
+    <div class="section-title">You are there</div>
+    <p class="section-note">Real people faced these moments and made different choices. Pick a path and see what actually happened to people who chose it.</p>
+    <div id="scenarios"></div>
+  </section>
+
+  <!-- ============ QUICK CHECK ============ -->
+  <section class="panel" id="panel-quiz">
+    <div class="section-title">Quick check</div>
+    <div class="score-strip">
+      <span>Score: <b id="scoreText">0 / 0</b></span>
+      <button class="reset-link" id="quizResetBtn">reset</button>
+    </div>
+    <div id="quizList"></div>
+  </section>
+
+</main>
+
+<script>
+// ---------- TAB SWITCHING ----------
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- BUILD THE TIMELINE ----------
+const timelineEvents = [
+  {id:0, label:"French and Indian War ends", year:1763},
+  {id:1, label:"Stamp Act passed", year:1765},
+  {id:2, label:"Declaration of Independence signed", year:1776},
+  {id:3, label:"U.S. Constitution written", year:1787},
+  {id:4, label:"Louisiana Purchase", year:1803},
+  {id:5, label:"Indian Removal Act", year:1830},
+  {id:6, label:"U.S.\u2013Mexican War begins", year:1846},
+  {id:7, label:"Civil War begins (Fort Sumter)", year:1861},
+  {id:8, label:"13th Amendment ratified", year:1865},
+];
+const correctOrder = [...timelineEvents].sort((a,b)=>a.year-b.year).map(e=>e.id);
+const SLOT_COUNT = timelineEvents.length;
+
+let placement = new Array(SLOT_COUNT).fill(null); // slot index -> event id
+let selectedCard = null;
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+let bankOrder = shuffle(timelineEvents.map(e=>e.id));
+
+function renderBuild(){
+  const bank = document.getElementById('bank');
+  const slots = document.getElementById('slots');
+  bank.innerHTML = '';
+  slots.innerHTML = '';
+
+  bankOrder.forEach(id=>{
+    const ev = timelineEvents.find(e=>e.id===id);
+    const chip = document.createElement('div');
+    const isPlaced = placement.includes(id);
+    chip.className = 'card-chip' + (isPlaced ? ' placed' : '') + (selectedCard===id ? ' selected' : '');
+    chip.textContent = ev.label;
+    if(!isPlaced){
+      chip.addEventListener('click', ()=>{
+        selectedCard = (selectedCard===id) ? null : id;
+        renderBuild();
+      });
+    }
+    bank.appendChild(chip);
+  });
+
+  for(let i=0;i<SLOT_COUNT;i++){
+    const slot = document.createElement('div');
+    const filledId = placement[i];
+    slot.className = 'slot' + (filledId ? ' filled' : '');
+    const num = document.createElement('span');
+    num.className='num'; num.textContent = (i+1)+'.';
+    slot.appendChild(num);
+    const txt = document.createElement('span');
+    txt.textContent = filledId ? timelineEvents.find(e=>e.id===filledId).label : '\u2014 tap a card, then tap here \u2014';
+    slot.appendChild(txt);
+    slot.addEventListener('click', ()=>{
+      if(selectedCard){
+        // remove selected card from any other slot first
+        const prevIdx = placement.indexOf(selectedCard);
+        if(prevIdx!==-1) placement[prevIdx] = null;
+        placement[i] = selectedCard;
+        selectedCard = null;
+        renderBuild();
+      } else if(filledId){
+        placement[i] = null;
+        renderBuild();
+      }
+    });
+    slots.appendChild(slot);
+  }
+  document.getElementById('orderResult').classList.remove('show');
+}
+renderBuild();
+
+document.getElementById('resetOrderBtn').addEventListener('click', ()=>{
+  placement = new Array(SLOT_COUNT).fill(null);
+  bankOrder = shuffle(timelineEvents.map(e=>e.id));
+  selectedCard = null;
+  renderBuild();
+});
+
+document.getElementById('checkOrderBtn').addEventListener('click', ()=>{
+  if(placement.includes(null)){
+    const r = document.getElementById('orderResult');
+    r.className = 'result-msg bad show';
+    r.textContent = 'Fill every slot first \u2014 ' + placement.filter(x=>x===null).length + ' still empty.';
+    return;
+  }
+  const slotEls = document.querySelectorAll('.slot');
+  let correctCount = 0;
+  placement.forEach((id, i)=>{
+    if(id === correctOrder[i]){ slotEls[i].classList.add('correct'); correctCount++; }
+    else { slotEls[i].classList.add('wrong'); }
+  });
+  const r = document.getElementById('orderResult');
+  if(correctCount===SLOT_COUNT){
+    r.className='result-msg good show';
+    r.textContent = 'All '+SLOT_COUNT+' in the right order! That\'s the full sweep from war debt to emancipation.';
+  } else {
+    r.className='result-msg bad show';
+    r.textContent = correctCount + ' of '+SLOT_COUNT+' correct. Green slots are right \u2014 fix the red ones and check again.';
+  }
+});
+
+// ---------- YOU ARE THERE ----------
+const scenarios = [
+  {
+    tag: "1774 \u00b7 Boston",
+    text: "You're a colonist watching Britain shut down Boston's port after the Tea Party. A neighbor asks where you stand.",
+    choices: [
+      {label:"Join the Sons of Liberty and boycott British goods", outcome:"This is the Patriot path. Colonists who chose this helped organize the Continental Congress and, within two years, were fighting for independence."},
+      {label:"Stay loyal to the King and report troublemakers", outcome:"This is the Loyalist path. About 1 in 5 colonists chose this. Many Loyalists later left for Canada or Britain when the war was lost."},
+      {label:"Try to stay neutral and just keep farming", outcome:"Many colonists tried this \u2014 but as the war spread, neutral families were often pressured to pick a side by whichever army passed through."}
+    ]
+  },
+  {
+    tag: "1787 \u00b7 Philadelphia",
+    text: "You're a delegate at the Constitutional Convention. Small states worry big states will control Congress. What do you push for?",
+    choices: [
+      {label:"Equal votes for every state, no matter the size", outcome:"This became the Senate: every state gets 2 senators, regardless of population."},
+      {label:"Votes based on each state's population", outcome:"This became the House of Representatives: bigger states get more representatives."},
+      {label:"Both \u2014 find a compromise", outcome:"This is exactly what happened: the \"Great Compromise\" created a two-house Congress combining both ideas."}
+    ]
+  },
+  {
+    tag: "1838 \u00b7 Georgia",
+    text: "You're a Cherokee family ordered by U.S. soldiers to leave your farm and move west of the Mississippi.",
+    choices: [
+      {label:"Refuse to leave your land", outcome:"Most families who resisted were forcibly removed by soldiers regardless \u2014 the government did not allow refusal."},
+      {label:"Begin the journey west as ordered", outcome:"This was reality for roughly 15,000 Cherokee people. About 1 in 4 died of cold, hunger, and disease on what became known as the Trail of Tears."}
+    ]
+  },
+  {
+    tag: "1860 \u00b7 South Carolina",
+    text: "Lincoln has just been elected. Your state is voting on whether to secede from the United States.",
+    choices: [
+      {label:"Vote to secede and join the Confederacy", outcome:"South Carolina became the first state to secede, in December 1860 \u2014 six more states followed before Lincoln even took office."},
+      {label:"Vote to stay in the Union", outcome:"Some border states like Kentucky and Missouri were deeply divided on this exact question, and families sometimes fought on opposite sides."}
+    ]
+  },
+  {
+    tag: "1892 \u00b7 Ellis Island",
+    text: "You've just arrived from Europe with almost nothing, hoping for factory work in an American city.",
+    choices: [
+      {label:"Take a job in a textile or steel factory", outcome:"This was the path for millions of immigrants \u2014 long hours and low pay, but a foothold that later generations built on."},
+      {label:"Try to save enough to buy farmland instead", outcome:"Farmland was possible but expensive and required capital most new immigrants didn't have \u2014 most ended up in city factory jobs instead."}
+    ]
+  }
+];
+
+function renderScenarios(){
+  const wrap = document.getElementById('scenarios');
+  wrap.innerHTML='';
+  scenarios.forEach((sc, si)=>{
+    const box = document.createElement('div');
+    box.className = 'scenario';
+    box.innerHTML = `<div class="scenario-tag">${sc.tag}</div><div class="scenario-text">${sc.text}</div>`;
+    sc.choices.forEach((c, ci)=>{
+      const b = document.createElement('button');
+      b.className = 'choice-btn';
+      b.textContent = c.label;
+      b.addEventListener('click', ()=>{
+        const out = box.querySelector('.outcome-'+si+'-'+ci) || (()=>{
+          const o = document.createElement('div');
+          o.className = 'outcome outcome-'+si+'-'+ci;
+          o.textContent = c.outcome;
+          box.appendChild(o);
+          return o;
+        })();
+        // hide any other open outcome in this scenario
+        box.querySelectorAll('.outcome').forEach(el=>el.classList.remove('show'));
+        out.classList.add('show');
+      });
+      box.appendChild(b);
+    });
+    wrap.appendChild(box);
+  });
+}
+renderScenarios();
+
+// ---------- QUICK CHECK QUIZ ----------
+const quizBank = [
+  {q:"Why did Britain start taxing the colonies directly after 1763?", options:["The French and Indian War left Britain in debt, and mercantilism said colonies should help pay it off", "The colonies asked to be taxed", "Spain demanded it", "Taxes had always existed since 1607"], a:0},
+  {q:"What does \"mercantilism\" mean in this era?", options:["A rule that only merchants could vote", "The idea that colonies exist to enrich the mother country economically", "A tax on tea only", "A law banning trade with Britain"], a:1},
+  {q:"Why did colonists object to the Stamp Act, even though the tax itself was small?", options:["They had no vote in Parliament", "They didn't use paper", "It only applied to tea", "Britain had never taxed them before"], a:0},
+  {q:"What was the main purpose of the Declaration of Independence?", options:["To create the three branches of government", "To explain why the colonies were separating from Britain", "To end slavery", "To buy land from France"], a:1},
+  {q:"Why was the first U.S. government under the Articles of Confederation considered too weak?", options:["It had no president at all", "It couldn't tax or enforce laws", "It only covered 5 states", "It was written in secret"], a:1},
+  {q:"What did the Bill of Rights add to the Constitution?", options:["A stronger army", "Guarantees of individual freedoms", "The three branches of government", "Voting rights for women"], a:1},
+  {q:"What effect did the Louisiana Purchase have on the United States?", options:["It ended the war with Britain", "It doubled the size of the country", "It freed enslaved people", "It created the first railroad"], a:1},
+  {q:"What was the Trail of Tears?", options:["A pioneer trading route", "The forced march of Native nations off their land", "A path used in the Gold Rush", "A Revolutionary War battle route"], a:1},
+  {q:"What economic difference helped divide the North and South before the Civil War?", options:["The North had more farmland", "The South's economy relied on enslaved agricultural labor while the North industrialized", "The North refused to trade with Europe", "The South had more factories"], a:1},
+  {q:"What did the Emancipation Proclamation do?", options:["Ended the Civil War immediately", "Declared enslaved people in Confederate states free", "Created the 13th Amendment", "Gave land to freed families"], a:1},
+  {q:"What made the 13th Amendment different from the Emancipation Proclamation?", options:["It only applied to the South", "It abolished slavery across the entire United States", "It was written by Jefferson", "It happened before the war started"], a:1},
+  {q:"What drew large numbers of immigrants to U.S. cities in the late 1800s?", options:["Free land grants downtown", "Factory jobs created by industrialization", "Government relocation programs", "The end of the Gold Rush"], a:1},
+];
+
+let quizScore = 0, quizTotal = 0;
+function loadQuizProgress(){
+  try{
+    const saved = JSON.parse(localStorage.getItem('g5history_quiz')||'{}');
+    quizScore = saved.score||0; quizTotal = saved.total||0;
+  }catch(e){}
+}
+function saveQuizProgress(){
+  localStorage.setItem('g5history_quiz', JSON.stringify({score:quizScore, total:quizTotal}));
+}
+function updateScoreText(){
+  document.getElementById('scoreText').textContent = quizScore+' / '+quizTotal;
+}
+
+function renderQuiz(){
+  const list = document.getElementById('quizList');
+  list.innerHTML='';
+  quizBank.forEach((item, qi)=>{
+    const box = document.createElement('div');
+    box.className='quiz-q';
+    const qt = document.createElement('div');
+    qt.className='qtext';
+    qt.textContent = (qi+1)+'. '+item.q;
+    box.appendChild(qt);
+    const fb = document.createElement('div');
+    fb.className='feedback';
+
+    item.options.forEach((opt, oi)=>{
+      const b = document.createElement('button');
+      b.className='choice-btn';
+      b.textContent = opt;
+      b.addEventListener('click', ()=>{
+        if(box.dataset.answered) return;
+        box.dataset.answered = 'true';
+        quizTotal++;
+        if(oi===item.a){
+          quizScore++;
+          fb.className='feedback correct show';
+          fb.textContent = 'Correct.';
+          b.style.borderColor='var(--teal)';
+        } else {
+          fb.className='feedback wrong show';
+          fb.textContent = 'Not quite \u2014 correct answer: '+item.options[item.a];
+          b.style.borderColor='var(--coral)';
+        }
+        saveQuizProgress();
+        updateScoreText();
+      });
+      box.appendChild(b);
+    });
+    box.appendChild(fb);
+    list.appendChild(box);
+  });
+}
+loadQuizProgress();
+updateScoreText();
+renderQuiz();
+
+document.getElementById('quizResetBtn').addEventListener('click', ()=>{
+  quizScore=0; quizTotal=0;
+  saveQuizProgress();
+  updateScoreText();
+  document.querySelectorAll('.quiz-q').forEach(b=>delete b.dataset.answered);
+  renderQuiz();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Grade 6 Eastern Hemisphere geography and history reference with interactive practice.">
+<title>Grade 6 — Atlas: Eastern Hemisphere</title>
+<style>
+  :root{
+    --navy:#1c2f4a;
+    --paper:#f7f3ea;
+    --paper-line:#dcd0b4;
+    --ink:#2a2420;
+    --ink-soft:#6b5f52;
+    --teal:#2f8f7a;
+    --teal-soft:#dcefe9;
+    --coral:#c0533e;
+    --coral-soft:#f6ddd3;
+    --gold:#b8862e;
+    --gold-soft:#f3e7cd;
+    --sea:#3c6e91;
+    --sea-soft:#dbe8ef;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Space Grotesk',sans-serif;
+    background-image:
+      radial-gradient(circle at 92% 4%, rgba(60,110,145,0.08), transparent 40%),
+      repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(180,160,120,0.09) 28px);
+  }
+  header{
+    max-width:900px;margin:0 auto;padding:34px 20px 18px;
+    border-bottom:2px solid var(--paper-line);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--sea);font-weight:600;
+  }
+  h1{
+    font-family:'Fraunces',serif;font-weight:600;font-size:clamp(28px,5vw,42px);
+    margin:6px 0 4px;color:var(--navy);letter-spacing:-0.01em;
+  }
+  h1 span{color:var(--coral);font-style:italic;}
+  .sub{color:var(--ink-soft);font-size:14.5px;margin:0 0 18px;max-width:580px;}
+
+  nav.tabs{display:flex;gap:6px;flex-wrap:wrap;max-width:900px;margin:0 auto;padding:14px 20px 0;}
+  .tab-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;
+    padding:9px 14px;border-radius:8px 8px 0 0;border:1.5px solid var(--paper-line);
+    border-bottom:none;background:#fff;color:var(--ink-soft);cursor:pointer;letter-spacing:.02em;
+  }
+  .tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+  main{max-width:900px;margin:0 auto;padding:0 20px 60px;}
+  .panel{background:#fff;border:1.5px solid var(--paper-line);border-radius:0 10px 10px 10px;padding:24px;display:none;}
+  .panel.active{display:block;}
+
+  .section-title{font-family:'Fraunces',serif;font-weight:600;font-size:21px;color:var(--navy);margin:0 0 4px;}
+  .section-note{color:var(--ink-soft);font-size:13.5px;margin:0 0 20px;}
+
+  /* --- Region chains --- */
+  .era-block{margin-bottom:30px;}
+  .era-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .era-badge{
+    width:34px;height:34px;border-radius:50%;background:var(--sea);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;
+  }
+  .era-title{font-family:'Fraunces',serif;font-weight:600;font-size:17px;color:var(--navy);}
+  .era-range{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-soft);}
+
+  .chain{position:relative;margin-left:17px;padding-left:26px;border-left:2px dashed var(--paper-line);}
+  .chain-step{position:relative;padding-bottom:18px;}
+  .chain-step:last-child{padding-bottom:0;}
+  .chain-step::before{
+    content:"";position:absolute;left:-33px;top:4px;width:12px;height:12px;border-radius:50%;
+    background:var(--teal);border:2px solid #fff;box-shadow:0 0 0 1.5px var(--teal);
+  }
+  .chain-step .yr{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--coral);font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+  .chain-step .ev{font-weight:600;font-size:14.5px;margin:2px 0 2px;}
+  .chain-step .why{font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+  .arrow-because{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-top:3px;display:inline-block;}
+
+  /* --- Mnemonics --- */
+  .mnemo-card{background:var(--gold-soft);border:1px solid #e3cd9a;border-radius:10px;padding:16px 18px;margin-bottom:16px;}
+  .mnemo-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+  .mnemo-phrase{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--navy);margin:6px 0 8px;}
+  .mnemo-key{font-size:13px;color:var(--ink-soft);line-height:1.6;}
+  .mnemo-key b{color:var(--ink);}
+
+  /* --- Match the Map --- */
+  .bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:18px;}
+  .bin{border:1.5px solid var(--paper-line);border-radius:10px;padding:10px;min-height:64px;background:var(--paper);cursor:pointer;}
+  .bin-label{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;color:var(--sea);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .bin .placed-chip{font-size:12px;background:var(--teal-soft);color:#1d5c4c;border-radius:6px;padding:6px 8px;margin-bottom:4px;}
+  .bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;min-height:44px;padding:12px;background:var(--paper);border:1px dashed var(--paper-line);border-radius:8px;}
+  .card-chip{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:#fff;border:1.5px solid var(--navy);color:var(--navy);padding:8px 12px;border-radius:7px;cursor:pointer;font-weight:600;}
+  .card-chip.selected{background:var(--navy);color:#fff;}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .btn{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;padding:10px 16px;border-radius:8px;border:1.5px solid var(--navy);cursor:pointer;background:#fff;color:var(--navy);}
+  .btn.primary{background:var(--navy);color:#fff;}
+  .result-msg{font-size:13.5px;margin-top:12px;padding:10px 12px;border-radius:8px;display:none;}
+  .result-msg.show{display:block;}
+  .result-msg.good{background:var(--teal-soft);color:#1d5c4c;}
+  .result-msg.bad{background:var(--coral-soft);color:#8c392b;}
+  .match-score{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;}
+
+  /* --- You are there --- */
+  .scenario{border:1.5px solid var(--paper-line);border-radius:10px;padding:18px;margin-bottom:18px;}
+  .scenario-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--coral);font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+  .scenario-text{font-size:14.5px;line-height:1.6;margin:8px 0 14px;}
+  .choice-btn{display:block;width:100%;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:14px;padding:11px 14px;margin-bottom:8px;border:1.5px solid var(--paper-line);border-radius:8px;background:#fff;cursor:pointer;color:var(--ink);}
+  .choice-btn:hover{border-color:var(--navy);}
+  .outcome{display:none;margin-top:10px;padding:12px 14px;background:var(--teal-soft);border-radius:8px;font-size:13.5px;line-height:1.6;color:#1d5c4c;}
+  .outcome.show{display:block;}
+
+  /* --- Quiz --- */
+  .score-strip{display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-bottom:16px;}
+  .score-strip b{color:var(--navy);}
+  .reset-link{background:none;border:none;color:var(--ink-soft);text-decoration:underline;font-family:'IBM Plex Mono',monospace;font-size:11.5px;cursor:pointer;padding:0;}
+  .quiz-q{border:1.5px solid var(--paper-line);border-radius:10px;padding:16px 18px;margin-bottom:14px;}
+  .quiz-q .qtext{font-weight:600;font-size:14.5px;margin-bottom:10px;}
+  .quiz-q .feedback{margin-top:10px;padding:9px 12px;border-radius:7px;font-size:13px;display:none;}
+  .quiz-q .feedback.show{display:block;}
+  .quiz-q .feedback.correct{background:var(--teal-soft);color:#1d5c4c;}
+  .quiz-q .feedback.wrong{background:var(--coral-soft);color:#8c392b;}
+
+  @media (max-width:600px){
+    .panel{padding:18px;}
+    header{padding:26px 16px 14px;}
+    nav.tabs{padding:14px 16px 0;}
+  }
+  .breadcrumb{display:flex;gap:8px;margin-bottom:18px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  .breadcrumb a{color:var(--navy);text-decoration:none;}
+  .breadcrumb a:hover,.breadcrumb a:focus-visible{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../">Home</a><span aria-hidden="true">/</span><a href="../../../subjects/social-science/">Social Science</a></nav>
+  <div class="eyebrow">Atlas &middot; Grade 6</div>
+  <h1>Eastern <span>Hemisphere</span></h1>
+  <p class="sub">Six regions, one big idea: geography shapes how people live, and that shapes what they leave behind. Follow each region from land &rarr; civilization &rarr; legacy.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="story">Region by Region</button>
+  <button class="tab-btn" data-tab="mnemo">Memory Tricks</button>
+  <button class="tab-btn" data-tab="build">Match the Map</button>
+  <button class="tab-btn" data-tab="there">You Are There</button>
+  <button class="tab-btn" data-tab="quiz">Quick Check</button>
+</nav>
+
+<main>
+
+  <!-- ============ REGION BY REGION ============ -->
+  <section class="panel active" id="panel-story">
+    <div class="section-title">Land shapes life, life leaves a legacy</div>
+    <p class="section-note">Each region follows the same pattern: geography &rarr; the civilization it made possible &rarr; what still remains today.</p>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">&#127807;</div>
+        <div><div class="era-title">Africa</div><div class="era-range">Nile Valley &amp; the Sahara</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">Geography</div><div class="ev">The Nile River floods on a predictable schedule</div>
+          <div class="why">Every year the Nile deposits rich black soil on its banks, making farming reliable in the middle of a desert.</div>
+          <span class="arrow-because">which allows &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Civilization</div><div class="ev">Ancient Egypt unites, c. 3100 BCE</div>
+          <div class="why">Reliable farming supports large populations, cities, and a powerful centralized government under the pharaohs.</div>
+          <span class="arrow-because">leaves behind &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Legacy today</div><div class="ev">Writing, math, and monuments</div>
+          <div class="why">Hieroglyphics, early geometry for surveying flooded land, and the pyramids are still studied worldwide.</div>
+          <span class="arrow-because">meanwhile, across the desert &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Trade connection</div><div class="ev">Trans-Saharan caravan routes</div>
+          <div class="why">Camel caravans crossed the Sahara carrying West African gold north and salt south, building wealthy kingdoms like Mali &mdash; whose ruler Mansa Musa made Timbuktu a center of learning.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">&#127981;</div>
+        <div><div class="era-title">Middle East</div><div class="era-range">The Fertile Crescent</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">Geography</div><div class="ev">Two rivers, unpredictable floods</div>
+          <div class="why">The Tigris and Euphrates make farming possible in dry Mesopotamia, but their floods are far less predictable than the Nile's.</div>
+          <span class="arrow-because">which requires &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Civilization</div><div class="ev">Sumer builds the first cities, c. 3500 BCE</div>
+          <div class="why">Managing irrigation and unpredictable flooding requires organization &mdash; leading to some of the world's first cities and governments.</div>
+          <span class="arrow-because">leaves behind &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Legacy today</div><div class="ev">Writing and written law</div>
+          <div class="why">Cuneiform is one of the first writing systems, and Hammurabi's Code (c. 1750 BCE) is one of the first written sets of laws &mdash; the ancestor of legal systems today.</div>
+          <span class="arrow-because">and religiously &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Cultural legacy</div><div class="ev">Birthplace of three major world religions</div>
+          <div class="why">Judaism, Christianity, and Islam all trace their origins to this region, still shaping cultures across the world today.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">&#127968;</div>
+        <div><div class="era-title">South Asia</div><div class="era-range">Indus &amp; Ganges river valleys</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">Geography</div><div class="ev">Monsoon rains and two great rivers</div>
+          <div class="why">The Indus and Ganges rivers, fed by seasonal monsoon rains, support farming for enormous populations &mdash; but too little or too much rain can mean famine or flood.</div>
+          <span class="arrow-because">which supports &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Civilization</div><div class="ev">The Indus Valley Civilization, c. 2500 BCE</div>
+          <div class="why">Cities like Mohenjo-daro had advanced city planning and drainage systems centuries ahead of their time. Their script still hasn't been fully deciphered.</div>
+          <span class="arrow-because">leaves behind &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Legacy today</div><div class="ev">Religion and mathematics</div>
+          <div class="why">Hinduism and Buddhism both originate here and spread across Asia. The concept of zero as a number was developed in India &mdash; a foundation for all modern math.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">&#127964;</div>
+        <div><div class="era-title">East Asia</div><div class="era-range">Yellow &amp; Yangtze river valleys</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">Geography</div><div class="ev">Mountains and deserts isolate the region</div>
+          <div class="why">Natural barriers on nearly every side let China develop a distinct culture with less outside interference than other early civilizations.</div>
+          <span class="arrow-because">while inside, &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Civilization</div><div class="ev">Early dynasties rise along the Yellow River, c. 2000 BCE</div>
+          <div class="why">Frequent flooding of the Yellow River required massive coordinated labor for water control &mdash; favoring strong, centralized rule.</div>
+          <span class="arrow-because">leaves behind &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Legacy today</div><div class="ev">Confucian values and world-changing inventions</div>
+          <div class="why">Confucianism's emphasis on respect for elders and education still shapes East Asian culture. Paper, printing, the compass, and gunpowder all originated here and later spread west along trade routes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">&#127968;</div>
+        <div><div class="era-title">Southeast Asia</div><div class="era-range">Peninsulas &amp; islands between two oceans</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">Geography</div><div class="ev">A crossroads between India and China</div>
+          <div class="why">Monsoon winds reverse direction with the seasons, letting sailors ride them one way to India and the other way back &mdash; making this region a natural trading crossroads.</div>
+          <span class="arrow-because">which brings in &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Cultural exchange</div><div class="ev">Hindu and Buddhist influence arrives by trade, not conquest</div>
+          <div class="why">Traders and travelers, not armies, carried religion and art styles from India &mdash; blending with local traditions rather than replacing them.</div>
+          <span class="arrow-because">leaves behind &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Legacy today</div><div class="ev">Angkor Wat</div>
+          <div class="why">The Khmer Empire (c. 800&ndash;1400 CE) built Angkor Wat, one of the largest religious monuments in the world, blending Hindu and later Buddhist styles.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="era-block">
+      <div class="era-head">
+        <div class="era-badge">&#127966;</div>
+        <div><div class="era-title">Pacific Islands</div><div class="era-range">The widest ocean on Earth</div></div>
+      </div>
+      <div class="chain">
+        <div class="chain-step">
+          <div class="yr">Geography</div><div class="ev">Thousands of islands, vast distances</div>
+          <div class="why">Some islands are thousands of miles from the nearest land &mdash; there was no coastline to follow, only open ocean.</div>
+          <span class="arrow-because">which demands &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Civilization</div><div class="ev">Polynesian voyaging</div>
+          <div class="why">Navigators crossed thousands of miles of open ocean reading stars, wave patterns, and bird flight &mdash; with no compass &mdash; deliberately settling islands like Hawaii, New Zealand, and Easter Island.</div>
+          <span class="arrow-because">leaves behind &darr;</span>
+        </div>
+        <div class="chain-step">
+          <div class="yr">Legacy today</div><div class="ev">Oral tradition and island self-sufficiency</div>
+          <div class="why">Navigation knowledge passed down through spoken tradition, not writing. Each island group adapted independently to its own limited land and resources.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MNEMONICS ============ -->
+  <section class="panel" id="panel-mnemo">
+    <div class="section-title">Memory tricks</div>
+    <p class="section-note">Real memory devices for the parts of this unit that are hardest to keep straight.</p>
+
+    <div class="mnemo-card">
+      <div class="mnemo-tag">Order of the great river civilizations</div>
+      <div class="mnemo-phrase">"My Elephant Is Crying"</div>
+      <div class="mnemo-key">Oldest to youngest: <b>M</b>esopotamia (c. 3500 BCE) &rarr; <b>E</b>gypt (c. 3100 BCE) &rarr; <b>I</b>ndus Valley (c. 2500 BCE) &rarr; <b>C</b>hina (c. 2000 BCE). All four grew up around rivers, in almost that exact order.</div>
+    </div>
+
+    <div class="mnemo-card">
+      <div class="mnemo-tag">The six regions, in study order</div>
+      <div class="mnemo-phrase">"Ancient Maps Show Every Sea Path"</div>
+      <div class="mnemo-key"><b>A</b>frica &middot; <b>M</b>iddle East &middot; <b>S</b>outh Asia &middot; <b>E</b>ast Asia &middot; <b>S</b>outheast Asia &middot; <b>P</b>acific Islands. Say the phrase, and you've got the region order.</div>
+    </div>
+
+    <div class="mnemo-card">
+      <div class="mnemo-tag">Three types of economy</div>
+      <div class="mnemo-phrase">Tribe. Crown. Money.</div>
+      <div class="mnemo-key"><b>T</b>raditional economy &rarr; decisions made by <b>T</b>ribe/custom (how your family has always farmed). <b>C</b>ommand economy &rarr; decisions made by the <b>C</b>rown or government (a ruler decides what's grown and traded). <b>M</b>arket economy &rarr; decisions made by <b>M</b>oney &mdash; buyers and sellers, supply and demand.</div>
+    </div>
+
+    <div class="mnemo-card">
+      <div class="mnemo-tag">Zero's journey around the world</div>
+      <div class="mnemo-phrase">"India births it, Arabia carries it, Europe names it"</div>
+      <div class="mnemo-key">The concept of zero was developed in <b>I</b>ndia, adopted and spread by scholars in the <b>A</b>rab world, and reached <b>E</b>urope so thoroughly through Arab traders that we still call our numbers "Arabic numerals" today, even though the idea started in India.</div>
+    </div>
+  </section>
+
+  <!-- ============ MATCH THE MAP ============ -->
+  <section class="panel" id="panel-build">
+    <div class="section-title">Match the clue to the region</div>
+    <p class="section-note">Tap a clue, then tap the region it belongs to. Correct matches move into the bin and stay there.</p>
+
+    <div class="match-score">Matched: <span id="matchScore">0</span> / <span id="matchTotal">12</span></div>
+    <div class="bins" id="bins"></div>
+    <div class="bank" id="matchBank"></div>
+    <div class="btn-row"><button class="btn" id="matchResetBtn">Shuffle again</button></div>
+    <div class="result-msg" id="matchResult"></div>
+  </section>
+
+  <!-- ============ YOU ARE THERE ============ -->
+  <section class="panel" id="panel-there">
+    <div class="section-title">You are there</div>
+    <p class="section-note">Different choices in these moments led to real, different outcomes. Pick a path and see what happened.</p>
+    <div id="scenarios"></div>
+  </section>
+
+  <!-- ============ QUICK CHECK ============ -->
+  <section class="panel" id="panel-quiz">
+    <div class="section-title">Quick check</div>
+    <div class="score-strip">
+      <span>Score: <b id="scoreText">0 / 0</b></span>
+      <button class="reset-link" id="quizResetBtn">reset</button>
+    </div>
+    <div id="quizList"></div>
+  </section>
+
+</main>
+
+<script>
+// ---------- TAB SWITCHING ----------
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- MATCH THE MAP ----------
+const regions = ["Africa","Middle East","South Asia","East Asia","Southeast Asia","Pacific Islands"];
+const clues = [
+  {id:1, text:"Nile floods create fertile farmland every year", region:"Africa"},
+  {id:2, text:"Trans-Saharan caravans carried gold and salt", region:"Africa"},
+  {id:3, text:"Cuneiform: one of the first writing systems", region:"Middle East"},
+  {id:4, text:"Hammurabi's Code: an early written law code", region:"Middle East"},
+  {id:5, text:"Mohenjo-daro's advanced drainage system", region:"South Asia"},
+  {id:6, text:"The concept of zero was invented here", region:"South Asia"},
+  {id:7, text:"Yellow River flooding shaped strong central government", region:"East Asia"},
+  {id:8, text:"Confucian respect for elders and education", region:"East Asia"},
+  {id:9, text:"Angkor Wat blends Hindu and Buddhist styles", region:"Southeast Asia"},
+  {id:10, text:"Monsoon winds made it a trading crossroads", region:"Southeast Asia"},
+  {id:11, text:"Wayfinders navigated by stars, waves, and birds", region:"Pacific Islands"},
+  {id:12, text:"Navigation knowledge passed down by oral tradition", region:"Pacific Islands"},
+];
+let selectedClue = null;
+let placedIds = new Set();
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let clueOrder = shuffle(clues.map(c=>c.id));
+
+function renderMatch(){
+  const bins = document.getElementById('bins');
+  const bank = document.getElementById('matchBank');
+  bins.innerHTML=''; bank.innerHTML='';
+
+  regions.forEach(r=>{
+    const bin = document.createElement('div');
+    bin.className='bin';
+    const label = document.createElement('div');
+    label.className='bin-label'; label.textContent=r;
+    bin.appendChild(label);
+    clues.filter(c=>placedIds.has(c.id) && c.region===r).forEach(c=>{
+      const chip = document.createElement('div');
+      chip.className='placed-chip'; chip.textContent=c.text;
+      bin.appendChild(chip);
+    });
+    bin.addEventListener('click', ()=>{
+      if(!selectedClue) return;
+      const clue = clues.find(c=>c.id===selectedClue);
+      if(clue.region===r){
+        placedIds.add(clue.id);
+        selectedClue=null;
+        document.getElementById('matchResult').classList.remove('show');
+      } else {
+        const res = document.getElementById('matchResult');
+        res.className='result-msg bad show';
+        res.textContent = '"'+clue.text+'" doesn\'t belong in '+r+'. Try again.';
+        selectedClue=null;
+      }
+      renderMatch();
+    });
+    bins.appendChild(bin);
+  });
+
+  clueOrder.forEach(id=>{
+    if(placedIds.has(id)) return;
+    const c = clues.find(x=>x.id===id);
+    const chip = document.createElement('div');
+    chip.className='card-chip'+(selectedClue===id?' selected':'');
+    chip.textContent = c.text;
+    chip.addEventListener('click', ()=>{
+      selectedClue = (selectedClue===id) ? null : id;
+      renderMatch();
+    });
+    bank.appendChild(chip);
+  });
+
+  document.getElementById('matchScore').textContent = placedIds.size;
+  if(placedIds.size===clues.length){
+    const res = document.getElementById('matchResult');
+    res.className='result-msg good show';
+    res.textContent = 'All 12 matched! Every clue is in its region.';
+  }
+}
+renderMatch();
+
+document.getElementById('matchResetBtn').addEventListener('click', ()=>{
+  placedIds = new Set();
+  selectedClue = null;
+  clueOrder = shuffle(clues.map(c=>c.id));
+  document.getElementById('matchResult').classList.remove('show');
+  renderMatch();
+});
+
+// ---------- YOU ARE THERE ----------
+const scenarios = [
+  {
+    tag: "c. 3000 BCE \u00b7 The Nile",
+    text: "You're an Egyptian farmer. The Nile is about to flood, like it does every year, and you need to plan your fields.",
+    choices: [
+      {label:"Plant right up to the riverbank, trusting the pattern", outcome:"This is exactly what Egyptian farmers did \u2014 the Nile's floods were reliable enough to plan around, which is a big reason Egyptian civilization thrived for thousands of years."},
+      {label:"Move your fields far from the river to be safe", outcome:"This would have meant missing out on the fertile black soil the flood deposits \u2014 farmers who did this got smaller harvests than those who trusted the river."}
+    ]
+  },
+  {
+    tag: "c. 1750 BCE \u00b7 Babylon",
+    text: "Two Mesopotamian farmers are in a dispute over stolen livestock. As the local judge, how do you settle it?",
+    choices: [
+      {label:"Look it up in Hammurabi's Code, a written law posted publicly", outcome:"This is the real innovation: Hammurabi's Code was carved in stone for everyone to see, so the same law applied to disputes like this across the whole kingdom \u2014 one of the first times law wasn't just \"whatever the king says today.\""},
+      {label:"Decide based on your own personal judgment", outcome:"Before written law codes, this was exactly the problem \u2014 rulings varied by judge and could be unfair. Hammurabi's Code was created specifically to fix this."}
+    ]
+  },
+  {
+    tag: "c. 2500 BCE \u00b7 Mohenjo-daro",
+    text: "You're a merchant in the Indus Valley about to send a shipment of goods to a trading partner far away.",
+    choices: [
+      {label:"Stamp the goods with a carved seal showing your mark", outcome:"Archaeologists have found thousands of these carved stone seals \u2014 they worked like a signature, proving where goods came from, centuries before anyone thought to write a receipt."},
+      {label:"Just send the goods with a verbal promise", outcome:"Over long trade distances with no way to verify a spoken promise, this was risky \u2014 which is exactly why Indus Valley traders developed their seal system instead."}
+    ]
+  },
+  {
+    tag: "Silk Road \u00b7 a caravan crossroads",
+    text: "You're a trader deciding what to load onto your camels for the long journey west.",
+    choices: [
+      {label:"Silk and paper from China", outcome:"These were among the most valuable goods moving west \u2014 paper-making technology itself eventually spread along this exact route, changing how the rest of the world recorded information."},
+      {label:"Spices from South Asia", outcome:"Also a major Silk Road good \u2014 pepper and cinnamon were worth enormous sums in distant markets, which is part of why so many later explorers went looking for a sea route to reach these spices directly."}
+    ]
+  },
+  {
+    tag: "Open ocean \u00b7 Polynesia",
+    text: "You're a wayfinder navigator at night, far from any land, deciding which way to steer.",
+    choices: [
+      {label:"Read the stars and the pattern of ocean swells", outcome:"This is the real technique: Polynesian navigators memorized star paths and could feel subtle changes in wave patterns caused by islands they couldn't yet see \u2014 no compass required."},
+      {label:"Wait until daylight to see land", outcome:"On the open Pacific, land could be days away in any direction \u2014 real wayfinders couldn't afford to just wait, which is exactly why they trained for years to read the ocean at night."}
+    ]
+  },
+  {
+    tag: "A village marketplace",
+    text: "You run a market stall. A drought has made grain scarce this year \u2014 how do you decide the price?",
+    choices: [
+      {label:"Charge whatever price buyers are willing to pay", outcome:"This is a market economy in action: when something is scarce, prices rise based on supply and demand, without anyone ordering it."},
+      {label:"Charge the same price your family always has, out of custom", outcome:"This reflects a traditional economy, where decisions follow custom rather than shifting supply \u2014 common in early village economies before markets or strong central governments took hold."},
+      {label:"Wait for the ruler's officials to set the price", outcome:"This reflects a command economy, where a central authority decides prices and production \u2014 a pattern seen in some ancient kingdoms managing grain stores directly."}
+    ]
+  }
+];
+
+function renderScenarios(){
+  const wrap = document.getElementById('scenarios');
+  wrap.innerHTML='';
+  scenarios.forEach((sc, si)=>{
+    const box = document.createElement('div');
+    box.className = 'scenario';
+    box.innerHTML = `<div class="scenario-tag">${sc.tag}</div><div class="scenario-text">${sc.text}</div>`;
+    sc.choices.forEach((c, ci)=>{
+      const b = document.createElement('button');
+      b.className = 'choice-btn';
+      b.textContent = c.label;
+      b.addEventListener('click', ()=>{
+        let out = box.querySelector('.outcome-'+si+'-'+ci);
+        if(!out){
+          out = document.createElement('div');
+          out.className = 'outcome outcome-'+si+'-'+ci;
+          out.textContent = c.outcome;
+          box.appendChild(out);
+        }
+        box.querySelectorAll('.outcome').forEach(el=>el.classList.remove('show'));
+        out.classList.add('show');
+      });
+      box.appendChild(b);
+    });
+    wrap.appendChild(box);
+  });
+}
+renderScenarios();
+
+// ---------- QUICK CHECK QUIZ ----------
+const quizBank = [
+  {q:"Why was the Nile's flooding especially good for farming in Egypt?", options:["It was predictable and deposited fertile soil each year", "It never flooded at all", "It flooded every day", "It only happened once a century"], a:0},
+  {q:"What made law under Hammurabi's Code different from earlier rule by a king's word alone?", options:["It applied only to nobles", "It was written down and posted publicly for everyone", "It banned all trade", "It only covered farming disputes"], a:1},
+  {q:"What is notable about the Indus Valley Civilization's script?", options:["It has never been fully deciphered", "It was identical to Egyptian hieroglyphics", "It was only numbers, no letters", "It was written in Chinese characters"], a:0},
+  {q:"Why did China develop a fairly distinct culture compared to other early civilizations?", options:["It had no rivers", "Mountains, deserts, and ocean isolated it from outside contact", "It was the newest civilization", "It had no written language"], a:1},
+  {q:"How did Hindu and Buddhist traditions mainly reach Southeast Asia?", options:["Through military conquest", "Through trade and travelers, not conquest", "They started there independently", "Through European colonization"], a:1},
+  {q:"How did Polynesian navigators cross vast stretches of open ocean without a compass?", options:["They only sailed near visible coastlines", "They read stars, wave patterns, and bird flight", "They used maps drawn by earlier European sailors", "They waited for favorable weather reports"], a:1},
+  {q:"Which of these is the correct order of the four early river valley civilizations, oldest to youngest?", options:["China, Egypt, Indus, Mesopotamia", "Mesopotamia, Egypt, Indus, China", "Egypt, Mesopotamia, China, Indus", "Indus, China, Mesopotamia, Egypt"], a:1},
+  {q:"In a traditional economy, how are economic decisions mainly made?", options:["By supply and demand in a market", "By custom and long-standing habit", "By a central government", "By international trade agreements"], a:1},
+  {q:"In a command economy, who primarily decides what is produced and traded?", options:["Buyers and sellers through prices", "A central authority, like a government or ruler", "Family tradition", "Foreign merchants"], a:1},
+  {q:"Where did the mathematical concept of zero originate?", options:["Ancient Egypt", "Mesopotamia", "India", "China"], a:2},
+  {q:"What made Southeast Asia a natural trading crossroads?", options:["It had no ocean access", "Seasonal monsoon winds let ships sail toward India one season and back the other", "It was closest to Europe", "It had the largest population in the world"], a:1},
+];
+
+let quizScore = 0, quizTotal = 0;
+function loadQuizProgress(){
+  try{
+    const saved = JSON.parse(localStorage.getItem('g6hemisphere_quiz')||'{}');
+    quizScore = saved.score||0; quizTotal = saved.total||0;
+  }catch(e){}
+}
+function saveQuizProgress(){ localStorage.setItem('g6hemisphere_quiz', JSON.stringify({score:quizScore, total:quizTotal})); }
+function updateScoreText(){ document.getElementById('scoreText').textContent = quizScore+' / '+quizTotal; }
+
+function renderQuiz(){
+  const list = document.getElementById('quizList');
+  list.innerHTML='';
+  quizBank.forEach((item, qi)=>{
+    const box = document.createElement('div');
+    box.className='quiz-q';
+    const qt = document.createElement('div');
+    qt.className='qtext'; qt.textContent = (qi+1)+'. '+item.q;
+    box.appendChild(qt);
+    const fb = document.createElement('div'); fb.className='feedback';
+
+    item.options.forEach((opt, oi)=>{
+      const b = document.createElement('button');
+      b.className='choice-btn'; b.textContent = opt;
+      b.addEventListener('click', ()=>{
+        if(box.dataset.answered) return;
+        box.dataset.answered = 'true';
+        quizTotal++;
+        if(oi===item.a){
+          quizScore++;
+          fb.className='feedback correct show'; fb.textContent='Correct.';
+          b.style.borderColor='var(--teal)';
+        } else {
+          fb.className='feedback wrong show'; fb.textContent='Not quite \u2014 correct answer: '+item.options[item.a];
+          b.style.borderColor='var(--coral)';
+        }
+        saveQuizProgress(); updateScoreText();
+      });
+      box.appendChild(b);
+    });
+    box.appendChild(fb);
+    list.appendChild(box);
+  });
+}
+loadQuizProgress();
+updateScoreText();
+renderQuiz();
+
+document.getElementById('quizResetBtn').addEventListener('click', ()=>{
+  quizScore=0; quizTotal=0;
+  saveQuizProgress(); updateScoreText();
+  document.querySelectorAll('.quiz-q').forEach(b=>delete b.dataset.answered);
+  renderQuiz();
+});
+</script>
+</body>
+</html>
