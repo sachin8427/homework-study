@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn and practice solving one-step and two-step algebra equations.">
+<title>Equation Solver Lab</title>
+<style>
+  :root{
+    --paper:#FAF7EF;
+    --paper-line:#E7E0D0;
+    --ink:#22262B;
+    --ink-soft:#5B6169;
+    --navy:#26415E;
+    --navy-soft:#DCE5EE;
+    --amber:#D98E32;
+    --amber-soft:#F7E6C9;
+    --teal:#3E8079;
+    --teal-soft:#DCEBE8;
+    --coral:#C1503E;
+    --coral-soft:#F5DED9;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0/100% 32px,
+      var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  header{padding:36px 20px 20px;max-width:760px;margin:0 auto;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--navy);font-weight:600;display:flex;align-items:center;gap:8px;
+  }
+  .eyebrow::before{content:"";width:20px;height:2px;background:var(--amber);display:inline-block;}
+  h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,7vw,40px);font-weight:700;margin:10px 0 6px;letter-spacing:-0.01em;}
+  h1 span{color:var(--navy);}
+  .sub{color:var(--ink-soft);font-size:15px;line-height:1.5;max-width:56ch;}
+
+  .tabs{display:flex;gap:8px;max-width:760px;margin:22px auto 0;padding:0 20px;}
+  .tab{
+    flex:1;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;
+    padding:12px 10px;border-radius:10px;border:1.5px solid var(--paper-line);
+    background:#fff;color:var(--ink-soft);cursor:pointer;transition:all .15s ease;
+  }
+  .tab.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+
+  main{max-width:760px;margin:0 auto;padding:22px 20px 0;}
+  section{display:none;}
+  section.active{display:block;}
+
+  .card{
+    background:#fff;border:1.5px solid var(--paper-line);border-radius:var(--radius);
+    padding:20px;margin-bottom:16px;box-shadow:0 1px 0 rgba(0,0,0,.02);
+  }
+  .cat-label{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    font-weight:600;padding:3px 9px;border-radius:20px;display:inline-block;margin-bottom:10px;
+  }
+  .cat-add .cat-label{background:var(--teal-soft);color:var(--teal);}
+  .cat-sub .cat-label{background:var(--coral-soft);color:var(--coral);}
+  .cat-mul .cat-label{background:var(--amber-soft);color:#8a5a17;}
+  .cat-div .cat-label{background:var(--navy-soft);color:var(--navy);}
+  .cat-eq  .cat-label{background:#EEE7F5;color:#6A4A94;}
+  .cat-warn .cat-label{background:var(--coral-soft);color:#8c392b;}
+
+  .pattern-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;margin:0 0 4px;}
+  .formula{
+    font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;background:var(--paper);
+    border:1px dashed var(--paper-line);border-radius:8px;padding:8px 12px;display:inline-block;margin:6px 0 10px;
+  }
+  .clue-words{font-size:13.5px;color:var(--ink-soft);margin-bottom:10px;}
+  .clue-words b{color:var(--ink);font-weight:600;}
+  .examples{font-size:13.5px;color:var(--ink-soft);line-height:1.7;}
+  .examples code{
+    font-family:'IBM Plex Mono',monospace;background:var(--paper);padding:1px 6px;border-radius:5px;
+    color:var(--ink);font-weight:600;
+  }
+  .warn-box{
+    background:var(--coral-soft);color:#8c392b;border-radius:10px;padding:12px 14px;
+    font-size:13.5px;line-height:1.6;margin-top:10px;
+  }
+  .warn-box b{font-weight:700;}
+
+  /* bar model */
+  .bar-model{margin:14px 0 6px;}
+  .bar-row{display:flex;align-items:stretch;height:40px;margin-bottom:6px;position:relative;}
+  .bar-row.stacked{flex-direction:column;height:auto;gap:4px;}
+  .bar-row.stacked .bar-inner-row{display:flex;height:36px;}
+  .bar-seg{
+    border:1.5px solid var(--navy);display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;color:var(--navy);
+    background:var(--navy-soft);margin-right:-1.5px;
+  }
+  .bar-seg.unknown{background:var(--amber-soft);color:#8a5a17;border-color:var(--amber);}
+  .brace-label{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-top:2px;}
+
+  /* practice */
+  .qcounter{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
+  .qtype-tag{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--navy);background:var(--navy-soft);padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:8px;
+  }
+  .question-text{font-size:16px;line-height:1.5;margin:6px 0 14px;}
+  .question-text b{color:var(--navy);}
+  input[type=text]{
+    width:100%;font-family:'IBM Plex Mono',monospace;font-size:16px;padding:12px 14px;
+    border:1.5px solid var(--paper-line);border-radius:10px;background:var(--paper);color:var(--ink);margin-bottom:10px;
+  }
+  input[type=text]:focus{outline:2px solid var(--navy);border-color:var(--navy);}
+  .btn-row{display:flex;gap:10px;}
+  button{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;padding:11px 18px;
+    border-radius:10px;border:none;cursor:pointer;
+  }
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-ghost{background:#fff;border:1.5px solid var(--paper-line);color:var(--ink);}
+  .feedback{margin-top:12px;padding:11px 14px;border-radius:10px;font-size:14.5px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:var(--teal-soft);color:#215952;}
+  .feedback.wrong{background:var(--coral-soft);color:#8c392b;}
+  .feedback .answer{font-family:'IBM Plex Mono',monospace;font-weight:600;}
+
+  .score-strip{
+    display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;padding:0 2px;
+  }
+  .score-strip b{color:var(--navy);font-weight:600;}
+  .reset-link{
+    background:none;border:none;color:var(--ink-soft);text-decoration:underline;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;padding:0;
+  }
+  .breadcrumb{display:flex;gap:8px;margin-bottom:18px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  .breadcrumb a{color:var(--navy);text-decoration:none;}
+  .breadcrumb a:hover,.breadcrumb a:focus-visible{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../">Home</a><span aria-hidden="true">/</span><a href="../../../subjects/math/">Math</a></nav>
+  <div class="eyebrow">Unit 1 &middot; Algebra</div>
+  <h1>Equation Solver <span>Lab</span></h1>
+  <p class="sub">One-step equations from bar models &mdash; built around the three trouble spots from Exercises 3 &amp; 4: division bars, two-equal-row models, and undoing multiply/divide.</p>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="reference">Reference</button>
+  <button class="tab" data-tab="practice">Practice</button>
+</div>
+
+<main>
+  <!-- REFERENCE -->
+  <section id="reference" class="active"></section>
+
+  <!-- PRACTICE -->
+  <section id="practice">
+    <div class="score-strip">
+      <span>Score: <b id="scoreText">0 / 0</b></span>
+      <button class="reset-link" id="resetBtn">reset progress</button>
+    </div>
+    <div class="card" id="quizCard">
+      <div class="qcounter" id="qcounter"></div>
+      <div id="barModelSlot"></div>
+      <div class="question-text" id="qtext"></div>
+      <input type="text" id="answerInput" placeholder="Type your answer, e.g. 12 or 3.5 or 5 1/3">
+      <div class="btn-row">
+        <button class="btn-primary" id="checkBtn">Check</button>
+        <button class="btn-ghost" id="nextBtn">Skip &rarr;</button>
+      </div>
+      <div class="btn-row" id="afterCheckRow" style="display:none;margin-top:10px;">
+        <button class="btn-primary" id="nextBtn2">Next &rarr;</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ---------------- REFERENCE DATA ---------------- */
+const patterns = [
+  {
+    cat:"cat-add", label:"Undo +",
+    title:"x + a = b  &rarr;  x = b \u2212 a",
+    formula:"x + a = b   \u2192   x = b \u2212 a",
+    clue:"Whatever is added to x, subtract it from both sides.",
+    bars:[{w:60,t:"x",u:false},{w:22,t:"12",u:true}],
+    braceTotal:"13",
+    examples:["<code>y + 12 = 13</code> &rarr; <code>y = 1</code>","<code>x + 4 = 7</code> &rarr; <code>x = 3</code>"]
+  },
+  {
+    cat:"cat-sub", label:"Undo \u2212",
+    title:"x \u2212 a = b  &rarr;  x = b + a",
+    formula:"x \u2212 a = b   \u2192   x = b + a",
+    clue:"Whatever is subtracted from x, add it back on both sides.",
+    bars:[{w:60,t:"x",u:false},{w:22,t:"?",u:true}],
+    braceTotal:null,
+    examples:["<code>a \u2212 2.5 = 7</code> &rarr; <code>a = 9.5</code> (add 2.5 to both sides)","<code>y \u2212 15 = 13</code> &rarr; <code>y = 28</code>"]
+  },
+  {
+    cat:"cat-mul", label:"Undo \u00d7",
+    title:"ax = b  &rarr;  x = b \u00f7 a",
+    formula:"ax = b   \u2192   x = b \u00f7 a",
+    clue:"x is being multiplied by a &mdash; divide both sides by a to undo it.",
+    bars:[{w:16,t:"m",u:false},{w:16,t:"m",u:false},{w:16,t:"m",u:false}],
+    braceTotal:"3m = 30",
+    examples:["<code>5m = 30</code> &rarr; <code>m = 6</code>","<code>4w = 18</code> &rarr; <code>w = 4.5</code> (doesn't have to be whole!)"]
+  },
+  {
+    cat:"cat-div", label:"Undo \u00f7",
+    title:"x \u00f7 a = b  &rarr;  x = b \u00d7 a",
+    formula:"x/a = b   \u2192   x = b \u00d7 a",
+    clue:"x is being divided by a &mdash; multiply both sides by a to undo it. This is the one that trips people up most.",
+    bars:[{w:88,t:"m",u:false}],
+    braceTotal:"m \u00f7 5 = 40",
+    examples:["<code>m/5 = 40</code> &rarr; multiply both sides by 5 &rarr; <code>m = 200</code>","<code>w/6 = 18</code> &rarr; <code>w = 108</code>","<code>\u2153t = 36</code> means <code>t/3 = 36</code> &rarr; <code>t = 108</code>"]
+  },
+  {
+    cat:"cat-warn", label:"Watch out",
+    title:"Division bar models: whole bar, whole value",
+    formula:"one long bar = x,  split marks show \u00f7",
+    clue:"When a bar model shows ONE bar split into equal-looking sections labeled with numbers (like Ex.4 #2: 45, 45, 45, 45, 45), the WHOLE bar is the unknown b, and each section is b \u00f7 5 &mdash; so b = 45 \u00d7 5, not 45 + 5.",
+    bars:[{w:17.6,t:"45",u:true},{w:17.6,t:"45",u:true},{w:17.6,t:"45",u:true},{w:17.6,t:"45",u:true},{w:17.6,t:"45",u:true}],
+    braceTotal:"b (the whole top bar)",
+    examples:["5 sections of 45 &rarr; <code>b \u00f7 5 = 45</code> &rarr; <code>b = 225</code>","7 sections of 8 &rarr; <code>z \u00f7 7 = 8</code> &rarr; <code>z = 56</code>"]
+  },
+  {
+    cat:"cat-warn", label:"Watch out",
+    title:"Two-equal-row bar models",
+    formula:"2(x + a) = total   \u2192   x = (total \u00f7 2) \u2212 a",
+    clue:"When the bar model shows TWO identical rows (each split into x and a), the number outside the brace is the combined total of BOTH rows. Divide by 2 first before subtracting a &mdash; don't just subtract a from the total.",
+    bars:[{w:60,t:"p",u:false},{w:22,t:"13",u:true}],
+    braceTotal:"56 for BOTH rows together",
+    examples:["Two rows of (p, 13), total 56 &rarr; <code>2(p+13)=56</code> &rarr; <code>2p+26=56</code> &rarr; <code>p=15</code>","Two rows of (v, 13), total 65 &rarr; <code>2(v+13)=65</code> &rarr; <code>v=19.5</code>"]
+  }
+];
+
+const refSection = document.getElementById('reference');
+patterns.forEach(p=>{
+  const barsHtml = p.bars.map(b=>`<div class="bar-seg${b.u?' unknown':''}" style="width:${b.w}%">${b.t}</div>`).join('');
+  const card = document.createElement('div');
+  card.className = `card ${p.cat}`;
+  card.innerHTML = `
+    <span class="cat-label">${p.label}</span>
+    <div class="pattern-title">${p.title}</div>
+    <div class="formula">${p.formula}</div>
+    <div class="clue-words">${p.clue}</div>
+    <div class="bar-model">
+      <div class="bar-row">${barsHtml}</div>
+      ${p.braceTotal ? `<div class="brace-label">total = ${p.braceTotal}</div>` : ''}
+    </div>
+    <div class="examples">${p.examples.map(e=>'&bull; '+e).join('<br>')}</div>
+  `;
+  refSection.appendChild(card);
+});
+
+/* ---------------- TABS ---------------- */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('main > section').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------------- PRACTICE DATA ---------------- */
+// Fresh names/numbers throughout (not copies of the worksheet). Accept decimal or fraction forms where relevant.
+const quiz = [
+  // Undo addition
+  {tag:"Solve for x", q:"<b>y + 9 = 14</b>. Solve for y.", a:["5"]},
+  {tag:"Solve for x", q:"<b>k + 2.5 = 6</b>. Solve for k.", a:["3.5"]},
+  {tag:"Bar model \u2192 equation", q:"A bar is split into <b>t</b> and 9, with a total of 40. Write the equation and solve. t = ___", a:["31"], bar:{parts:[{t:"t",u:false,w:70},{t:"9",u:true,w:20}], total:"40"}},
+
+  // Undo subtraction
+  {tag:"Solve for x", q:"<b>m \u2212 3.5 = 8</b>. Solve for m.", a:["11.5"]},
+  {tag:"Solve for x", q:"<b>h \u2212 18 = 22</b>. Solve for h.", a:["40"]},
+
+  // Undo multiplication
+  {tag:"Solve for x", q:"<b>6n = 27</b>. Solve for n.", a:["4.5"]},
+  {tag:"Solve for x", q:"<b>4c = 26</b>. Solve for c.", a:["6.5"]},
+  {tag:"Bar model \u2192 equation", q:"7 equal bars, each labeled <b>r</b>, total 63. Write the equation and solve. r = ___", a:["9"], bar:{parts:[{t:"r",u:false,w:14},{t:"r",u:false,w:14},{t:"r",u:false,w:14},{t:"r",u:false,w:14},{t:"r",u:false,w:14},{t:"r",u:false,w:14},{t:"r",u:false,w:14}], total:"63"}},
+
+  // Undo division / fraction coefficient (the big trouble spot)
+  {tag:"Solve for x \u2014 careful!", q:"<b>b / 4 = 15</b>. Solve for b. (multiply both sides by 4)", a:["60"]},
+  {tag:"Solve for x \u2014 careful!", q:"<b>w / 9 = 12</b>. Solve for w.", a:["108"]},
+  {tag:"Solve for x \u2014 careful!", q:"<b>\u00bc g = 20</b> (same as g/4 = 20). Solve for g.", a:["80"]},
+  {tag:"Solve for x \u2014 careful!", q:"<b>\u2153 e = 21</b> (same as e/3 = 21). Solve for e.", a:["63"]},
+
+  // Division-style bar model (whole bar split into equal sections labeled with the KNOWN value)
+  {tag:"Division bar model \u2014 careful!", q:"One bar for <b>s</b> is split into 6 equal sections, each labeled 12. Write the equation and solve. s = ___", a:["72"], bar:{parts:[{t:"12",u:true,w:14.6},{t:"12",u:true,w:14.6},{t:"12",u:true,w:14.6},{t:"12",u:true,w:14.6},{t:"12",u:true,w:14.6},{t:"12",u:true,w:14.6}], total:"s (the whole bar)"}},
+  {tag:"Division bar model \u2014 careful!", q:"One bar for <b>f</b> is split into 8 equal sections, each labeled 9. Write the equation and solve. f = ___", a:["72"], bar:{parts:[{t:"9",u:true,w:11},{t:"9",u:true,w:11},{t:"9",u:true,w:11},{t:"9",u:true,w:11},{t:"9",u:true,w:11},{t:"9",u:true,w:11},{t:"9",u:true,w:11},{t:"9",u:true,w:11}], total:"f (the whole bar)"}},
+
+  // Two-equal-row bar models (the other big trouble spot)
+  {tag:"Two-row bar model \u2014 careful!", q:"Two identical rows, each split into <b>q</b> and 9. Combined total of both rows is 50. Solve for q.", a:["16"], bar:{parts:[{t:"q",u:false,w:60},{t:"9",u:true,w:22}], total:"50 for BOTH rows"}},
+  {tag:"Two-row bar model \u2014 careful!", q:"Two identical rows, each split into <b>u</b> and 17. Combined total of both rows is 70. Solve for u.", a:["18"], bar:{parts:[{t:"u",u:false,w:55},{t:"17",u:true,w:26}], total:"70 for BOTH rows"}},
+
+  // Two-step-ish equations mirroring 3p+1=10 and 7q+13=52 style, with fraction results included on purpose
+  {tag:"Two-step equation", q:"<b>5p + 2 = 17</b>. Solve for p.", a:["3"]},
+  {tag:"Two-step equation \u2014 fraction answer", q:"<b>6q + 9 = 40</b>. Solve for q. (Answer will not be a whole number \u2014 give it as a decimal or a mixed fraction)", a:["31/6","5 1/6","5.17","5.16667","5.1667"]},
+  {tag:"Two-step equation", q:"<b>3r \u2212 4 = 11</b>. Solve for r.", a:["5"]},
+  {tag:"Two-step equation \u2014 fraction answer", q:"<b>1/5 q \u2212 3 = 4</b> (same as q/5 \u2212 3 = 4). Solve for q.", a:["35"]}
+];
+
+/* ---------------- PRACTICE RENDER LOGIC ---------------- */
+function renderBar(spec){
+  if(!spec) return '';
+  const segs = spec.parts.map(p=>`<div class="bar-seg${p.u?' unknown':''}" style="width:${p.w}%">${p.t}</div>`).join('');
+  return `<div class="bar-model"><div class="bar-row">${segs}</div><div class="brace-label">total = ${spec.total}</div></div>`;
+}
+
+let order = [...Array(quiz.length).keys()];
+let idx = 0;
+let score = {correct:0, attempted:0};
+try{ score = JSON.parse(localStorage.getItem('equationSolverLabScore')||'{"correct":0,"attempted":0}'); }catch(e){}
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+shuffle(order);
+
+function toFraction(str){
+  // accepts "5 1/6" or "31/6" style mixed/plain fractions and returns a decimal
+  str = str.trim();
+  let mixed = str.match(/^(\d+)\s+(\d+)\/(\d+)$/);
+  if(mixed){ return parseInt(mixed[1]) + parseInt(mixed[2])/parseInt(mixed[3]); }
+  let frac = str.match(/^(\d+)\/(\d+)$/);
+  if(frac){ return parseInt(frac[1])/parseInt(frac[2]); }
+  return null;
+}
+
+function normalize(s){
+  return s.toLowerCase().replace(/\s+/g,'').replace(/\$/g,'');
+}
+
+function checkAnswer(given, accepted){
+  const g = normalize(given);
+  // direct string match against any accepted form
+  for(const a of accepted){
+    if(normalize(a) === g) return true;
+  }
+  // numeric match with small tolerance, covers decimals & fractions typed as "31/6" or "5 1/6"
+  let gNum = parseFloat(given.replace(',', '.'));
+  if(isNaN(gNum)){
+    const asFrac = toFraction(given);
+    if(asFrac !== null) gNum = asFrac;
+  }
+  if(!isNaN(gNum) && gNum !== null){
+    for(const a of accepted){
+      let aNum = parseFloat(a);
+      if(isNaN(aNum)){
+        const af = toFraction(a);
+        if(af !== null) aNum = af;
+      }
+      if(!isNaN(aNum) && aNum !== null && Math.abs(aNum - gNum) < 0.01) return true;
+    }
+  }
+  return false;
+}
+
+function updateScore(){
+  document.getElementById('scoreText').textContent = `${score.correct} / ${score.attempted}`;
+  try{ localStorage.setItem('equationSolverLabScore', JSON.stringify(score)); }catch(e){}
+}
+
+function loadQuestion(){
+  const q = quiz[order[idx]];
+  document.getElementById('qcounter').textContent = `Question ${idx+1} of ${quiz.length}`;
+  document.getElementById('qtext').innerHTML = `<span class="qtype-tag">${q.tag}</span><br>${q.q}`;
+  document.getElementById('barModelSlot').innerHTML = renderBar(q.bar);
+  document.getElementById('answerInput').value = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('answerInput').disabled = false;
+  document.querySelector('.btn-row').style.display = 'flex';
+  document.getElementById('afterCheckRow').style.display = 'none';
+  document.getElementById('answerInput').focus();
+}
+
+document.getElementById('checkBtn').addEventListener('click', ()=>{
+  const q = quiz[order[idx]];
+  const given = document.getElementById('answerInput').value;
+  const ok = checkAnswer(given, q.a);
+  const fb = document.getElementById('feedback');
+  score.attempted++;
+  if(ok){
+    score.correct++;
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `Correct &mdash; <span class="answer">${q.a[0]}</span>`;
+  } else {
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `Not quite. Answer: <span class="answer">${q.a[0]}</span>`;
+  }
+  updateScore();
+
+  // After checking, hide Check/Skip and show a single Next button
+  document.querySelector('.btn-row').style.display = 'none';
+  document.getElementById('afterCheckRow').style.display = 'flex';
+  document.getElementById('answerInput').disabled = true;
+});
+
+function goNext(){
+  idx = (idx+1) % quiz.length;
+  loadQuestion();
+}
+document.getElementById('nextBtn').addEventListener('click', goNext);
+document.getElementById('nextBtn2').addEventListener('click', goNext);
+
+document.addEventListener('keydown', e=>{
+  if(e.key!=='Enter') return;
+  const afterCheckVisible = document.getElementById('afterCheckRow').style.display !== 'none';
+  if(afterCheckVisible){ goNext(); }
+  else { document.getElementById('checkBtn').click(); }
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  score = {correct:0, attempted:0};
+  updateScore();
+});
+
+updateScore();
+loadQuestion();
+</script>
+</body>
+</html>

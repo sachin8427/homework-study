@@ -64,6 +64,17 @@ test("algebra lab is standalone and linked from the home catalog", () => {
   assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
 });
 
+test("equation solver is standalone and registered under Math", () => {
+  const page = fs.readFileSync(path.join(projectRoot, "tools", "math", "equation-solver-lab", "index.html"), "utf8");
+  const catalog = fs.readFileSync(path.join(projectRoot, "assets", "catalog.js"), "utf8");
+  const scripts = [...page.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+  assert.match(page, /href="\.\.\/\.\.\/\.\.\/subjects\/math\/"/);
+  assert.doesNotMatch(page, /https?:\/\//);
+  assert.match(catalog, /tools\/math\/equation-solver-lab\//);
+  assert.equal(scripts.length, 1);
+  assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
+});
+
 test("history pages are standalone and registered under Social Science", () => {
   const catalog = fs.readFileSync(path.join(projectRoot, "assets", "catalog.js"), "utf8");
   const pages = [

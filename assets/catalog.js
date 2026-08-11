@@ -13,6 +13,7 @@ window.STUDY_CATALOG = {
   ],
   resources: [
     { title: "Bar Model Algebra Lab", category: "math", url: "tools/math/algebra-bar-models/", description: "Learn five algebra bar-model patterns and practice writing expressions.", type: "Interactive practice" },
+    { title: "Equation Solver Lab", category: "math", url: "tools/math/equation-solver-lab/", description: "Learn and practice solving one-step and two-step algebra equations.", type: "Interactive practice" },
     { title: "Sentence Workbench", category: "writing", url: "tools/sentence-workbench/", description: "Practice sentence dress-ups and openers with flashcards and writing exercises.", type: "Interactive practice" },
     { title: "Dress-Ups & Sentence Openers", category: "writing", url: "dress-ups-reference.html", description: "Use a concise reference for stronger, clearer, and more interesting writing.", type: "Reference guide" },
     { title: "Grade 5 U.S. History: 1763 to 1900s", category: "social-science", url: "tools/social-science/us-history-grade-5/", description: "Review key events from colonial resistance through westward expansion and industrial growth.", type: "Study guide and quiz" },
