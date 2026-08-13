@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn to find prepositional phrases, their objects, and the subject/verb of a sentence, then practice with fresh sentences.">
+<title>Prepositional Phrases Lab</title>
+<style>
+  :root{
+    --paper:#FAF7EF;
+    --paper-line:#E7E0D0;
+    --ink:#22262B;
+    --ink-soft:#5B6169;
+    --navy:#26415E;
+    --navy-soft:#DCE5EE;
+    --amber:#D98E32;
+    --amber-soft:#F7E6C9;
+    --teal:#3E8079;
+    --teal-soft:#DCEBE8;
+    --coral:#C1503E;
+    --coral-soft:#F5DED9;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0/100% 32px,
+      var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  header{padding:36px 20px 20px;max-width:760px;margin:0 auto;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--navy);font-weight:600;display:flex;align-items:center;gap:8px;
+  }
+  .eyebrow::before{content:"";width:20px;height:2px;background:var(--amber);display:inline-block;}
+  h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,7vw,40px);font-weight:700;margin:10px 0 6px;letter-spacing:-0.01em;}
+  h1 span{color:var(--navy);}
+  .sub{color:var(--ink-soft);font-size:15px;line-height:1.5;max-width:56ch;}
+
+  .tabs{display:flex;gap:8px;max-width:760px;margin:22px auto 0;padding:0 20px;}
+  .tab{
+    flex:1;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;
+    padding:12px 10px;border-radius:10px;border:1.5px solid var(--paper-line);
+    background:#fff;color:var(--ink-soft);cursor:pointer;transition:all .15s ease;
+  }
+  .tab.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+
+  main{max-width:760px;margin:0 auto;padding:22px 20px 0;}
+  section{display:none;}
+  section.active{display:block;}
+
+  .card{
+    background:#fff;border:1.5px solid var(--paper-line);border-radius:var(--radius);
+    padding:20px;margin-bottom:16px;box-shadow:0 1px 0 rgba(0,0,0,.02);
+  }
+  .cat-label{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    font-weight:600;padding:3px 9px;border-radius:20px;display:inline-block;margin-bottom:10px;
+  }
+  .cat-def .cat-label{background:var(--navy-soft);color:var(--navy);}
+  .cat-method .cat-label{background:var(--teal-soft);color:var(--teal);}
+  .cat-warn .cat-label{background:var(--coral-soft);color:#8c392b;}
+  .cat-trick .cat-label{background:var(--amber-soft);color:#8a5a17;}
+
+  .pattern-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;margin:0 0 4px;}
+  .formula{
+    font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;background:var(--paper);
+    border:1px dashed var(--paper-line);border-radius:8px;padding:8px 12px;display:inline-block;margin:6px 0 10px;
+  }
+  .clue-words{font-size:13.5px;color:var(--ink-soft);margin-bottom:10px;}
+  .clue-words b{color:var(--ink);font-weight:600;}
+  .examples{font-size:13.5px;color:var(--ink-soft);line-height:1.9;}
+  .examples code{
+    font-family:'IBM Plex Mono',monospace;background:var(--paper);padding:1px 6px;border-radius:5px;
+    color:var(--ink);font-weight:600;
+  }
+  .marked{font-family:'IBM Plex Mono',monospace;font-size:14px;line-height:2.1;}
+  .marked .subj{text-decoration:underline;text-decoration-thickness:1.5px;}
+  .marked .verb{text-decoration:underline;text-decoration-thickness:1.5px;text-decoration-style:double;}
+  .marked .prep{text-decoration:line-through;color:var(--ink-soft);}
+  .marked .obj{background:var(--amber-soft);border-radius:4px;padding:0 3px;}
+  .word-bank{
+    display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;
+  }
+  .word-chip{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--navy-soft);color:var(--navy);
+    padding:4px 10px;border-radius:20px;font-weight:600;
+  }
+  .warn-box{
+    background:var(--coral-soft);color:#8c392b;border-radius:10px;padding:12px 14px;
+    font-size:13.5px;line-height:1.6;margin-top:10px;
+  }
+  .warn-box b{font-weight:700;}
+  .tip-box{
+    background:var(--teal-soft);color:#1d5c4c;border-radius:10px;padding:12px 14px;
+    font-size:13.5px;line-height:1.6;margin-top:10px;
+  }
+  .tip-box b{font-weight:700;}
+  .src-tag{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.05em;margin-top:10px;display:block;
+  }
+
+  /* practice */
+  .score-strip{
+    display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;padding:0 2px;
+  }
+  .score-strip b{color:var(--navy);font-weight:600;}
+  .reset-link{
+    background:none;border:none;color:var(--ink-soft);text-decoration:underline;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;padding:0;
+  }
+  .qcounter{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
+  .qtype-tag{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--navy);background:var(--navy-soft);padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:8px;
+  }
+  .qtype-tag.careful{color:#8c392b;background:var(--coral-soft);}
+  .question-text{font-size:16px;line-height:1.6;margin:6px 0 14px;}
+  .question-text b{color:var(--navy);}
+  .task-line{font-size:13px;color:var(--ink-soft);margin:-8px 0 12px;}
+  input[type=text]{
+    width:100%;font-family:'IBM Plex Mono',monospace;font-size:16px;padding:12px 14px;
+    border:1.5px solid var(--paper-line);border-radius:10px;background:var(--paper);color:var(--ink);margin-bottom:10px;
+  }
+  input[type=text]:focus{outline:2px solid var(--navy);border-color:var(--navy);}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+  button{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;padding:11px 18px;
+    border-radius:10px;border:none;cursor:pointer;
+  }
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-ghost{background:#fff;border:1.5px solid var(--paper-line);color:var(--ink);}
+  .feedback{margin-top:12px;padding:11px 14px;border-radius:10px;font-size:14.5px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:var(--teal-soft);color:#215952;}
+  .feedback.wrong{background:var(--coral-soft);color:#8c392b;}
+  .feedback .answer{font-family:'IBM Plex Mono',monospace;font-weight:600;}
+  .feedback .hint{display:block;margin-top:6px;font-size:13px;color:inherit;opacity:.85;}
+  .breadcrumb{display:flex;gap:8px;margin-bottom:18px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  .breadcrumb a{color:var(--navy);text-decoration:none;}
+  .breadcrumb a:hover,.breadcrumb a:focus-visible{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../">Home</a><span aria-hidden="true">/</span><a href="../../../subjects/writing/">Writing</a></nav>
+  <div class="eyebrow">Grammar &middot; Prepositions</div>
+  <h1>Prepositional Phrases <span>Lab</span></h1>
+  <p class="sub">Find the object of a preposition, cross out the phrase, and underline the real subject and verb &mdash; built around the one mix-up worth drilling: don't delete the verb by accident.</p>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="reference">Reference</button>
+  <button class="tab" data-tab="practice">Practice</button>
+</div>
+
+<main>
+  <!-- REFERENCE -->
+  <section id="reference" class="active">
+
+    <div class="card cat-def">
+      <span class="cat-label">Definition</span>
+      <div class="pattern-title">Object of a preposition</div>
+      <div class="clue-words">A prepositional phrase begins with a preposition and ends with a <b>noun</b> or <b>pronoun</b>. That final word is called the <b>object of the preposition</b>.</div>
+      <div class="examples">
+        &bull; Leah works <code>with Dan</code>. &mdash; <i>Dan</i> is a noun.<br>
+        &bull; Leah works <code>with him</code>. &mdash; <i>him</i> is a pronoun.
+      </div>
+      <span class="src-tag">From your worksheet, items 1&ndash;10</span>
+    </div>
+
+    <div class="card cat-method">
+      <span class="cat-label">Method</span>
+      <div class="pattern-title">Delete to find the subject and verb</div>
+      <div class="clue-words">Crossing out every prepositional phrase strips a sentence down to just the <b>subject</b> (underline once) and the <b>verb</b> (underline twice) &mdash; whatever is left over.</div>
+      <div class="marked">
+        A <span class="subj">branch</span> <span class="prep">of a tree</span> <span class="verb">fell</span> <span class="prep">during the blizzard</span>.<br>
+        <span class="subj">Marla</span> <span class="verb">sends</span> stories <span class="prep">to me</span>.
+      </div>
+      <span class="src-tag">Worksheet examples, page 2</span>
+    </div>
+
+    <div class="card cat-warn">
+      <span class="cat-label">Watch out</span>
+      <div class="pattern-title">Don't cross out the verb with the phrase</div>
+      <div class="clue-words">When a linking verb (<b>is</b>, <b>are</b>, <b>was</b>, <b>were</b>) sits right in front of a prepositional phrase, it's easy to drag it into the strike-through by mistake. The verb always stays &mdash; only the phrase after it gets crossed out.</div>
+      <div class="marked">
+        <span class="subj">The man</span> <span class="prep">in the black tie</span> <span class="verb">is</span> <span class="prep">from Oklahoma</span>.
+      </div>
+      <div class="warn-box"><b>Check yourself:</b> read what's left after crossing out. If there's no verb left standing, you crossed out too much.</div>
+      <span class="src-tag">Worksheet, page 3 &mdash; items with is/are (you got these right, but they're the easiest place to slip)</span>
+    </div>
+
+    <div class="card cat-trick">
+      <span class="cat-label">Trick case</span>
+      <div class="pattern-title">"But" can mean "except"</div>
+      <div class="clue-words">Most of the time <i>but</i> joins two ideas together. When it means <b>except</b>, it's working as a preposition instead, and everything after it is part of the phrase.</div>
+      <div class="marked">
+        <span class="subj">Everyone</span> <span class="prep">but Jessi</span> <span class="verb">looked</span> <span class="prep">for the missing sneaker</span>.
+      </div>
+      <span class="src-tag">Worksheet, page 3, item 13</span>
+    </div>
+
+    <div class="card cat-trick">
+      <span class="cat-label">Don't forget</span>
+      <div class="pattern-title">Circle the whole phrase, not just the preposition</div>
+      <div class="clue-words">When the directions say "circle the prepositional phrase," the circle has to wrap the preposition <b>and</b> its object &mdash; not just the first word.</div>
+      <div class="examples">
+        &bull; <code>among some people</code> &mdash; not just <code>among</code><br>
+        &bull; <code>on an old couch</code> &mdash; not just <code>on</code>
+      </div>
+      <span class="src-tag">Worksheet, page 1, items 7 and 10 &mdash; these two got left uncircled</span>
+    </div>
+
+    <div class="card cat-def">
+      <span class="cat-label">Reference</span>
+      <div class="pattern-title">Common prepositions</div>
+      <div class="clue-words">Any of these can start a prepositional phrase.</div>
+      <div class="word-bank">
+        <span class="word-chip">with</span><span class="word-chip">in</span><span class="word-chip">on</span><span class="word-chip">at</span>
+        <span class="word-chip">until</span><span class="word-chip">after</span><span class="word-chip">before</span><span class="word-chip">among</span>
+        <span class="word-chip">without</span><span class="word-chip">against</span><span class="word-chip">of</span><span class="word-chip">above</span>
+        <span class="word-chip">below</span><span class="word-chip">behind</span><span class="word-chip">inside</span><span class="word-chip">past</span>
+        <span class="word-chip">toward</span><span class="word-chip">over</span><span class="word-chip">between</span><span class="word-chip">throughout</span>
+        <span class="word-chip">along</span><span class="word-chip">off</span><span class="word-chip">but (=except)</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- PRACTICE -->
+  <section id="practice">
+    <div class="score-strip">
+      <span>Score: <b id="scoreText">0 / 0</b></span>
+      <button class="reset-link" id="resetBtn">reset progress</button>
+    </div>
+    <div class="card" id="quizCard">
+      <div class="qcounter" id="qcounter"></div>
+      <div id="qtypeSlot"></div>
+      <div class="question-text" id="qtext"></div>
+      <div class="task-line" id="tasktext"></div>
+      <input type="text" id="answerInput" placeholder="Type your answer">
+      <div class="btn-row">
+        <button class="btn-primary" id="checkBtn">Check</button>
+        <button class="btn-ghost" id="nextBtn">Skip &rarr;</button>
+      </div>
+      <div class="btn-row" id="afterCheckRow" style="display:none;margin-top:10px;">
+        <button class="btn-primary" id="nextBtn2">Next &rarr;</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ---------------- TABS ---------------- */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('main > section').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------------- PRACTICE DATA ---------------- */
+// Fresh names/numbers/scenarios throughout — none of these repeat the worksheet's sentences.
+// Weighted toward the worksheet's real trouble spots: not deleting a linking verb (is/are) next to
+// a prepositional phrase, circling the *whole* phrase, and "but" meaning "except".
+const quiz = [
+  // --- Object of a preposition (fill in the blank) ---
+  {type:"object", tag:"Object of the preposition", q:"Are you doing homework <b>with</b> ____?", task:"Write a noun or pronoun that finishes the phrase.", a:["*noun"]},
+  {type:"object", tag:"Object of the preposition", q:"That boy <b>in the</b> ____ is my cousin.", task:"Write a noun that finishes the phrase (describes what he's wearing).", a:["*noun"]},
+  {type:"object", tag:"Object of the preposition", q:"We must wait here <b>until</b> ____.", task:"Write a noun that could follow “until” (a time or event).", a:["*noun"]},
+  {type:"object", tag:"Object of the preposition", q:"Part <b>of the</b> ____ was cracked.", task:"Write a noun that finishes the phrase.", a:["*noun"]},
+  {type:"object", tag:"Object of the preposition", q:"He walked <b>among</b> some ____ and waved.", task:"Write a plural noun that finishes the phrase.", a:["*noun"]},
+  {type:"object", tag:"Object of the preposition", q:"That bike <b>without a</b> ____ looks strange.", task:"Write a noun that finishes the phrase.", a:["*noun"]},
+  {type:"object", tag:"Object of the preposition", q:"They leaned <b>against the</b> ____ and waited.", task:"Write a noun that finishes the phrase.", a:["*noun"]},
+
+  // --- Find the object in a full sentence ---
+  {type:"findObj", tag:"Find the object", q:"<b>Priya rides the bus with her brother.</b>", task:"What is the object of the preposition “with”?", a:["brother","her brother"]},
+  {type:"findObj", tag:"Find the object", q:"<b>The kitten hid under the porch during the storm.</b>", task:"What is the object of the preposition “during”?", a:["storm","the storm"]},
+  {type:"findObj", tag:"Find the object", q:"<b>Marcus left his backpack beside the lockers.</b>", task:"What is the object of the preposition “beside”?", a:["lockers","the lockers"]},
+  {type:"findObj", tag:"Find the object", q:"<b>A stack of folded towels sat by the door.</b>", task:"What is the object of the preposition “by”?", a:["door","the door"]},
+
+  // --- The trouble spot: linking verb (is/are/was/were) next to a phrase ---
+  {type:"verb", tag:"Find the verb — careful!", careful:true, q:"<b>The girl in the red jacket is from Denver.</b>", task:"After you cross out the prepositional phrases, what word is the verb?", a:["is"]},
+  {type:"verb", tag:"Find the verb — careful!", careful:true, q:"<b>Boxes for old textbooks are beside the supply closet.</b>", task:"After you cross out the prepositional phrases, what word is the verb?", a:["are"]},
+  {type:"verb", tag:"Find the verb — careful!", careful:true, q:"<b>The story about the shipwreck was in yesterday's paper.</b>", task:"After you cross out the prepositional phrases, what word is the verb?", a:["was"]},
+  {type:"verb", tag:"Find the verb — careful!", careful:true, q:"<b>The coats on the bottom shelf were beneath a pile of scarves.</b>", task:"After you cross out the prepositional phrases, what word is the verb?", a:["were"]},
+  {type:"verb", tag:"Find the verb — careful!", careful:true, q:"<b>Your umbrella is inside my locker.</b>", task:"After you cross out the prepositional phrase “inside my locker,” what word is left as the verb? (Don't cross this word out too!)", a:["is"]},
+
+  // --- Find the subject ---
+  {type:"subject", tag:"Find the subject", q:"<b>Several students in the front row finished early.</b>", task:"What is the subject (cross out the prepositional phrase first)?", a:["students","several students"]},
+  {type:"subject", tag:"Find the subject", q:"<b>Before the bell rang, two friends raced down the hallway.</b>", task:"What is the subject?", a:["friends","two friends"]},
+  {type:"subject", tag:"Find the subject", q:"<b>A shelf of dusty trophies fell during the earthquake.</b>", task:"What is the subject?", a:["shelf","a shelf"]},
+
+  // --- The other trouble spot: "but" meaning "except" ---
+  {type:"findObj", tag:"“But” as a preposition — careful!", careful:true, q:"<b>Everyone but Marcus finished the worksheet.</b>", task:"Here “but” means “except.” What is the object of that preposition?", a:["marcus"]},
+  {type:"findObj", tag:"“But” as a preposition — careful!", careful:true, q:"<b>Nobody but the librarian knew where the book was.</b>", task:"Here “but” means “except.” What is the object of that preposition?", a:["librarian","the librarian"]},
+
+  // --- Circle the whole phrase (type the full phrase, not just the preposition) ---
+  {type:"phrase", tag:"Circle the whole phrase — careful!", careful:true, q:"<b>The puppy squeezed among some boxes and hid.</b>", task:"Type the entire prepositional phrase (preposition + object), not just the preposition.", a:["among some boxes"]},
+  {type:"phrase", tag:"Circle the whole phrase — careful!", careful:true, q:"<b>Grandpa sat on an old bench and read the paper.</b>", task:"Type the entire prepositional phrase (preposition + object), not just the preposition.", a:["on an old bench"]},
+  {type:"phrase", tag:"Circle the whole phrase — careful!", careful:true, q:"<b>The cat slept without a blanket all night.</b>", task:"Type the entire prepositional phrase (preposition + object), not just the preposition.", a:["without a blanket"]}
+];
+
+/* ---------------- PRACTICE RENDER LOGIC ---------------- */
+let order = [...Array(quiz.length).keys()];
+let idx = 0;
+let score = {correct:0, attempted:0};
+try{ score = JSON.parse(localStorage.getItem('prepPhrasesLabScore')||'{"correct":0,"attempted":0}'); }catch(e){}
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+shuffle(order);
+
+function normalize(s){
+  return s.toLowerCase().trim().replace(/\s+/g,' ').replace(/[.,!?]/g,'');
+}
+
+// "*noun" answers accept any single reasonable word typed in (open-ended object-of-preposition items)
+function checkAnswer(given, accepted){
+  const g = normalize(given);
+  if(accepted.length===1 && accepted[0]==='*noun'){
+    return g.length>0 && /^[a-z'-]+(\s[a-z'-]+)?$/.test(g);
+  }
+  for(const a of accepted){
+    if(normalize(a) === g) return true;
+  }
+  return false;
+}
+
+function updateScore(){
+  document.getElementById('scoreText').textContent = `${score.correct} / ${score.attempted}`;
+  try{ localStorage.setItem('prepPhrasesLabScore', JSON.stringify(score)); }catch(e){}
+}
+
+function loadQuestion(){
+  const q = quiz[order[idx]];
+  document.getElementById('qcounter').textContent = `Question ${idx+1} of ${quiz.length}`;
+  document.getElementById('qtypeSlot').innerHTML = `<span class="qtype-tag${q.careful?' careful':''}">${q.tag}</span>`;
+  document.getElementById('qtext').innerHTML = q.q;
+  document.getElementById('tasktext').textContent = q.task;
+  document.getElementById('answerInput').value = '';
+  document.getElementById('answerInput').placeholder = (q.a[0]==='*noun') ? 'Type one word' : 'Type your answer';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('answerInput').disabled = false;
+  document.querySelector('.btn-row').style.display = 'flex';
+  document.getElementById('afterCheckRow').style.display = 'none';
+  document.getElementById('answerInput').focus();
+}
+
+document.getElementById('checkBtn').addEventListener('click', ()=>{
+  const q = quiz[order[idx]];
+  const given = document.getElementById('answerInput').value;
+  const ok = checkAnswer(given, q.a);
+  const fb = document.getElementById('feedback');
+  score.attempted++;
+  if(ok){
+    score.correct++;
+    fb.className = 'feedback show correct';
+    fb.innerHTML = (q.a[0]==='*noun')
+      ? `Good — that works as the object of the preposition.`
+      : `Correct &mdash; <span class="answer">${q.a[0]}</span>`;
+  } else {
+    fb.className = 'feedback show wrong';
+    const shown = (q.a[0]==='*noun') ? 'any single noun or pronoun' : q.a[0];
+    fb.innerHTML = `Not quite. Answer: <span class="answer">${shown}</span>`;
+    if(q.type==='verb'){
+      fb.innerHTML += `<span class="hint">Remember: is/are/was/were stays — only the phrase after it gets crossed out.</span>`;
+    } else if(q.type==='phrase'){
+      fb.innerHTML += `<span class="hint">The circle needs the preposition AND its object, not just the first word.</span>`;
+    }
+  }
+  updateScore();
+
+  document.querySelector('.btn-row').style.display = 'none';
+  document.getElementById('afterCheckRow').style.display = 'flex';
+  document.getElementById('answerInput').disabled = true;
+});
+
+function goNext(){
+  idx = (idx+1) % quiz.length;
+  loadQuestion();
+}
+document.getElementById('nextBtn').addEventListener('click', goNext);
+document.getElementById('nextBtn2').addEventListener('click', goNext);
+
+document.addEventListener('keydown', e=>{
+  if(e.key!=='Enter') return;
+  const afterCheckVisible = document.getElementById('afterCheckRow').style.display !== 'none';
+  if(afterCheckVisible){ goNext(); }
+  else { document.getElementById('checkBtn').click(); }
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  score = {correct:0, attempted:0};
+  updateScore();
+});
+
+updateScore();
+loadQuestion();
+</script>
+</body>
+</html>
