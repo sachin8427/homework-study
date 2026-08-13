@@ -59,6 +59,33 @@
     line-height: 1;
   }
 
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 18px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .breadcrumb a {
+    color: var(--cream);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .breadcrumb a:hover,
+  .breadcrumb a:focus-visible {
+    color: var(--gold);
+  }
+
+  .breadcrumb span {
+    color: rgba(251,248,241,0.6);
+  }
+
   .eyebrow {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
@@ -508,6 +535,11 @@
 <body>
 
 <header>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../../">Home</a>
+    <span aria-hidden="true">/</span>
+    <a href="../../../subjects/science/">Science</a>
+  </nav>
   <p class="eyebrow">Chapter 1 · Scientific Inquiry</p>
   <h1>The Scientific Method</h1>
   <p class="subtitle">Procedure, hypothesis-writing, and observation vs. experimentation — study lab.</p>
