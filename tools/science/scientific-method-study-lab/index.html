@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Scientific Method — Study Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1B2A4A;
+    --navy-light: #2C4270;
+    --teal: #2A9D8F;
+    --teal-light: #6FC3B8;
+    --coral: #E76F51;
+    --gold: #E9C46A;
+    --cream: #FBF8F1;
+    --paper-line: #E4DCC8;
+    --ink: #26324A;
+    --muted: #6B7690;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--ink);
+    background-color: var(--cream);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 34px,
+      var(--paper-line) 34px,
+      var(--paper-line) 35px
+    );
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  header {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 28px 20px 24px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 5px solid var(--coral);
+  }
+
+  header::after {
+    content: "?";
+    position: absolute;
+    right: -10px;
+    top: -30px;
+    font-family: 'Fraunces', serif;
+    font-size: 180px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+  }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 6px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 30px;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: rgba(251,248,241,0.75);
+    margin: 8px 0 0;
+    max-width: 34em;
+  }
+
+  nav.tabs {
+    display: flex;
+    gap: 0;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--cream);
+    border-bottom: 2px solid var(--navy);
+  }
+
+  nav.tabs button {
+    flex: 1;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 14px 8px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  nav.tabs button.active {
+    color: var(--navy);
+    border-bottom-color: var(--coral);
+    font-weight: 600;
+  }
+
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  section.block {
+    margin-bottom: 34px;
+  }
+
+  h2.section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 4px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  h2.section-title .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: var(--teal);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.03em;
+  }
+
+  p.section-note {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+
+  /* Flashcards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .flip-card {
+    perspective: 1000px;
+    height: 128px;
+    cursor: pointer;
+  }
+
+  .flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+
+  .flip-card.flipped .flip-inner {
+    transform: rotateY(180deg);
+  }
+
+  .flip-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(27,42,74,0.12);
+  }
+
+  .flip-front {
+    background: white;
+    border: 2px solid var(--navy);
+  }
+
+  .flip-front .term {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 19px;
+    color: var(--navy);
+  }
+
+  .flip-front .hint {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    margin-top: 8px;
+    letter-spacing: 0.03em;
+  }
+
+  .flip-back {
+    background: var(--navy);
+    color: var(--cream);
+    transform: rotateY(180deg);
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .flip-back .example {
+    display: block;
+    margin-top: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--gold);
+  }
+
+  /* Steps chain */
+  .steps-chain {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step-item {
+    display: flex;
+    gap: 14px;
+    position: relative;
+    padding-bottom: 22px;
+  }
+
+  .step-item:last-child { padding-bottom: 0; }
+
+  .step-item::before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 34px;
+    bottom: 0;
+    width: 2px;
+    background: var(--teal-light);
+  }
+
+  .step-item:last-child::before { display: none; }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 1;
+  }
+
+  .step-text {
+    background: white;
+    border: 1.5px solid var(--paper-line);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 14px;
+    flex: 1;
+  }
+
+  .step-loop {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--coral);
+    background: #FDF0EC;
+    border: 1px dashed var(--coral);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 8px;
+  }
+
+  /* Practice */
+  .progress-bar-wrap {
+    background: white;
+    border: 1.5px solid var(--navy);
+    border-radius: 20px;
+    padding: 4px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 10px;
+    background: var(--paper-line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--teal);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .progress-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--navy);
+    padding-right: 8px;
+    white-space: nowrap;
+  }
+
+  .score-pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: var(--navy);
+    color: var(--gold);
+    padding: 6px 12px;
+    border-radius: 14px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+
+  .q-card {
+    background: white;
+    border: 2px solid var(--navy);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 4px 4px 0 rgba(27,42,74,0.1);
+  }
+
+  .q-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--teal);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .q-prompt {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    margin-bottom: 14px;
+    color: var(--navy);
+  }
+
+  .q-prompt .scenario {
+    display: block;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--ink);
+    background: #F6F2E7;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-top: 8px;
+    border-left: 3px solid var(--gold);
+  }
+
+  .mc-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mc-option {
+    text-align: left;
+    padding: 11px 14px;
+    border: 1.5px solid var(--paper-line);
+    background: var(--cream);
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .mc-option:hover { border-color: var(--teal); }
+
+  .mc-option.correct {
+    background: #E4F4EA;
+    border-color: #4CAF7D;
+    font-weight: 600;
+  }
+
+  .mc-option.incorrect {
+    background: #FBE8E4;
+    border-color: var(--coral);
+  }
+
+  .mc-option:disabled { cursor: default; }
+
+  .text-answer-area textarea {
+    width: 100%;
+    min-height: 70px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    padding: 10px;
+    border: 1.5px solid var(--paper-line);
+    border-radius: 8px;
+    resize: vertical;
+    background: var(--cream);
+  }
+
+  .reveal-btn, .next-btn, .self-grade button {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .reveal-btn {
+    background: var(--navy);
+    color: white;
+  }
+
+  .sample-answer {
+    display: none;
+    margin-top: 12px;
+    background: #EFF7F5;
+    border: 1px solid var(--teal-light);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13.5px;
+  }
+
+  .sample-answer strong { color: var(--teal); }
+
+  .self-grade {
+    display: none;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .self-grade button.correct-btn { background: #4CAF7D; color: white; }
+  .self-grade button.incorrect-btn { background: var(--coral); color: white; }
+
+  .q-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+  }
+
+  .next-btn {
+    background: var(--coral);
+    color: white;
+    display: none;
+  }
+
+  .done-card {
+    text-align: center;
+    padding: 40px 20px;
+    background: white;
+    border: 2px solid var(--navy);
+    border-radius: 12px;
+  }
+
+  .done-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    color: var(--navy);
+  }
+
+  .restart-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 22px;
+    font-size: 13px;
+    margin-top: 14px;
+    cursor: pointer;
+  }
+
+  @media (min-width: 560px) {
+    .card-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Chapter 1 · Scientific Inquiry</p>
+  <h1>The Scientific Method</h1>
+  <p class="subtitle">Procedure, hypothesis-writing, and observation vs. experimentation — study lab.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-panel="reference">Reference</button>
+  <button class="tab-btn" data-panel="practice">Practice</button>
+</nav>
+
+<main>
+
+  <!-- REFERENCE PANEL -->
+  <div class="panel active" id="reference">
+
+    <section class="block">
+      <h2 class="section-title">Steps in Order <span class="tag">sequence</span></h2>
+      <p class="section-note">The scientific method is a loop, not a straight line — tap through the sequence.</p>
+      <div class="steps-chain" id="stepsChain"></div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Key Vocabulary <span class="tag">15 terms</span></h2>
+      <p class="section-note">Tap a card to flip it.</p>
+      <div class="card-grid" id="cardGrid"></div>
+    </section>
+
+  </div>
+
+  <!-- PRACTICE PANEL -->
+  <div class="panel" id="practice">
+    <div class="score-pill" id="scorePill">Score: 0 / 0</div>
+    <div class="progress-bar-wrap">
+      <span class="progress-label" id="progressLabel">Q1 / 20</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div id="quizArea"></div>
+  </div>
+
+</main>
+
+<script>
+/* ---------- DATA ---------- */
+
+const steps = [
+  "Ask a question about the world.",
+  "Form a hypothesis that answers the question.",
+  "Design an experiment (or plan observations) to test it.",
+  "Run the test and record data.",
+  "If the hypothesis is wrong, form a new one and test again.",
+  "If it's confirmed, test again to be sure — then share results with other scientists."
+];
+
+const terms = [
+  { term: "Scientific Method", hint: "the big picture", def: "A step-by-step technique used for scientific investigation — the overall process scientists follow.", ex: "Ask → hypothesize → test → analyze → share" },
+  { term: "Observation", hint: "gathering facts", def: "The act of gathering facts or making notes about events, without necessarily testing anything.", ex: "e.g. an astronomer noting a star's color" },
+  { term: "Experimentation", hint: "conducting a test", def: "The act of conducting experiments — actively changing something and measuring the result.", ex: "e.g. a chemist testing which liquid dissolves sugar fastest" },
+  { term: "Purpose", hint: "the question", def: "The question stated at the start of an investigation that the whole experiment is designed to answer." },
+  { term: "Hypothesis", hint: "the prediction", def: "A statement that can be tested to see if it's true or false — an educated guess about the outcome.", ex: "If [independent variable], then [dependent variable]..." },
+  { term: "Procedure", hint: "the directions", def: "A step-by-step set of directions for testing the hypothesis, detailed enough for another scientist to copy it exactly." },
+  { term: "Materials", hint: "the shopping list", def: "The list of items needed to conduct the experiment, written in the order they're used and measured in metric units." },
+  { term: "Experiment", hint: "the test itself", def: "A test designed to answer the question stated in the purpose. Made up of an experimental group and a control group." },
+  { term: "Experimental Group", hint: "the changed part", def: "The part of the experiment that is changed and tested — results are compared back to the control group." },
+  { term: "Control Group", hint: "the unchanged part", def: "The part of the experiment left unchanged, so it can be compared against the experimental group." },
+  { term: "Constants", hint: "kept the same", def: "The conditions a scientist deliberately keeps the same throughout the experiment, for every group." },
+  { term: "Variable", hint: "what can change", def: "A factor, trait, or condition in an experiment that can change and affect the results. A good experiment tests only one at a time." },
+  { term: "Independent Variable", hint: "what YOU change", def: "The one factor that is deliberately changed and tested by the scientist in an experiment." },
+  { term: "Dependent Variable", hint: "what responds", def: "The factor that responds to the change in the independent variable. Measured and recorded in metric units." },
+  { term: "Data", hint: "the results", def: "A record of the results of the experiment, usually collected in a data table, then later organized into a graph." }
+];
+
+/* Practice questions — fresh scenarios, not lifted from the worksheets */
+const questions = [
+  // Matching / definition (MC)
+  { type: "mc", prompt: "Which term matches: \"a factor kept the same on purpose during an experiment\"?",
+    options: ["Constants", "Data", "Purpose", "Procedure"], correct: 0 },
+  { type: "mc", prompt: "Which term matches: \"a step-by-step set of directions detailed enough for another scientist to repeat\"?",
+    options: ["Hypothesis", "Procedure", "Materials", "Observation"], correct: 1 },
+  { type: "mc", prompt: "Which term matches: \"the part of the experiment that is changed and tested\"?",
+    options: ["Control group", "Constants", "Experimental group", "Dependent variable"], correct: 2 },
+  { type: "mc", prompt: "Which term matches: \"a record of the results, usually kept in a table\"?",
+    options: ["Purpose", "Data", "Hypothesis", "Materials"], correct: 1 },
+
+  // Observation vs. Experiment (fresh scenarios)
+  { type: "mc", prompt: "A meteorologist tracks cloud patterns for a month to predict tomorrow's weather, without changing anything. Is this observation or experimentation?",
+    options: ["Observation", "Experimentation"], correct: 0 },
+  { type: "mc", prompt: "A botanist gives three identical plants different amounts of water to see which grows tallest. Is this observation or experimentation?",
+    options: ["Observation", "Experimentation"], correct: 1 },
+  { type: "mc", prompt: "A geologist examines rock layers in a canyon wall and concludes how old they are, without altering anything. Is this observation or experimentation?",
+    options: ["Observation", "Experimentation"], correct: 0 },
+  { type: "mc", prompt: "An engineer tests four bridge designs under weight to see which holds the most before bending. Is this observation or experimentation?",
+    options: ["Observation", "Experimentation"], correct: 1 },
+
+  // Variable identification (self-check, two blanks)
+  { type: "text", prompt: "Hypothesis: \"Louder music will increase a dog's heart rate.\"",
+    scenario: "Name the independent variable AND the dependent variable.",
+    sample: "Independent: volume of the music. Dependent: the dog's heart rate (measured in beats per minute)." },
+  { type: "text", prompt: "Hypothesis: \"More sunlight will increase the height a sunflower grows.\"",
+    scenario: "Name the independent variable AND the dependent variable.",
+    sample: "Independent: amount of sunlight. Dependent: height of the sunflower (measured in centimeters)." },
+  { type: "text", prompt: "Hypothesis: \"A steeper ramp will increase the speed of a toy car at the bottom.\"",
+    scenario: "Name the independent variable AND the dependent variable.",
+    sample: "Independent: steepness (angle) of the ramp. Dependent: speed of the car (measured in meters per second)." },
+  { type: "text", prompt: "Hypothesis: \"Colder temperatures will decrease how long it takes ice to melt... wait, that's backwards. Fix the direction first, then identify the variables.\"",
+    scenario: "Purpose: Does temperature affect how fast ice melts?",
+    sample: "Colder temperatures will INCREASE melting time (slow it down). Independent: temperature. Dependent: time to melt (measured in minutes)." },
+
+  // Hypothesis writing (self-check)
+  { type: "text", prompt: "Write a hypothesis for this purpose: \"Does the amount of salt in water affect how fast an egg sinks or floats?\"",
+    sample: "If more salt is added to the water, then the egg will float faster / more easily (because saltwater is denser)." },
+  { type: "text", prompt: "Write a hypothesis for this purpose: \"Does the color of a surface affect how quickly it heats up in sunlight?\"",
+    sample: "If a surface is darker in color, then it will heat up faster in sunlight." },
+  { type: "text", prompt: "Write a hypothesis for this purpose: \"Does the length of a pendulum affect how many swings it makes per minute?\"",
+    sample: "If a pendulum is shorter, then it will complete more swings per minute." },
+  { type: "text", prompt: "Write a hypothesis for this purpose: \"Does practice time affect how many words a student can type per minute?\"",
+    sample: "If a student practices typing more, then their typing speed (words per minute) will increase." },
+
+  // Spot the error (MC)
+  { type: "mc", prompt: "A student writes: \"Independent variable: plant height. Dependent variable: amount of fertilizer.\" What's wrong?",
+    options: ["Nothing is wrong", "The variables are swapped — fertilizer is independent, plant height is dependent", "Plant height can't be a variable", "This needs a control group instead"], correct: 1 },
+  { type: "mc", prompt: "A student measures \"movement of a mealworm\" in inches. What's the error?",
+    options: ["Nothing is wrong", "Movement isn't a real dependent variable", "It should be measured in a metric unit, like centimeters", "Mealworms can't be studied this way"], correct: 2 },
+  { type: "mc", prompt: "A student hypothesizes: \"If a human is older, then their resting heart rate will increase.\" What's the more scientifically accurate direction?",
+    options: ["The hypothesis is already correct", "Resting heart rate tends to decrease or stay steady with age, not increase", "Age has no effect on heart rate at all", "Heart rate can't be a dependent variable"], correct: 1 },
+  { type: "mc", prompt: "A student's \"control group\" is a plant given extra fertilizer, and the \"experimental group\" gets no fertilizer. What's backwards?",
+    options: ["Nothing — this is correct", "The groups are swapped: the control should be unchanged (no fertilizer), the experimental group should get the change (extra fertilizer)", "You can't use plants for a control group", "Fertilizer can't be an independent variable"], correct: 1 }
+];
+
+/* ---------- REFERENCE: STEPS ---------- */
+const stepsChain = document.getElementById('stepsChain');
+steps.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'step-item';
+  div.innerHTML = `<div class="step-num">${i+1}</div><div class="step-text">${s}</div>`;
+  stepsChain.appendChild(div);
+});
+const loopNote = document.createElement('p');
+loopNote.className = 'step-loop';
+loopNote.textContent = "🔁 Steps 4–6 repeat — the scientific method is a cycle of testing, refining, and re-testing.";
+stepsChain.appendChild(loopNote);
+
+/* ---------- REFERENCE: FLASHCARDS ---------- */
+const cardGrid = document.getElementById('cardGrid');
+terms.forEach(t => {
+  const card = document.createElement('div');
+  card.className = 'flip-card';
+  card.innerHTML = `
+    <div class="flip-inner">
+      <div class="flip-face flip-front">
+        <div class="term">${t.term}</div>
+        <div class="hint">${t.hint}</div>
+      </div>
+      <div class="flip-face flip-back">
+        ${t.def}
+        ${t.ex ? `<span class="example">${t.ex}</span>` : ''}
+      </div>
+    </div>
+  `;
+  card.addEventListener('click', () => card.classList.toggle('flipped'));
+  cardGrid.appendChild(card);
+});
+
+/* ---------- TABS ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  });
+});
+
+/* ---------- PRACTICE QUIZ ENGINE ---------- */
+const STORAGE_KEY = 'sciMethodQuizProgress';
+let qIndex = 0;
+let score = 0;
+let answered = new Array(questions.length).fill(null); // null | true | false
+
+function loadProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (saved && saved.answered && saved.answered.length === questions.length) {
+      answered = saved.answered;
+      score = answered.filter(a => a === true).length;
+      qIndex = answered.findIndex(a => a === null);
+      if (qIndex === -1) qIndex = questions.length; // all done
+    }
+  } catch (e) {}
+}
+
+function saveProgress() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ answered }));
+  } catch (e) {}
+}
+
+function updateScoreUI() {
+  const totalAnswered = answered.filter(a => a !== null).length;
+  document.getElementById('scorePill').textContent = `Score: ${score} / ${totalAnswered}`;
+  document.getElementById('progressLabel').textContent = `Q${Math.min(qIndex+1, questions.length)} / ${questions.length}`;
+  const pct = (Math.min(qIndex, questions.length) / questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function renderQuiz() {
+  const area = document.getElementById('quizArea');
+  updateScoreUI();
+
+  if (qIndex >= questions.length) {
+    area.innerHTML = `
+      <div class="done-card">
+        <h3>Nice work! 🎉</h3>
+        <p>You scored ${score} / ${questions.length}.</p>
+        <button class="restart-btn" id="restartBtn">Restart practice</button>
+      </div>
+    `;
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      answered = new Array(questions.length).fill(null);
+      score = 0;
+      qIndex = 0;
+      saveProgress();
+      renderQuiz();
+    });
+    return;
+  }
+
+  const q = questions[qIndex];
+  const card = document.createElement('div');
+  card.className = 'q-card';
+
+  if (q.type === 'mc') {
+    card.innerHTML = `
+      <span class="q-type">Multiple choice</span>
+      <div class="q-prompt">${q.prompt}</div>
+      <div class="mc-options">
+        ${q.options.map((opt, i) => `<button class="mc-option" data-i="${i}">${opt}</button>`).join('')}
+      </div>
+      <div class="q-footer"><button class="next-btn" id="nextBtn">Next →</button></div>
+    `;
+    area.innerHTML = '';
+    area.appendChild(card);
+
+    card.querySelectorAll('.mc-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const chosen = parseInt(btn.dataset.i);
+        card.querySelectorAll('.mc-option').forEach(b => b.disabled = true);
+        if (chosen === q.correct) {
+          btn.classList.add('correct');
+          if (answered[qIndex] === null) { score++; answered[qIndex] = true; }
+        } else {
+          btn.classList.add('incorrect');
+          card.querySelector(`.mc-option[data-i="${q.correct}"]`).classList.add('correct');
+          if (answered[qIndex] === null) { answered[qIndex] = false; }
+        }
+        saveProgress();
+        updateScoreUI();
+        card.querySelector('#nextBtn').style.display = 'inline-block';
+      });
+    });
+
+  } else if (q.type === 'text') {
+    card.innerHTML = `
+      <span class="q-type">Short answer — self-check</span>
+      <div class="q-prompt">${q.prompt}${q.scenario ? `<span class="scenario">${q.scenario}</span>` : ''}</div>
+      <div class="text-answer-area">
+        <textarea placeholder="Type your answer here..."></textarea>
+        <button class="reveal-btn" id="revealBtn">Reveal answer</button>
+        <div class="sample-answer" id="sampleAnswer"><strong>Sample answer:</strong> ${q.sample}</div>
+        <div class="self-grade" id="selfGrade">
+          <button class="correct-btn" id="gotItRight">I got it right</button>
+          <button class="incorrect-btn" id="gotItWrong">I missed it</button>
+        </div>
+      </div>
+      <div class="q-footer"><button class="next-btn" id="nextBtn">Next →</button></div>
+    `;
+    area.innerHTML = '';
+    area.appendChild(card);
+
+    card.querySelector('#revealBtn').addEventListener('click', () => {
+      card.querySelector('#sampleAnswer').style.display = 'block';
+      card.querySelector('#selfGrade').style.display = 'flex';
+      card.querySelector('#revealBtn').style.display = 'none';
+    });
+
+    card.querySelector('#gotItRight').addEventListener('click', () => {
+      if (answered[qIndex] === null) { score++; answered[qIndex] = true; }
+      finishSelfGrade();
+    });
+    card.querySelector('#gotItWrong').addEventListener('click', () => {
+      if (answered[qIndex] === null) { answered[qIndex] = false; }
+      finishSelfGrade();
+    });
+
+    function finishSelfGrade() {
+      card.querySelector('#selfGrade').querySelectorAll('button').forEach(b => b.disabled = true);
+      saveProgress();
+      updateScoreUI();
+      card.querySelector('#nextBtn').style.display = 'inline-block';
+    }
+  }
+
+  card.querySelector('#nextBtn').addEventListener('click', () => {
+    qIndex++;
+    saveProgress();
+    renderQuiz();
+  });
+}
+
+loadProgress();
+renderQuiz();
+</script>
+
+</body>
+</html>
