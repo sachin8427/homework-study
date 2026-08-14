@@ -14,6 +14,7 @@ window.STUDY_CATALOG = {
   resources: [
     { title: "Bar Model Algebra Lab", category: "math", url: "tools/math/algebra-bar-models/", description: "Learn five algebra bar-model patterns and practice writing expressions.", type: "Interactive practice" },
     { title: "Equation Solver Lab", category: "math", url: "tools/math/equation-solver-lab/", description: "Learn and practice solving one-step and two-step algebra equations.", type: "Interactive practice" },
+    { title: "Grade 6 Multi-Variable Expressions", category: "math", url: "tools/math/multi-variable-expressions-grade-6/", description: "Translate word problems into multi-variable expressions, evaluate them, and practice eight common patterns.", type: "Study guide and quiz" },
     { title: "The Scientific Method Study Lab", category: "science", url: "tools/science/scientific-method-study-lab/", description: "Study scientific procedures, hypothesis writing, observations, and experiments.", type: "Study guide and practice" },
     { title: "Sentence Workbench", category: "writing", url: "tools/sentence-workbench/", description: "Practice sentence dress-ups and openers with flashcards and writing exercises.", type: "Interactive practice" },
     { title: "Prepositional Phrases Lab", category: "writing", url: "tools/writing/prepositional-phrases-lab/", description: "Find prepositional phrases and their objects, then identify each sentence's subject and verb.", type: "Study guide and practice" },

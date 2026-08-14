@@ -75,6 +75,16 @@ test("equation solver is standalone and registered under Math", () => {
   assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
 });
 
+test("Grade 6 multi-variable expressions is linked under Math", () => {
+  const page = fs.readFileSync(path.join(projectRoot, "tools", "math", "multi-variable-expressions-grade-6", "index.html"), "utf8");
+  const catalog = fs.readFileSync(path.join(projectRoot, "assets", "catalog.js"), "utf8");
+  const scripts = [...page.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+  assert.match(page, /href="\.\.\/\.\.\/\.\.\/subjects\/math\/"/);
+  assert.match(catalog, /tools\/math\/multi-variable-expressions-grade-6\//);
+  assert.equal(scripts.length, 1);
+  assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
+});
+
 test("history pages and the Grade 6 hub are registered under Social Science", () => {
   const catalog = fs.readFileSync(path.join(projectRoot, "assets", "catalog.js"), "utf8");
   const grade5 = fs.readFileSync(path.join(projectRoot, "tools", "social-science", "us-history-grade-5", "index.html"), "utf8");

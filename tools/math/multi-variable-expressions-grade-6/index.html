@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algebraic Expressions II — Study Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1B2A4A; --navy-light: #2C4270; --teal: #2A9D8F; --teal-light: #6FC3B8;
+    --coral: #E76F51; --gold: #E9C46A; --cream: #FBF8F1; --paper-line: #E4DCC8;
+    --ink: #26324A; --muted: #6B7690;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: 'Space Grotesk', sans-serif; color: var(--ink);
+    background-color: var(--cream);
+    background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 34px, var(--paper-line) 34px, var(--paper-line) 35px);
+    min-height: 100vh; padding-bottom: 60px;
+  }
+  header { background: var(--navy); color: var(--cream); padding: 28px 20px 24px; position: relative; overflow: hidden; border-bottom: 5px solid var(--coral); }
+  header::after { content: "x+y"; position: absolute; right: -6px; top: -18px; font-family: 'Fraunces', serif; font-style: italic; font-size: 100px; font-weight: 700; color: rgba(255,255,255,0.06); line-height: 1; }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin: 0 0 6px; }
+  h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 28px; margin: 0; line-height: 1.15; }
+  .subtitle { font-size: 14px; color: rgba(251,248,241,0.75); margin: 8px 0 0; max-width: 34em; }
+  .breadcrumb { display: flex; gap: 8px; margin-bottom: 18px; font-size: 14px; font-weight: 600; color: rgba(251,248,241,0.75); }
+  .breadcrumb a { color: var(--cream); text-decoration: none; }
+  .breadcrumb a:hover, .breadcrumb a:focus-visible { text-decoration: underline; }
+
+  nav.tabs { display: flex; max-width: 720px; margin: 0 auto; padding: 0 16px; position: sticky; top: 0; z-index: 10; background: var(--cream); border-bottom: 2px solid var(--navy); }
+  nav.tabs button { flex: 1; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; padding: 14px 8px; background: none; border: none; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; }
+  nav.tabs button.active { color: var(--navy); border-bottom-color: var(--coral); font-weight: 600; }
+
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 40px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  section.block { margin-bottom: 32px; }
+
+  h2.section-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--navy); margin: 0 0 4px; display: flex; align-items: baseline; gap: 8px; }
+  h2.section-title .tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; background: var(--teal); color: white; padding: 3px 8px; border-radius: 3px; }
+  p.section-note { font-size: 13.5px; color: var(--muted); margin: 0 0 16px; }
+  p.narrative { font-size: 14.5px; line-height: 1.6; margin: 0 0 14px; }
+
+  /* Keyword table */
+  .keyword-list { display: flex; flex-direction: column; gap: 8px; }
+  .keyword-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: white; border: 1.5px solid var(--paper-line); border-radius: 8px; padding: 10px 14px; font-size: 13.5px; }
+  .keyword-phrase { font-weight: 500; color: var(--navy); }
+  .keyword-op { font-family: 'IBM Plex Mono', monospace; font-size: 12px; background: var(--gold); color: var(--navy); padding: 3px 9px; border-radius: 12px; white-space: nowrap; }
+
+  /* Pattern flip-cards */
+  .card-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .flip-card { perspective: 1000px; height: 150px; cursor: pointer; }
+  .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.4,0.2,0.2,1); transform-style: preserve-3d; }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 6px rgba(27,42,74,0.12); }
+  .flip-front { background: white; border: 2px solid var(--navy); }
+  .flip-front .pattern-num { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--coral); text-transform: uppercase; margin-bottom: 4px; }
+  .flip-front .term { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16.5px; color: var(--navy); }
+  .flip-front .form { font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: var(--teal); margin-top: 8px; background: #EFF7F5; display: inline-block; padding: 4px 10px; border-radius: 6px; width: fit-content; }
+  .flip-back { background: var(--navy); color: var(--cream); transform: rotateY(180deg); font-size: 12.8px; line-height: 1.45; }
+  .flip-back .example { display: block; margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--gold); }
+
+  /* Worked walkthrough chain */
+  .chain { display: flex; flex-direction: column; gap: 0; }
+  .chain-item { display: flex; gap: 14px; position: relative; padding-bottom: 20px; }
+  .chain-item:last-child { padding-bottom: 0; }
+  .chain-item::before { content: ""; position: absolute; left: 15px; top: 34px; bottom: 0; width: 2px; background: var(--teal-light); }
+  .chain-item:last-child::before { display: none; }
+  .chain-num { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--coral); color: white; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; z-index: 1; }
+  .chain-text { background: white; border: 1.5px solid var(--paper-line); border-left: 3px solid var(--gold); border-radius: 6px; padding: 10px 14px; font-size: 13.5px; flex: 1; }
+  .chain-text .math { font-family: 'IBM Plex Mono', monospace; color: var(--navy); }
+
+  /* Quiz */
+  .progress-bar-wrap { background: white; border: 1.5px solid var(--navy); border-radius: 20px; padding: 4px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+  .progress-track { flex: 1; height: 10px; background: var(--paper-line); border-radius: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--teal); width: 0%; transition: width 0.3s ease; }
+  .progress-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--navy); padding-right: 8px; white-space: nowrap; }
+  .score-pill { font-family: 'IBM Plex Mono', monospace; font-size: 12px; background: var(--navy); color: var(--gold); padding: 6px 12px; border-radius: 14px; display: inline-block; margin-bottom: 14px; }
+  .q-card { background: white; border: 2px solid var(--navy); border-radius: 12px; padding: 18px; box-shadow: 4px 4px 0 rgba(27,42,74,0.1); }
+  .q-type { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; display: block; }
+  .q-prompt { font-size: 15.5px; font-weight: 500; line-height: 1.45; margin-bottom: 14px; color: var(--navy); }
+  .mc-options { display: flex; flex-direction: column; gap: 8px; }
+  .mc-option { text-align: left; padding: 11px 14px; border: 1.5px solid var(--paper-line); background: var(--cream); border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; cursor: pointer; }
+  .mc-option.correct { background: #E4F4EA; border-color: #4CAF7D; font-weight: 600; }
+  .mc-option.incorrect { background: #FBE8E4; border-color: var(--coral); }
+  .mc-option:disabled { cursor: default; }
+  .numeric-answer-area { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .numeric-answer-area input { font-family: 'IBM Plex Mono', monospace; font-size: 16px; padding: 10px 12px; border: 1.5px solid var(--paper-line); border-radius: 8px; width: 140px; background: var(--cream); }
+  .check-btn { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; text-transform: uppercase; padding: 10px 16px; border-radius: 20px; border: none; cursor: pointer; background: var(--navy); color: white; }
+  .numeric-feedback { margin-top: 10px; font-size: 13.5px; padding: 10px 12px; border-radius: 8px; display: none; }
+  .numeric-feedback.correct { display: block; background: #E4F4EA; color: #2E7D52; }
+  .numeric-feedback.incorrect { display: block; background: #FBE8E4; color: var(--coral); }
+  .text-answer-area textarea { width: 100%; min-height: 55px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; padding: 10px; border: 1.5px solid var(--paper-line); border-radius: 8px; resize: vertical; background: var(--cream); }
+  .reveal-btn { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; text-transform: uppercase; padding: 10px 16px; border-radius: 20px; border: none; cursor: pointer; margin-top: 10px; background: var(--navy); color: white; }
+  .sample-answer { display: none; margin-top: 12px; background: #EFF7F5; border: 1px solid var(--teal-light); border-radius: 8px; padding: 12px; font-size: 13.5px; }
+  .sample-answer .math { font-family: 'IBM Plex Mono', monospace; }
+  .self-grade { display: none; gap: 10px; margin-top: 12px; }
+  .self-grade button { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; text-transform: uppercase; padding: 10px 16px; border-radius: 20px; border: none; cursor: pointer; }
+  .self-grade button.correct-btn { background: #4CAF7D; color: white; }
+  .self-grade button.incorrect-btn { background: var(--coral); color: white; }
+  .q-footer { display: flex; justify-content: flex-end; margin-top: 14px; }
+  .next-btn { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; text-transform: uppercase; padding: 10px 16px; border-radius: 20px; border: none; cursor: pointer; background: var(--coral); color: white; display: none; }
+  .done-card { text-align: center; padding: 40px 20px; background: white; border: 2px solid var(--navy); border-radius: 12px; }
+  .done-card h3 { font-family: 'Fraunces', serif; font-size: 24px; color: var(--navy); }
+  .restart-btn { font-family: 'IBM Plex Mono', monospace; background: var(--teal); color: white; border: none; padding: 12px 22px; border-radius: 22px; font-size: 13px; margin-top: 14px; cursor: pointer; }
+
+  @media (min-width: 560px) { .card-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../">Home</a><span aria-hidden="true">/</span><a href="../../../subjects/math/">Math</a></nav>
+  <p class="eyebrow">Grade 6 · Math — Algebraic Expressions II</p>
+  <h1>Multi-Variable Expressions</h1>
+  <p class="subtitle">Recognize the pattern, build the expression, then evaluate or solve it.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-panel="reference">Reference</button>
+  <button class="tab-btn" data-panel="practice">Practice</button>
+</nav>
+
+<main>
+
+  <!-- REFERENCE -->
+  <div class="panel active" id="reference">
+
+    <section class="block">
+      <h2 class="section-title">Reading the Word Problem <span class="tag">keywords</span></h2>
+      <p class="narrative">Every one of these problems is a translation task — turning English into math. These phrases are your signals for which operation to use.</p>
+      <div class="keyword-list">
+        <div class="keyword-row"><span class="keyword-phrase">"each ___ costs/weighs..."</span><span class="keyword-op">multiply</span></div>
+        <div class="keyword-row"><span class="keyword-phrase">"total," "altogether," "in all"</span><span class="keyword-op">add</span></div>
+        <div class="keyword-row"><span class="keyword-phrase">"times as many/heavy"</span><span class="keyword-op">multiply</span></div>
+        <div class="keyword-row"><span class="keyword-phrase">"more than"</span><span class="keyword-op">add</span></div>
+        <div class="keyword-row"><span class="keyword-phrase">"how many more / difference"</span><span class="keyword-op">subtract</span></div>
+        <div class="keyword-row"><span class="keyword-phrase">"if x = ..., find..."</span><span class="keyword-op">substitute</span></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">8 Expression Patterns <span class="tag">tap to flip</span></h2>
+      <div class="card-grid" id="patternCards"></div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Worked Walkthrough <span class="tag">2-step reasoning</span></h2>
+      <p class="narrative">This is the pattern that trips people up most — using one clue to find a variable, then using that variable to find the real answer.</p>
+      <p class="narrative"><em>Problem: Two ropes are cut from one length. One piece is <span class="math">y</span> meters, the other is <span class="math">3y</span> meters. Together they measure 24 meters. How long is the shorter piece?</em></p>
+      <div class="chain" id="walkthroughChain"></div>
+    </section>
+
+  </div>
+
+  <!-- PRACTICE -->
+  <div class="panel" id="practice">
+    <div class="score-pill" id="scorePill">Score: 0 / 0</div>
+    <div class="progress-bar-wrap">
+      <span class="progress-label" id="progressLabel">Q1 / 24</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div id="quizArea"></div>
+  </div>
+
+</main>
+
+<script>
+/* ---------- DATA ---------- */
+
+const patterns = [
+  { num: "Pattern 1", term: "Rate × Quantity", form: "n · x", def: "A fixed per-unit amount times a changing count. This is the building block for every other pattern.", ex: "Each ride costs $4. Riding r times → 4r" },
+  { num: "Pattern 2", term: "Two-Term Sum", form: "ax + by", def: "Two different 'rate × quantity' terms added together — used when a scenario has two categories.", ex: "Pencils 15¢ each, pens 40¢ each → 15p + 40q" },
+  { num: "Pattern 3", term: "Three-Term Sum", form: "ax + by + cz", def: "Same idea as Pattern 2, extended to three categories instead of two.", ex: "Small $3, medium $5, large $8 bags → 3s + 5m + 8l" },
+  { num: "Pattern 4", term: "Substitution", form: "plug in, then compute", def: "Once you have an expression, replace each variable with its given value and calculate — order of operations still applies.", ex: "7p + 3q, p=4, q=5 → 28 + 15 = 43" },
+  { num: "Pattern 5", term: "Multiplicative Relationship", form: "B = k · A  or  B = A + c", def: "One quantity is described in terms of another — 'twice as much,' '$2 more than' — instead of being independent.", ex: "Jake read x books. Mia read twice as many → 2x" },
+  { num: "Pattern 6", term: "Reverse-Solving", form: "total → solve for the unknown", def: "You're given the TOTAL of an expression and have to work backward to find the variable — usually a one-step equation.", ex: "5x = 35 → x = 7" },
+  { num: "Pattern 7", term: "Tables with Expressions", form: "row/column totals", def: "A table where some cells are numbers and others are expressions — fill in the missing cells using the relationships given.", ex: "Boys: m and 3m → total boys = 4m" },
+  { num: "Pattern 8", term: "Difference Expressions", form: "A − B", def: "Comparing two totals by subtracting one expression from another — watch for parentheses when one side has more than one term.", ex: "3x boys, (y + 5) girls → 3x − (y + 5)" }
+];
+
+const walkthroughSteps = [
+  "Identify the two expressions: shorter piece = <span class='math'>y</span>, longer piece = <span class='math'>3y</span>.",
+  "Write the total as an equation: <span class='math'>y + 3y = 24</span>.",
+  "Combine like terms: <span class='math'>4y = 24</span>.",
+  "Solve for the variable: <span class='math'>y = 6</span>.",
+  "Answer the actual question asked (the SHORTER piece): <span class='math'>y = 6 meters</span>."
+];
+
+/* type: 'mc' (auto-graded), 'numeric' (auto-graded, exact match), 'text' (self-check) */
+const questions = [
+  // Pattern 1
+  { type: "mc", pattern: "Pattern 1", prompt: "Each notebook costs $6. Priya buys n notebooks. Which expression shows the total cost?", options: ["6n", "n + 6", "6 + n", "n ÷ 6"], correct: 0 },
+  { type: "numeric", pattern: "Pattern 1", prompt: "Stickers come in packs of 8. If s = 12 packs, how many stickers total? (Expression: 8s)", answer: 96 },
+  { type: "mc", pattern: "Pattern 1", prompt: "A parking garage charges $5 per hour. Which expression shows the cost for h hours?", options: ["h + 5", "5h", "h ÷ 5", "5 − h"], correct: 1 },
+
+  // Pattern 2
+  { type: "mc", pattern: "Pattern 2", prompt: "Adult meals cost $9 and kids meals cost $5. A family orders a adult meals and k kids meals. Total cost?", options: ["9a + 5k", "9k + 5a", "9a − 5k", "(9+5)(a+k)"], correct: 0 },
+  { type: "numeric", pattern: "Pattern 2", prompt: "Using 9a + 5k from above, if a = 3 and k = 2, what's the total cost in dollars?", answer: 37 },
+  { type: "text", pattern: "Pattern 2", prompt: "General admission tickets cost g dollars and VIP tickets cost v dollars. Write an expression for buying 4 GA and 2 VIP tickets.", sample: "4g + 2v" },
+
+  // Pattern 3
+  { type: "mc", pattern: "Pattern 3", prompt: "Small bags cost $3, medium $5, large $8. Buying s small, m medium, and l large bags. Total cost?", options: ["3s + 5m + 8l", "3m + 5l + 8s", "3+5+8(s+m+l)", "3s − 5m − 8l"], correct: 0 },
+  { type: "numeric", pattern: "Pattern 3", prompt: "Using 3s + 5m + 8l, if s = 2, m = 1, l = 3, what's the total cost?", answer: 35 },
+  { type: "text", pattern: "Pattern 3", prompt: "A fruit stand sells apples for $2, bananas for $1, and mangoes for $4. Write an expression for buying a apples, b bananas, and m mangoes.", sample: "2a + b + 4m" },
+
+  // Pattern 4
+  { type: "numeric", pattern: "Pattern 4", prompt: "Evaluate 2a + 5b + c when a = 3, b = 2, c = 10.", answer: 26 },
+  { type: "numeric", pattern: "Pattern 4", prompt: "Evaluate 6x + 2y when x = 5, y = 9.", answer: 48 },
+  { type: "numeric", pattern: "Pattern 4", prompt: "Evaluate 4p − 3q when p = 10, q = 6.", answer: 22 },
+
+  // Pattern 5
+  { type: "mc", pattern: "Pattern 5", prompt: "Jake read x books. Mia read twice as many as Jake. Which expression shows how many Mia read?", options: ["x + 2", "2x", "x ÷ 2", "x − 2"], correct: 1 },
+  { type: "text", pattern: "Pattern 5", prompt: "Sam saved d dollars. Nina saved $15 more than 3 times what Sam saved. Write an expression for Nina's savings.", sample: "3d + 15" },
+  { type: "numeric", pattern: "Pattern 5", prompt: "Using 3d + 15 from above, if Sam saved d = 10 dollars, how much did Nina save?", answer: 45 },
+
+  // Pattern 6
+  { type: "numeric", pattern: "Pattern 6", prompt: "A rope is cut into two pieces: one is y meters, the other is 3y meters. Together they measure 24 meters. What is y?", answer: 6 },
+  { type: "numeric", pattern: "Pattern 6", prompt: "Two buckets: one weighs b kg, the other weighs (b + 5) kg. Together they weigh 21 kg. What is b?", answer: 8 },
+  { type: "numeric", pattern: "Pattern 6", prompt: "A stack has x notebooks and 4x pencils, totaling 35 items. What is x?", answer: 7 },
+
+  // Pattern 7
+  { type: "numeric", pattern: "Pattern 7", prompt: "In a table, Green group has m boys and Yellow group has 3m boys. Green group also has 8 girls, and the Green group total is 15. What is m?", answer: 7 },
+  { type: "numeric", pattern: "Pattern 7", prompt: "Using m = 7 from above, what is the total number of boys (m + 3m) in both groups combined?", answer: 28 },
+
+  // Pattern 8
+  { type: "mc", pattern: "Pattern 8", prompt: "A club has 3x boys and (y + 5) girls. Which expression shows how many more boys than girls there are?", options: ["3x − (y + 5)", "3x + y + 5", "(y+5) − 3x", "3x − y − 5 · 2"], correct: 0 },
+  { type: "text", pattern: "Pattern 8", prompt: "A store sold a adult bikes and c kids bikes. Write an expression for how many more adult bikes were sold than kids bikes.", sample: "a − c" }
+];
+
+/* ---------- REFERENCE: pattern cards ---------- */
+const patternGrid = document.getElementById('patternCards');
+patterns.forEach(p => {
+  const card = document.createElement('div');
+  card.className = 'flip-card';
+  card.innerHTML = `
+    <div class="flip-inner">
+      <div class="flip-face flip-front">
+        <div class="pattern-num">${p.num}</div>
+        <div class="term">${p.term}</div>
+        <div class="form">${p.form}</div>
+      </div>
+      <div class="flip-face flip-back">
+        ${p.def}
+        <span class="example">${p.ex}</span>
+      </div>
+    </div>`;
+  card.addEventListener('click', () => card.classList.toggle('flipped'));
+  patternGrid.appendChild(card);
+});
+
+/* ---------- REFERENCE: walkthrough ---------- */
+const walkEl = document.getElementById('walkthroughChain');
+walkthroughSteps.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'chain-item';
+  div.innerHTML = `<div class="chain-num">${i+1}</div><div class="chain-text">${s}</div>`;
+  walkEl.appendChild(div);
+});
+
+/* ---------- TABS ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  });
+});
+
+/* ---------- QUIZ ENGINE ---------- */
+const STORAGE_KEY = 'algExpressionsIIQuizProgress';
+let qIndex = 0;
+let score = 0;
+let answered = new Array(questions.length).fill(null);
+
+function loadProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (saved && saved.answered && saved.answered.length === questions.length) {
+      answered = saved.answered;
+      score = answered.filter(a => a === true).length;
+      qIndex = answered.findIndex(a => a === null);
+      if (qIndex === -1) qIndex = questions.length;
+    }
+  } catch (e) {}
+}
+function saveProgress() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ answered })); } catch (e) {}
+}
+function updateScoreUI() {
+  const totalAnswered = answered.filter(a => a !== null).length;
+  document.getElementById('scorePill').textContent = `Score: ${score} / ${totalAnswered}`;
+  document.getElementById('progressLabel').textContent = `Q${Math.min(qIndex+1, questions.length)} / ${questions.length}`;
+  const pct = (Math.min(qIndex, questions.length) / questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function renderQuiz() {
+  const area = document.getElementById('quizArea');
+  updateScoreUI();
+
+  if (qIndex >= questions.length) {
+    area.innerHTML = `
+      <div class="done-card">
+        <h3>Nice work! 🎉</h3>
+        <p>You scored ${score} / ${questions.length}.</p>
+        <button class="restart-btn" id="restartBtn">Restart practice</button>
+      </div>`;
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      answered = new Array(questions.length).fill(null);
+      score = 0; qIndex = 0;
+      saveProgress(); renderQuiz();
+    });
+    return;
+  }
+
+  const q = questions[qIndex];
+  const card = document.createElement('div');
+  card.className = 'q-card';
+
+  if (q.type === 'mc') {
+    card.innerHTML = `
+      <span class="q-type">${q.pattern} · Multiple choice</span>
+      <div class="q-prompt">${q.prompt}</div>
+      <div class="mc-options">${q.options.map((opt, i) => `<button class="mc-option" data-i="${i}">${opt}</button>`).join('')}</div>
+      <div class="q-footer"><button class="next-btn" id="nextBtn">Next →</button></div>
+    `;
+    area.innerHTML = ''; area.appendChild(card);
+    card.querySelectorAll('.mc-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const chosen = parseInt(btn.dataset.i);
+        card.querySelectorAll('.mc-option').forEach(b => b.disabled = true);
+        if (chosen === q.correct) {
+          btn.classList.add('correct');
+          if (answered[qIndex] === null) { score++; answered[qIndex] = true; }
+        } else {
+          btn.classList.add('incorrect');
+          card.querySelector(`.mc-option[data-i="${q.correct}"]`).classList.add('correct');
+          if (answered[qIndex] === null) { answered[qIndex] = false; }
+        }
+        saveProgress(); updateScoreUI();
+        card.querySelector('#nextBtn').style.display = 'inline-block';
+      });
+    });
+
+  } else if (q.type === 'numeric') {
+    card.innerHTML = `
+      <span class="q-type">${q.pattern} · Solve it</span>
+      <div class="q-prompt">${q.prompt}</div>
+      <div class="numeric-answer-area">
+        <input type="number" id="numInput" placeholder="Your answer">
+        <button class="check-btn" id="checkBtn">Check</button>
+      </div>
+      <div class="numeric-feedback" id="numFeedback"></div>
+      <div class="q-footer"><button class="next-btn" id="nextBtn">Next →</button></div>
+    `;
+    area.innerHTML = ''; area.appendChild(card);
+    const input = card.querySelector('#numInput');
+    const fb = card.querySelector('#numFeedback');
+    function checkNumeric() {
+      const val = parseFloat(input.value);
+      const correct = !isNaN(val) && Math.abs(val - q.answer) < 0.001;
+      fb.className = 'numeric-feedback ' + (correct ? 'correct' : 'incorrect');
+      fb.textContent = correct ? '✓ Correct!' : `Not quite — the answer is ${q.answer}.`;
+      if (answered[qIndex] === null) {
+        if (correct) score++;
+        answered[qIndex] = correct;
+      }
+      saveProgress(); updateScoreUI();
+      card.querySelector('#checkBtn').disabled = true;
+      input.disabled = true;
+      card.querySelector('#nextBtn').style.display = 'inline-block';
+    }
+    card.querySelector('#checkBtn').addEventListener('click', checkNumeric);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') checkNumeric(); });
+
+  } else if (q.type === 'text') {
+    card.innerHTML = `
+      <span class="q-type">${q.pattern} · Write the expression</span>
+      <div class="q-prompt">${q.prompt}</div>
+      <div class="text-answer-area">
+        <textarea placeholder="Type your expression here..."></textarea>
+        <button class="reveal-btn" id="revealBtn">Reveal answer</button>
+        <div class="sample-answer" id="sampleAnswer"><strong>Sample answer:</strong> <span class="math">${q.sample}</span></div>
+        <div class="self-grade" id="selfGrade">
+          <button class="correct-btn" id="gotItRight">I got it right</button>
+          <button class="incorrect-btn" id="gotItWrong">I missed it</button>
+        </div>
+      </div>
+      <div class="q-footer"><button class="next-btn" id="nextBtn">Next →</button></div>
+    `;
+    area.innerHTML = ''; area.appendChild(card);
+    card.querySelector('#revealBtn').addEventListener('click', () => {
+      card.querySelector('#sampleAnswer').style.display = 'block';
+      card.querySelector('#selfGrade').style.display = 'flex';
+      card.querySelector('#revealBtn').style.display = 'none';
+    });
+    card.querySelector('#gotItRight').addEventListener('click', () => {
+      if (answered[qIndex] === null) { score++; answered[qIndex] = true; }
+      finishSelfGrade();
+    });
+    card.querySelector('#gotItWrong').addEventListener('click', () => {
+      if (answered[qIndex] === null) { answered[qIndex] = false; }
+      finishSelfGrade();
+    });
+    function finishSelfGrade() {
+      card.querySelector('#selfGrade').querySelectorAll('button').forEach(b => b.disabled = true);
+      saveProgress(); updateScoreUI();
+      card.querySelector('#nextBtn').style.display = 'inline-block';
+    }
+  }
+
+  const nextBtn = card.querySelector('#nextBtn');
+  nextBtn.style.display = (q.type === 'mc' || q.type === 'numeric' || q.type === 'text') ? nextBtn.style.display : 'none';
+  if (q.type !== 'mc') { /* numeric/text handled above */ }
+  card.querySelector('#nextBtn').addEventListener('click', () => {
+    qIndex++; saveProgress(); renderQuiz();
+  });
+}
+
+loadProgress();
+renderQuiz();
+</script>
+
+</body>
+</html>
