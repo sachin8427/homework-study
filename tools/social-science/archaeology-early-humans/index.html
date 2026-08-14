@@ -56,6 +56,9 @@
   }
   h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 27px; margin: 0; line-height: 1.15; }
   .subtitle { font-size: 14px; color: rgba(251,248,241,0.75); margin: 8px 0 0; max-width: 34em; }
+  .breadcrumb { display: flex; gap: 8px; margin-bottom: 18px; font-size: 14px; font-weight: 600; color: rgba(251,248,241,0.75); }
+  .breadcrumb a { color: var(--cream); text-decoration: none; }
+  .breadcrumb a:hover, .breadcrumb a:focus-visible { text-decoration: underline; }
 
   nav.tabs {
     display: flex;
@@ -198,6 +201,7 @@
 <body>
 
 <header>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../">Home</a><span aria-hidden="true">/</span><a href="../../../subjects/social-science/">Social Science</a></nav>
   <p class="eyebrow">Grade 6 · History &amp; Social Science</p>
   <h1>Archaeology &amp; Early Humans</h1>
   <p class="subtitle">How historians know the past, how archaeologists dig it up, and how the Neolithic Revolution changed everything.</p>
