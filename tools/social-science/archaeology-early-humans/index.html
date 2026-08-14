@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archaeology & Early Humans — Study Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1B2A4A;
+    --navy-light: #2C4270;
+    --teal: #2A9D8F;
+    --teal-light: #6FC3B8;
+    --coral: #E76F51;
+    --gold: #E9C46A;
+    --cream: #FBF8F1;
+    --paper-line: #E4DCC8;
+    --ink: #26324A;
+    --muted: #6B7690;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--ink);
+    background-color: var(--cream);
+    background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 34px, var(--paper-line) 34px, var(--paper-line) 35px);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+  header {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 28px 20px 24px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 5px solid var(--coral);
+  }
+  header::after {
+    content: "⛏";
+    position: absolute;
+    right: -10px;
+    top: -30px;
+    font-size: 160px;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 6px;
+  }
+  h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 27px; margin: 0; line-height: 1.15; }
+  .subtitle { font-size: 14px; color: rgba(251,248,241,0.75); margin: 8px 0 0; max-width: 34em; }
+
+  nav.tabs {
+    display: flex;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 4px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--cream);
+    border-bottom: 2px solid var(--navy);
+    overflow-x: auto;
+  }
+  nav.tabs button {
+    flex: 1 0 auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    padding: 13px 8px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+  }
+  nav.tabs button.active { color: var(--navy); border-bottom-color: var(--coral); font-weight: 600; }
+
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 40px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  section.block { margin-bottom: 32px; }
+
+  h2.section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 4px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  h2.section-title .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: var(--teal);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+  p.section-note { font-size: 13.5px; color: var(--muted); margin: 0 0 16px; }
+  p.narrative { font-size: 14.5px; line-height: 1.6; margin: 0 0 14px; }
+
+  /* Flashcards */
+  .card-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .flip-card { perspective: 1000px; height: 118px; cursor: pointer; }
+  .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.4,0.2,0.2,1); transform-style: preserve-3d; }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 6px rgba(27,42,74,0.12); }
+  .flip-front { background: white; border: 2px solid var(--navy); }
+  .flip-front .term { font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; color: var(--navy); }
+  .flip-front .hint { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--teal); margin-top: 6px; }
+  .flip-back { background: var(--navy); color: var(--cream); transform: rotateY(180deg); font-size: 13px; line-height: 1.4; }
+
+  /* Chain */
+  .chain { display: flex; flex-direction: column; gap: 0; }
+  .chain-item { display: flex; gap: 14px; position: relative; padding-bottom: 20px; }
+  .chain-item:last-child { padding-bottom: 0; }
+  .chain-item::before { content: ""; position: absolute; left: 15px; top: 34px; bottom: 0; width: 2px; background: var(--teal-light); }
+  .chain-item:last-child::before { display: none; }
+  .chain-num { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--coral); color: white; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; z-index: 1; }
+  .chain-text { background: white; border: 1.5px solid var(--paper-line); border-left: 3px solid var(--gold); border-radius: 6px; padding: 10px 14px; font-size: 13.5px; flex: 1; }
+  .chain-text strong { color: var(--navy); }
+
+  .case-study { background: #F6F2E7; border-radius: 8px; padding: 14px; margin-top: 10px; font-size: 13.5px; border-left: 3px solid var(--teal); }
+  .case-study .cs-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--teal); text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 6px; }
+
+  /* Memory tricks */
+  .mnem-card { background: white; border: 2px dashed var(--gold); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .mnem-card .mnem-title { font-family: 'Fraunces', serif; font-weight: 600; color: var(--coral); font-size: 15.5px; margin-bottom: 6px; }
+  .mnem-card .mnem-body { font-size: 13.5px; line-height: 1.5; }
+
+  /* Timeline game */
+  .timeline-pool { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .timeline-chip { background: white; border: 1.5px solid var(--navy); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; cursor: pointer; }
+  .timeline-chip.picked { opacity: 0.35; pointer-events: none; }
+  .timeline-answer-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; min-height: 40px; }
+  .timeline-answer-item { display: flex; gap: 10px; align-items: center; background: #EFF7F5; border: 1px solid var(--teal-light); border-radius: 6px; padding: 8px 10px; font-size: 13px; }
+  .timeline-answer-item .num { font-family: 'IBM Plex Mono', monospace; color: var(--teal); font-weight: 600; }
+  .timeline-answer-item.correct { background: #E4F4EA; border-color: #4CAF7D; }
+  .timeline-answer-item.incorrect { background: #FBE8E4; border-color: var(--coral); }
+  .game-btn { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; text-transform: uppercase; padding: 10px 18px; border-radius: 20px; border: none; cursor: pointer; background: var(--navy); color: white; }
+  .game-btn:disabled { opacity: 0.4; }
+  .reset-link { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--muted); background: none; border: none; text-decoration: underline; cursor: pointer; margin-left: 12px; }
+
+  /* Scenario */
+  .scenario-card { background: white; border: 2px solid var(--navy); border-radius: 12px; padding: 18px; box-shadow: 4px 4px 0 rgba(27,42,74,0.1); }
+  .scenario-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; text-transform: uppercase; color: var(--coral); display: block; margin-bottom: 6px; }
+  .scenario-text { font-size: 15px; line-height: 1.5; margin-bottom: 14px; color: var(--navy); font-weight: 500; }
+  .scenario-options { display: flex; flex-direction: column; gap: 8px; }
+  .scenario-option { text-align: left; padding: 11px 14px; border: 1.5px solid var(--paper-line); background: var(--cream); border-radius: 8px; font-size: 13.5px; cursor: pointer; }
+  .scenario-option.correct { background: #E4F4EA; border-color: #4CAF7D; font-weight: 600; }
+  .scenario-option.incorrect { background: #FBE8E4; border-color: var(--coral); }
+  .scenario-option:disabled { cursor: default; }
+  .scenario-feedback { display: none; margin-top: 12px; background: #F6F2E7; border-radius: 8px; padding: 12px; font-size: 13.5px; }
+  .scenario-footer { display: flex; justify-content: flex-end; margin-top: 14px; }
+  .next-btn { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; text-transform: uppercase; padding: 10px 16px; border-radius: 20px; border: none; cursor: pointer; background: var(--coral); color: white; display: none; }
+
+  /* Quick check (shared with scenario styles) */
+  .progress-bar-wrap { background: white; border: 1.5px solid var(--navy); border-radius: 20px; padding: 4px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+  .progress-track { flex: 1; height: 10px; background: var(--paper-line); border-radius: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--teal); width: 0%; transition: width 0.3s ease; }
+  .progress-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--navy); padding-right: 8px; white-space: nowrap; }
+  .score-pill { font-family: 'IBM Plex Mono', monospace; font-size: 12px; background: var(--navy); color: var(--gold); padding: 6px 12px; border-radius: 14px; display: inline-block; margin-bottom: 14px; }
+  .q-card { background: white; border: 2px solid var(--navy); border-radius: 12px; padding: 18px; box-shadow: 4px 4px 0 rgba(27,42,74,0.1); }
+  .q-type { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; display: block; }
+  .q-prompt { font-size: 15.5px; font-weight: 500; line-height: 1.4; margin-bottom: 14px; color: var(--navy); }
+  .mc-options { display: flex; flex-direction: column; gap: 8px; }
+  .mc-option { text-align: left; padding: 11px 14px; border: 1.5px solid var(--paper-line); background: var(--cream); border-radius: 8px; font-size: 14px; cursor: pointer; }
+  .mc-option.correct { background: #E4F4EA; border-color: #4CAF7D; font-weight: 600; }
+  .mc-option.incorrect { background: #FBE8E4; border-color: var(--coral); }
+  .mc-option:disabled { cursor: default; }
+  .text-answer-area textarea { width: 100%; min-height: 60px; font-family: 'Space Grotesk', sans-serif; font-size: 14px; padding: 10px; border: 1.5px solid var(--paper-line); border-radius: 8px; resize: vertical; background: var(--cream); }
+  .reveal-btn { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; text-transform: uppercase; padding: 10px 16px; border-radius: 20px; border: none; cursor: pointer; margin-top: 10px; background: var(--navy); color: white; }
+  .sample-answer { display: none; margin-top: 12px; background: #EFF7F5; border: 1px solid var(--teal-light); border-radius: 8px; padding: 12px; font-size: 13.5px; }
+  .self-grade { display: none; gap: 10px; margin-top: 12px; }
+  .self-grade button { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; text-transform: uppercase; padding: 10px 16px; border-radius: 20px; border: none; cursor: pointer; }
+  .self-grade button.correct-btn { background: #4CAF7D; color: white; }
+  .self-grade button.incorrect-btn { background: var(--coral); color: white; }
+  .q-footer { display: flex; justify-content: flex-end; margin-top: 14px; }
+  .done-card { text-align: center; padding: 40px 20px; background: white; border: 2px solid var(--navy); border-radius: 12px; }
+  .done-card h3 { font-family: 'Fraunces', serif; font-size: 24px; color: var(--navy); }
+  .restart-btn { font-family: 'IBM Plex Mono', monospace; background: var(--teal); color: white; border: none; padding: 12px 22px; border-radius: 22px; font-size: 13px; margin-top: 14px; cursor: pointer; }
+
+  @media (min-width: 560px) { .card-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Grade 6 · History &amp; Social Science</p>
+  <h1>Archaeology &amp; Early Humans</h1>
+  <p class="subtitle">How historians know the past, how archaeologists dig it up, and how the Neolithic Revolution changed everything.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-panel="story">Story</button>
+  <button class="tab-btn" data-panel="tricks">Memory Tricks</button>
+  <button class="tab-btn" data-panel="timeline">Timeline Game</button>
+  <button class="tab-btn" data-panel="scenario">You Are There</button>
+  <button class="tab-btn" data-panel="quiz">Quick Check</button>
+</nav>
+
+<main>
+
+  <!-- STORY -->
+  <div class="panel active" id="story">
+    <section class="block">
+      <h2 class="section-title">How Historians Study the Past <span class="tag">sources</span></h2>
+      <p class="narrative"><strong>Primary sources</strong> were created <em>during</em> the time being studied — letters, diaries, photographs, artifacts. <strong>Secondary sources</strong> are created <em>after</em> the event, and interpret, combine, or summarize primary sources to help explain the past. Historians often disagree on how to interpret the same evidence — that disagreement is normal and is called <strong>historiography</strong>: the study of how historians study, interpret, and write about history.</p>
+      <div class="card-grid" id="sourceCards"></div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">What Is a Civilization? <span class="tag">traits</span></h2>
+      <p class="narrative">Historians look for six common traits to decide whether a society counts as a "civilization."</p>
+      <div class="card-grid" id="civCards"></div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Digging Up the Past <span class="tag">archaeology</span></h2>
+      <p class="narrative">Archaeologists study <strong>artifacts</strong> (things made by people) by <strong>excavating</strong> — digging at a site. Once found, they need to figure out an artifact's age. Four common dating methods:</p>
+      <div class="card-grid" id="datingCards"></div>
+      <div class="case-study">
+        <span class="cs-title">Famous find · Pompeii &amp; Herculaneum</span>
+        Buried by the eruption of Mt. Vesuvius in A.D. 79 — preserved evidence of how everyday Romans lived.
+      </div>
+      <div class="case-study">
+        <span class="cs-title">Famous find · The Rosetta Stone</span>
+        Found in Rosetta, Egypt in 1799 by Napoleon's troops. Inscribed in three scripts — Greek, Demotic, and Hieroglyphics. Jean-François Champollion deciphered it by comparing the three, unlocking the ability to read Egyptian hieroglyphics.
+      </div>
+      <div class="case-study">
+        <span class="cs-title">Famous find · Olduvai Gorge, Tanzania</span>
+        Louis and Mary Leakey led a dig that found human footprints 3.7 million years old — nicknamed the "Cradle of Mankind," helping prove human evolution began in Africa.
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">The Ages of Early Humans <span class="tag">sequence</span></h2>
+      <p class="narrative">Named for the main material used for tools, in order: <strong>Paleolithic</strong> (Old Stone Age) → <strong>Mesolithic</strong> (Middle Stone Age) → <strong>Neolithic</strong> (New Stone Age) → <strong>Bronze Age</strong> (bronze = copper + tin) → <strong>Iron Age</strong> (still going on today).</p>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">The Neolithic Revolution <span class="tag">cause &amp; effect</span></h2>
+      <p class="narrative">This is the single biggest chain of cause-and-effect in early human history — follow it step by step:</p>
+      <div class="chain" id="neolithicChain"></div>
+      <div class="case-study">
+        <span class="cs-title">Case study · Çatalhöyük (southern Turkey)</span>
+        A 9,000-year-old, extremely well-preserved Neolithic settlement. Homes were built back-to-back and entered through the roof. Residents buried their dead under the floors of their houses and decorated walls with art — evidence they valued community and spirituality.
+      </div>
+      <div class="case-study">
+        <span class="cs-title">Case study · Tell Abu Hureyra (Euphrates River, Syria)</span>
+        Occupied roughly 11,500–7,000 B.C. Residents first hunted gazelle and other game, then around 9,700 B.C. began deliberately planting wild grains — one of the earliest known transitions from hunting to farming.
+      </div>
+    </section>
+  </div>
+
+  <!-- MEMORY TRICKS -->
+  <div class="panel" id="tricks">
+    <section class="block">
+      <h2 class="section-title">Memory Tricks</h2>
+      <div id="mnemContainer"></div>
+    </section>
+  </div>
+
+  <!-- TIMELINE GAME -->
+  <div class="panel" id="timeline">
+    <section class="block">
+      <h2 class="section-title">Put It In Order <span class="tag">game</span></h2>
+      <p class="section-note">Tap the events below in the order you think they happened — oldest first.</p>
+      <div class="timeline-answer-list" id="timelineAnswerList"></div>
+      <div class="timeline-pool" id="timelinePool"></div>
+      <button class="game-btn" id="checkOrderBtn" disabled>Check My Order</button>
+      <button class="reset-link" id="resetOrderBtn">Reset</button>
+    </section>
+  </div>
+
+  <!-- YOU ARE THERE -->
+  <div class="panel" id="scenario">
+    <section class="block">
+      <h2 class="section-title">You Are There</h2>
+      <p class="section-note">Step into the role of a working archaeologist or historian.</p>
+      <div id="scenarioArea"></div>
+    </section>
+  </div>
+
+  <!-- QUICK CHECK -->
+  <div class="panel" id="quiz">
+    <div class="score-pill" id="scorePill">Score: 0 / 0</div>
+    <div class="progress-bar-wrap">
+      <span class="progress-label" id="progressLabel">Q1 / 20</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div id="quizArea"></div>
+  </div>
+
+</main>
+
+<script>
+/* ---------- DATA ---------- */
+
+const sourceCards = [
+  { term: "Primary Source", hint: "made AT the time", def: "Created during the time period being studied. Letters, diaries, photographs, official records, artifacts." },
+  { term: "Secondary Source", hint: "made AFTER the time", def: "Created after a historical event, based on analysis, interpretation, or summary of primary sources. Textbooks, documentaries, biographies." },
+  { term: "Historiography", hint: "history about history", def: "The study of how historians study, interpret, and write about history. From Greek: 'graph' = to write." }
+];
+
+const civCards = [
+  { term: "Permanent Settlements", hint: "trait 1", def: "Villages, towns, and cities where people stay put instead of moving constantly." },
+  { term: "Monumental Architecture", hint: "trait 2", def: "Large, complex structures that take major planning and labor to build." },
+  { term: "Division of Labor", hint: "trait 3", def: "Different people specialize in different jobs, instead of everyone doing everything." },
+  { term: "Social Class Structure", hint: "trait 4", def: "Ranked roles in society — some groups have more status or power than others." },
+  { term: "Political Structure", hint: "trait 5", def: "Organized government or leadership that makes decisions for the group." },
+  { term: "Writing System", hint: "trait 6 (not universal)", def: "Used by many civilizations to record information — but not required for every civilization." }
+];
+
+const datingCards = [
+  { term: "Carbon Dating", hint: "measuring decay", def: "Finds the age of something by measuring the amount of certain carbon isotopes left in it." },
+  { term: "Dendrochronology", hint: "tree rings", def: "Dating an object by counting the growth rings in wood." },
+  { term: "Stratification", hint: "soil layers", def: "Dating by looking at layers of soil — the deepest layer is generally the oldest." },
+  { term: "Thermoluminescence", hint: "light &amp; heat", def: "Dating certain materials by measuring trapped energy released as light when heated." }
+];
+
+const neolithicChain = [
+  "The last Ice Age ends and the climate begins warming, starting roughly 14,000 years ago.",
+  "In the boomerang-shaped <strong>Fertile Crescent</strong> (between the Mediterranean Sea and the Persian Gulf), wild wheat, rye, and barley begin growing as it gets warmer.",
+  "Pre-Neolithic people called the <strong>Natufians</strong> start building permanent houses, while still mainly hunting and gathering.",
+  "Around 12,000–10,000 years ago, people begin deliberately planting grains and domesticating animals — the start of the <strong>Agricultural (Neolithic) Revolution</strong>.",
+  "Farming produces a <strong>food surplus</strong> — more food than people need right away — stored in vessels and storehouses.",
+  "Because not everyone has to grow food anymore, people <strong>specialize</strong>: builders, weavers, toolmakers, traders, religious leaders, government officials.",
+  "Villages grow into <strong>cities</strong>. Larger populations require organized government to function.",
+  "The result: full <strong>civilizations</strong> — permanent settlements, monumental architecture, social class, and political structure."
+];
+
+const mnemonics = [
+  { title: "Stone Age order: P → M → N", body: "\"Old, Middle, New — in that order it's true.\" Paleolithic (Old) → Mesolithic (Middle) → Neolithic (New)." },
+  { title: "Primary vs. Secondary", body: "If you were THERE when it happened, it's Primary. If you read about it there-AFTER, it's Secondary." },
+  { title: "Dendrochronology = trees", body: "\"Trees Tell Time\" — count the rings, just like counting a birthday candle for every year." },
+  { title: "Stratification = layers", body: "\"Deeper is older\" — like a lasagna: the bottom layer went in first." },
+  { title: "Bronze = Copper + Tin", body: "Think of the chemistry symbols: Cu (copper) + Sn (tin) = Bronze. That's literally the recipe." },
+  { title: "The Rosetta Stone's 3 scripts", body: "Greek, Demotic (everyday Egyptian), Hieroglyphics (religious/royal Egyptian) — three versions of the same law, which is what let Champollion crack the code." },
+  { title: "The Neolithic Revolution chain", body: "Warm → Wild grain → Settle → Sow → Surplus → Specialize → Cities. Each word triggers the next step in the chain." }
+];
+
+const TIMELINE_EVENTS = [
+  { id: 0, label: "Olduvai Gorge footprints — 3.7 million years ago" },
+  { id: 1, label: "Paleolithic (Old Stone Age) begins" },
+  { id: 2, label: "Ice Age ends, climate warms — ~14,000 years ago" },
+  { id: 3, label: "Neolithic Revolution begins in the Fertile Crescent — ~12,000 years ago" },
+  { id: 4, label: "Çatalhöyük settlement thriving — ~9,000 years ago" },
+  { id: 5, label: "Bronze Age begins" },
+  { id: 6, label: "Mt. Vesuvius buries Pompeii &amp; Herculaneum — A.D. 79" },
+  { id: 7, label: "Rosetta Stone discovered by Napoleon's troops — 1799" },
+  { id: 8, label: "Iron Age — still ongoing today" }
+]; // already in correct chronological order by id
+
+const scenarios = [
+  {
+    tag: "Scenario 1 · Dating a wooden tool",
+    text: "You're an archaeologist and just found a wooden tool buried in layered soil. What's the best way to find out roughly how old it is?",
+    options: [
+      { label: "Count the growth rings inside the wood (dendrochronology)", correct: true, feedback: "Correct! Wood has visible growth rings, making dendrochronology the natural choice." },
+      { label: "Use thermoluminescence, meant for heated materials like pottery", correct: false, feedback: "Not quite — thermoluminescence works on materials that were once heated, like fired clay, not wood." },
+      { label: "Guess based on how old it looks", correct: false, feedback: "Not a reliable method — archaeologists use scientific dating techniques, not appearance." }
+    ]
+  },
+  {
+    tag: "Scenario 2 · Multiple skeletons, different depths",
+    text: "You dig at a site and find several sets of remains buried at different soil depths. What's the fastest way to tell which is oldest?",
+    options: [
+      { label: "Use stratification — the deepest layer is generally the oldest", correct: true, feedback: "Correct! In undisturbed soil, deeper layers were deposited earlier, so they're older." },
+      { label: "They must all be the same age since they're at the same site", correct: false, feedback: "Not necessarily — a single site can be used across many different time periods." },
+      { label: "Ask a historian to interpret it instead of dating it directly", correct: false, feedback: "Interpretation matters later, but the age itself comes from a dating method like stratification." }
+    ]
+  },
+  {
+    tag: "Scenario 3 · Translating unknown symbols",
+    text: "You uncover a stone tablet with unknown symbols. What strategy — similar to what worked for the Rosetta Stone — would help you translate it?",
+    options: [
+      { label: "Look for the same message written in a language you already know, alongside it", correct: true, feedback: "Correct! Champollion cracked hieroglyphics because the Rosetta Stone repeated the same text in Greek, which he could already read." },
+      { label: "Assume it says the same thing as a nearby artifact", correct: false, feedback: "That's a guess, not a translation method — it could easily be wrong." },
+      { label: "Try to sound out the symbols like English letters", correct: false, feedback: "Ancient scripts don't map directly onto English phonetics — that's why a side-by-side translation was so valuable." }
+    ]
+  },
+  {
+    tag: "Scenario 4 · A village with a food surplus",
+    text: "A village near a river has been growing more crops than it needs for a generation. Based on the Neolithic Revolution chain, what would you predict happens next?",
+    options: [
+      { label: "Some villagers stop farming full-time and take on specialized jobs; the village may grow into a city with organized government", correct: true, feedback: "Correct! That's exactly the chain: surplus → specialization → growth into cities → need for government." },
+      { label: "Nothing changes — everyone keeps farming exactly as before", correct: false, feedback: "Not according to the pattern historians see — surplus consistently leads to specialization and social change." },
+      { label: "The village disappears because farming stops being useful", correct: false, feedback: "The opposite tends to happen — surplus supports population growth and settlement expansion, not decline." }
+    ]
+  }
+];
+
+const questions = [
+  { type: "mc", prompt: "A diary written by a soldier during World War II is an example of a...", options: ["Primary source", "Secondary source", "Artifact only, not a source", "Historiography"], correct: 0 },
+  { type: "mc", prompt: "A documentary made last year about the ancient Maya, based on other historians' research, is an example of a...", options: ["Primary source", "Secondary source", "Fossil", "Excavation"], correct: 1 },
+  { type: "mc", prompt: "Which is NOT one of the six common traits of a civilization?", options: ["Division of labor", "Monumental architecture", "A written language spoken by absolutely everyone", "Social class structure"], correct: 2 },
+  { type: "mc", prompt: "An archaeologist finds a fired clay pot and wants to date it using trapped light energy. Which method fits best?", options: ["Dendrochronology", "Thermoluminescence", "Stratification", "Carbon dating"], correct: 1 },
+  { type: "mc", prompt: "What is an 'excavation'?", options: ["A type of ancient writing", "Digging at a site to uncover artifacts", "A food surplus", "A social class"], correct: 1 },
+  { type: "mc", prompt: "Put these in the correct order: Paleolithic, Neolithic, Mesolithic.", options: ["Paleolithic → Mesolithic → Neolithic", "Neolithic → Mesolithic → Paleolithic", "Mesolithic → Paleolithic → Neolithic", "Paleolithic → Neolithic → Mesolithic"], correct: 0 },
+  { type: "mc", prompt: "Bronze is an alloy made from copper and...", options: ["Iron", "Tin", "Gold", "Lead"], correct: 1 },
+  { type: "mc", prompt: "Who led the dig at Olduvai Gorge that found 3.7-million-year-old footprints?", options: ["Jean-François Champollion", "Napoleon's troops", "Louis and Mary Leakey", "The Natufians"], correct: 2 },
+  { type: "mc", prompt: "The Rosetta Stone helped historians because it repeated the same text in...", options: ["One language, three times", "Three different languages", "Braille and print", "Pictures only, no words"], correct: 1 },
+  { type: "mc", prompt: "A 'nomadic' group of people is one that...", options: ["Stays permanently in one place", "Moves often to find food, shelter, and resources", "Only farms grain", "Builds monumental architecture"], correct: 1 },
+  { type: "mc", prompt: "What does 'sedentary' mean, in the context of food producers?", options: ["Wandering to hunt animals", "Staying in one place to farm", "Living underground", "Trading with distant cultures"], correct: 1 },
+  { type: "mc", prompt: "Which region is described as 'boomerang-shaped' and is where the Neolithic Revolution began?", options: ["The Indus River Valley", "The Fertile Crescent", "The Nile Delta", "The Yellow River Valley"], correct: 1 },
+  { type: "mc", prompt: "At Çatalhöyük, how did residents typically enter their homes?", options: ["Through a front door", "Through a hole in the roof", "Through underground tunnels", "Through a shared courtyard gate"], correct: 1 },
+  { type: "mc", prompt: "What did people at Tell Abu Hureyra do first, before they began cultivating grain?", options: ["Built monumental temples", "Hunted gazelle and other game", "Mined bronze", "Wrote in hieroglyphics"], correct: 1 },
+  { type: "text", prompt: "Explain, in your own words, why a food surplus led to job specialization during the Neolithic Revolution.", sample: "Once farming produced more food than people needed right away, not everyone had to spend all their time growing food. That freed some people up to become builders, toolmakers, traders, or religious and government leaders instead." },
+  { type: "text", prompt: "Why were river valleys (like Mesopotamia, Egypt, and the Indus Valley) especially good locations for early civilizations?", sample: "Rivers flooded and left nutrient-rich silt behind, which was great for farming. People also learned to control the water with dams and canals, enabling large-scale irrigation and agriculture." },
+  { type: "text", prompt: "How is a fossil different from an artifact?", sample: "A fossil is the preserved remnant, impression, or trace of a once-living organism from a past geological age. An artifact is something made BY people, like a tool, pot, or weapon — evidence of human activity, not a living thing itself." },
+  { type: "text", prompt: "Why do historians rely so heavily on secondary sources, even though primary sources are considered more 'authentic'?", sample: "Secondary sources interpret and combine information from multiple primary sources, provide context and different perspectives, and help readers understand complex events that a single primary source couldn't explain on its own." },
+  { type: "text", prompt: "What does it mean that 'scholars often disagree on how to interpret evidence,' and why is that not a bad thing?", sample: "Different historians can look at the same primary sources and reach different conclusions about what they mean. This is normal (it's literally what historiography studies) because evidence is often incomplete, and re-examining it from new angles helps build a fuller picture of the past." },
+  { type: "text", prompt: "Describe the chain of cause and effect from 'the Ice Age ends' to 'cities need organized government.'", sample: "Warming climate → wild grains grow in the Fertile Crescent → people (Natufians) settle down → they begin deliberately farming → farming creates a food surplus → surplus allows people to specialize in non-farming jobs → villages grow into cities → larger populations require organized government." }
+];
+
+/* ---------- STORY: flashcards ---------- */
+function renderFlipCards(containerId, data) {
+  const container = document.getElementById(containerId);
+  data.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'flip-card';
+    card.innerHTML = `
+      <div class="flip-inner">
+        <div class="flip-face flip-front">
+          <div class="term">${t.term}</div>
+          <div class="hint">${t.hint}</div>
+        </div>
+        <div class="flip-face flip-back">${t.def}</div>
+      </div>`;
+    card.addEventListener('click', () => card.classList.toggle('flipped'));
+    container.appendChild(card);
+  });
+}
+renderFlipCards('sourceCards', sourceCards);
+renderFlipCards('civCards', civCards);
+renderFlipCards('datingCards', datingCards);
+
+/* ---------- STORY: chain ---------- */
+const chainEl = document.getElementById('neolithicChain');
+neolithicChain.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'chain-item';
+  div.innerHTML = `<div class="chain-num">${i+1}</div><div class="chain-text">${s}</div>`;
+  chainEl.appendChild(div);
+});
+
+/* ---------- MEMORY TRICKS ---------- */
+const mnemContainer = document.getElementById('mnemContainer');
+mnemonics.forEach(m => {
+  const div = document.createElement('div');
+  div.className = 'mnem-card';
+  div.innerHTML = `<div class="mnem-title">${m.title}</div><div class="mnem-body">${m.body}</div>`;
+  mnemContainer.appendChild(div);
+});
+
+/* ---------- TABS ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  });
+});
+
+/* ---------- TIMELINE GAME ---------- */
+let pickedOrder = [];
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function renderTimelinePool() {
+  const pool = document.getElementById('timelinePool');
+  pool.innerHTML = '';
+  const shuffled = shuffle(TIMELINE_EVENTS);
+  shuffled.forEach(ev => {
+    const chip = document.createElement('div');
+    chip.className = 'timeline-chip';
+    chip.textContent = ev.label.replace(/&amp;/g, '&');
+    chip.dataset.id = ev.id;
+    chip.addEventListener('click', () => {
+      if (pickedOrder.includes(ev.id)) return;
+      pickedOrder.push(ev.id);
+      chip.classList.add('picked');
+      renderTimelineAnswerList();
+      document.getElementById('checkOrderBtn').disabled = pickedOrder.length !== TIMELINE_EVENTS.length;
+    });
+    pool.appendChild(chip);
+  });
+}
+function renderTimelineAnswerList() {
+  const list = document.getElementById('timelineAnswerList');
+  list.innerHTML = '';
+  pickedOrder.forEach((id, i) => {
+    const ev = TIMELINE_EVENTS.find(e => e.id === id);
+    const item = document.createElement('div');
+    item.className = 'timeline-answer-item';
+    item.innerHTML = `<span class="num">${i+1}.</span><span>${ev.label.replace(/&amp;/g, '&')}</span>`;
+    list.appendChild(item);
+  });
+}
+function checkTimelineOrder() {
+  const items = document.querySelectorAll('.timeline-answer-item');
+  pickedOrder.forEach((id, i) => {
+    items[i].classList.add(id === i ? 'correct' : 'incorrect');
+  });
+  document.getElementById('checkOrderBtn').disabled = true;
+}
+document.getElementById('checkOrderBtn').addEventListener('click', checkTimelineOrder);
+document.getElementById('resetOrderBtn').addEventListener('click', () => {
+  pickedOrder = [];
+  document.getElementById('checkOrderBtn').disabled = true;
+  renderTimelinePool();
+  renderTimelineAnswerList();
+});
+renderTimelinePool();
+
+/* ---------- SCENARIOS ---------- */
+let scenarioIndex = 0;
+function renderScenario() {
+  const area = document.getElementById('scenarioArea');
+  if (scenarioIndex >= scenarios.length) {
+    area.innerHTML = `
+      <div class="done-card">
+        <h3>You've completed all scenarios! 🏺</h3>
+        <button class="restart-btn" id="restartScenarioBtn">Start Over</button>
+      </div>`;
+    document.getElementById('restartScenarioBtn').addEventListener('click', () => { scenarioIndex = 0; renderScenario(); });
+    return;
+  }
+  const s = scenarios[scenarioIndex];
+  const card = document.createElement('div');
+  card.className = 'scenario-card';
+  card.innerHTML = `
+    <span class="scenario-tag">${s.tag}</span>
+    <div class="scenario-text">${s.text}</div>
+    <div class="scenario-options">
+      ${s.options.map((o, i) => `<button class="scenario-option" data-i="${i}">${o.label}</button>`).join('')}
+    </div>
+    <div class="scenario-feedback" id="scenarioFeedback"></div>
+    <div class="scenario-footer"><button class="next-btn" id="scenarioNextBtn">Next →</button></div>
+  `;
+  area.innerHTML = '';
+  area.appendChild(card);
+
+  card.querySelectorAll('.scenario-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = parseInt(btn.dataset.i);
+      card.querySelectorAll('.scenario-option').forEach(b => b.disabled = true);
+      btn.classList.add(s.options[i].correct ? 'correct' : 'incorrect');
+      if (!s.options[i].correct) {
+        const correctBtn = card.querySelector(`.scenario-option[data-i="${s.options.findIndex(o => o.correct)}"]`);
+        correctBtn.classList.add('correct');
+      }
+      const fb = card.querySelector('#scenarioFeedback');
+      fb.textContent = s.options[i].feedback;
+      fb.style.display = 'block';
+      card.querySelector('#scenarioNextBtn').style.display = 'inline-block';
+    });
+  });
+  card.querySelector('#scenarioNextBtn').addEventListener('click', () => {
+    scenarioIndex++;
+    renderScenario();
+  });
+}
+renderScenario();
+
+/* ---------- QUICK CHECK QUIZ ---------- */
+const STORAGE_KEY = 'archaeologyQuizProgress';
+let qIndex = 0;
+let score = 0;
+let answered = new Array(questions.length).fill(null);
+
+function loadProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (saved && saved.answered && saved.answered.length === questions.length) {
+      answered = saved.answered;
+      score = answered.filter(a => a === true).length;
+      qIndex = answered.findIndex(a => a === null);
+      if (qIndex === -1) qIndex = questions.length;
+    }
+  } catch (e) {}
+}
+function saveProgress() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ answered })); } catch (e) {}
+}
+function updateScoreUI() {
+  const totalAnswered = answered.filter(a => a !== null).length;
+  document.getElementById('scorePill').textContent = `Score: ${score} / ${totalAnswered}`;
+  document.getElementById('progressLabel').textContent = `Q${Math.min(qIndex+1, questions.length)} / ${questions.length}`;
+  const pct = (Math.min(qIndex, questions.length) / questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+function renderQuiz() {
+  const area = document.getElementById('quizArea');
+  updateScoreUI();
+  if (qIndex >= questions.length) {
+    area.innerHTML = `
+      <div class="done-card">
+        <h3>Nice work! 🎉</h3>
+        <p>You scored ${score} / ${questions.length}.</p>
+        <button class="restart-btn" id="restartBtn">Restart practice</button>
+      </div>`;
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      answered = new Array(questions.length).fill(null);
+      score = 0; qIndex = 0;
+      saveProgress(); renderQuiz();
+    });
+    return;
+  }
+  const q = questions[qIndex];
+  const card = document.createElement('div');
+  card.className = 'q-card';
+
+  if (q.type === 'mc') {
+    card.innerHTML = `
+      <span class="q-type">Multiple choice</span>
+      <div class="q-prompt">${q.prompt}</div>
+      <div class="mc-options">${q.options.map((opt, i) => `<button class="mc-option" data-i="${i}">${opt}</button>`).join('')}</div>
+      <div class="q-footer"><button class="next-btn" id="nextBtn" style="display:none;">Next →</button></div>
+    `;
+    area.innerHTML = ''; area.appendChild(card);
+    card.querySelectorAll('.mc-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const chosen = parseInt(btn.dataset.i);
+        card.querySelectorAll('.mc-option').forEach(b => b.disabled = true);
+        if (chosen === q.correct) {
+          btn.classList.add('correct');
+          if (answered[qIndex] === null) { score++; answered[qIndex] = true; }
+        } else {
+          btn.classList.add('incorrect');
+          card.querySelector(`.mc-option[data-i="${q.correct}"]`).classList.add('correct');
+          if (answered[qIndex] === null) { answered[qIndex] = false; }
+        }
+        saveProgress(); updateScoreUI();
+        card.querySelector('#nextBtn').style.display = 'inline-block';
+      });
+    });
+  } else if (q.type === 'text') {
+    card.innerHTML = `
+      <span class="q-type">Short answer — self-check</span>
+      <div class="q-prompt">${q.prompt}</div>
+      <div class="text-answer-area">
+        <textarea placeholder="Type your answer here..."></textarea>
+        <button class="reveal-btn" id="revealBtn">Reveal answer</button>
+        <div class="sample-answer" id="sampleAnswer"><strong>Sample answer:</strong> ${q.sample}</div>
+        <div class="self-grade" id="selfGrade">
+          <button class="correct-btn" id="gotItRight">I got it right</button>
+          <button class="incorrect-btn" id="gotItWrong">I missed it</button>
+        </div>
+      </div>
+      <div class="q-footer"><button class="next-btn" id="nextBtn" style="display:none;">Next →</button></div>
+    `;
+    area.innerHTML = ''; area.appendChild(card);
+    card.querySelector('#revealBtn').addEventListener('click', () => {
+      card.querySelector('#sampleAnswer').style.display = 'block';
+      card.querySelector('#selfGrade').style.display = 'flex';
+      card.querySelector('#revealBtn').style.display = 'none';
+    });
+    card.querySelector('#gotItRight').addEventListener('click', () => {
+      if (answered[qIndex] === null) { score++; answered[qIndex] = true; }
+      finishSelfGrade();
+    });
+    card.querySelector('#gotItWrong').addEventListener('click', () => {
+      if (answered[qIndex] === null) { answered[qIndex] = false; }
+      finishSelfGrade();
+    });
+    function finishSelfGrade() {
+      card.querySelector('#selfGrade').querySelectorAll('button').forEach(b => b.disabled = true);
+      saveProgress(); updateScoreUI();
+      card.querySelector('#nextBtn').style.display = 'inline-block';
+    }
+  }
+  card.querySelector('#nextBtn').addEventListener('click', () => {
+    qIndex++; saveProgress(); renderQuiz();
+  });
+}
+loadProgress();
+renderQuiz();
+</script>
+
+</body>
+</html>
