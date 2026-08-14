@@ -75,19 +75,23 @@ test("equation solver is standalone and registered under Math", () => {
   assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
 });
 
-test("history pages are standalone and registered under Social Science", () => {
+test("history pages and the Grade 6 hub are registered under Social Science", () => {
   const catalog = fs.readFileSync(path.join(projectRoot, "assets", "catalog.js"), "utf8");
-  const pages = [
-    ["us-history-grade-5", "tools/social-science/us-history-grade-5/"],
-    ["eastern-hemisphere-grade-6", "tools/social-science/eastern-hemisphere-grade-6/"]
-  ];
+  const grade5 = fs.readFileSync(path.join(projectRoot, "tools", "social-science", "us-history-grade-5", "index.html"), "utf8");
+  const grade6Root = path.join(projectRoot, "tools", "social-science", "eastern-hemisphere-grade-6");
+  const hub = fs.readFileSync(path.join(grade6Root, "index.html"), "utf8");
 
-  for (const [folder, catalogUrl] of pages) {
-    const html = fs.readFileSync(path.join(projectRoot, "tools", "social-science", folder, "index.html"), "utf8");
+  assert.match(grade5, /href="\.\.\/\.\.\/\.\.\/subjects\/social-science\/"/);
+  assert.match(catalog, /tools\/social-science\/us-history-grade-5\//);
+  assert.match(catalog, /tools\/social-science\/eastern-hemisphere-grade-6\//);
+  assert.match(hub, /href="eastern-hemisphere\/"/);
+  assert.match(hub, /href="archaeology-early-humans\/"/);
+
+  for (const folder of ["eastern-hemisphere", "archaeology-early-humans"]) {
+    const html = fs.readFileSync(path.join(grade6Root, folder, "index.html"), "utf8");
     const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-    assert.match(html, /href="\.\.\/\.\.\/\.\.\/subjects\/social-science\/"/);
-    assert.doesNotMatch(html, /https?:\/\//);
-    assert.match(catalog, new RegExp(catalogUrl.replaceAll("/", "\\/")));
+    assert.match(html, /href="\.\.\/\.\.\/\.\.\/\.\.\/subjects\/social-science\/"/);
+    assert.match(html, /href="\.\.\/">Grade 6 History &amp; Eastern Hemisphere<\/a>/);
     assert.equal(scripts.length, 1);
     assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
   }
