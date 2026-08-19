@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graphs of Functions — Study Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1c2f4a;
+    --paper:#faf6ee;
+    --paper-line:#ded2b8;
+    --ink:#2a2420;
+    --ink-soft:#6b5f52;
+    --teal:#2f8f7a;
+    --teal-soft:#dcefe9;
+    --coral:#c0533e;
+    --coral-soft:#f6ddd3;
+    --gold:#b8862e;
+    --gold-soft:#f3e7cd;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Space Grotesk',sans-serif;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(180,160,120,0.10) 28px);
+    min-height:100vh;padding-bottom:60px;
+  }
+  header{
+    max-width:900px;margin:0 auto;padding:34px 20px 18px;
+    border-bottom:2px solid var(--paper-line);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--gold);font-weight:600;
+  }
+  h1{
+    font-family:'Fraunces',serif;font-weight:600;font-size:clamp(28px,5vw,42px);
+    margin:6px 0 4px;color:var(--navy);letter-spacing:-0.01em;
+  }
+  h1 span{color:var(--coral);font-style:italic;}
+  .sub{color:var(--ink-soft);font-size:14.5px;margin:0 0 4px;max-width:560px;}
+  .breadcrumb{display:flex;gap:8px;margin-bottom:18px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  .breadcrumb a{color:var(--navy);text-decoration:none;}
+  .breadcrumb a:hover,.breadcrumb a:focus-visible{text-decoration:underline;}
+
+  nav.tabs{
+    display:flex;gap:6px;flex-wrap:wrap;max-width:900px;margin:0 auto;padding:14px 20px 0;
+  }
+  .tab-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;
+    padding:10px 18px;border-radius:9px 9px 0 0;border:1.5px solid var(--paper-line);
+    border-bottom:none;background:#fff2;color:var(--ink-soft);cursor:pointer;
+  }
+  .tab-btn.active{background:var(--paper);color:var(--navy);border-color:var(--navy);}
+
+  main{max-width:900px;margin:0 auto;padding:22px 20px 40px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .section-title{
+    font-family:'Fraunces',serif;font-weight:600;font-size:22px;color:var(--navy);
+    margin:26px 0 12px;
+  }
+  .section-title:first-child{margin-top:0;}
+  .section-note{color:var(--ink-soft);font-size:13.5px;margin:-6px 0 14px;}
+
+  .card{
+    background:#fff;border:1.5px solid var(--paper-line);border-radius:12px;
+    padding:16px 18px;margin-bottom:14px;
+  }
+  .card-tag{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.06em;color:var(--teal);
+  }
+  .card h3{font-family:'Fraunces',serif;font-size:17px;margin:6px 0 8px;color:var(--navy);}
+  .card p{font-size:14px;line-height:1.6;margin:0 0 8px;color:var(--ink);}
+  .card p:last-child{margin-bottom:0;}
+  .card .eq{
+    font-family:'IBM Plex Mono',monospace;background:var(--paper);border:1px solid var(--paper-line);
+    border-radius:7px;padding:8px 10px;display:inline-block;font-size:14px;margin:2px 0;
+  }
+
+  .watch{border-color:#e0a99a;background:var(--coral-soft);}
+  .watch .card-tag{color:var(--coral);}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr;}}
+
+  svg.graph{width:100%;height:auto;background:#fff;border:1px solid var(--paper-line);border-radius:8px;}
+  .axis-line{stroke:var(--ink-soft);stroke-width:1.2;}
+  .grid-line{stroke:var(--paper-line);stroke-width:1;}
+  .fn-line{stroke:var(--navy);stroke-width:2.4;fill:none;}
+  .guide{stroke:var(--coral);stroke-width:1.4;stroke-dasharray:4 3;}
+  .pt{fill:var(--coral);}
+  .axis-label{font-family:'IBM Plex Mono',monospace;font-size:9px;fill:var(--ink-soft);}
+
+  /* --- Quiz --- */
+  .score-bar{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);
+    margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px dashed var(--paper-line);
+  }
+  .score-bar b{color:var(--navy);}
+  .reset-link{color:var(--coral);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:inherit;font-size:12.5px;}
+
+  .qcard{background:#fff;border:1.5px solid var(--paper-line);border-radius:12px;padding:20px;}
+  .qmeta{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px;}
+  .qtext{font-size:16px;line-height:1.55;margin-bottom:14px;color:var(--ink);}
+  .qtext .eq{font-family:'IBM Plex Mono',monospace;background:var(--paper);border:1px solid var(--paper-line);border-radius:6px;padding:2px 6px;}
+
+  .input-row{display:flex;gap:8px;margin-bottom:12px;}
+  input[type=text]{
+    flex:1;font-family:'IBM Plex Mono',monospace;font-size:15px;padding:11px 12px;
+    border:1.5px solid var(--paper-line);border-radius:8px;background:var(--paper);color:var(--ink);
+  }
+  input[type=text]:disabled{opacity:.7;}
+
+  .mc-row{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+  .mc-opt{
+    text-align:left;font-family:'Space Grotesk',sans-serif;font-size:14.5px;
+    padding:11px 14px;border:1.5px solid var(--paper-line);border-radius:8px;
+    background:var(--paper);color:var(--ink);cursor:pointer;
+  }
+  .mc-opt.selected{border-color:var(--navy);background:#fff;}
+  .mc-opt.correct{border-color:var(--teal);background:var(--teal-soft);}
+  .mc-opt.wrong{border-color:var(--coral);background:var(--coral-soft);}
+  .mc-opt:disabled{cursor:default;}
+
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .btn{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;padding:10px 18px;
+    border-radius:8px;border:1.5px solid var(--navy);cursor:pointer;background:#fff;color:var(--navy);
+  }
+  .btn.primary{background:var(--navy);color:#fff;}
+  .btn.ghost{border-color:var(--paper-line);color:var(--ink-soft);}
+
+  .feedback{margin-top:12px;padding:11px 13px;border-radius:8px;font-size:14px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.good{background:var(--teal-soft);color:#1d5c4c;}
+  .feedback.bad{background:var(--coral-soft);color:#8a3b28;}
+  .feedback .ans{font-family:'IBM Plex Mono',monospace;font-weight:700;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../">Home</a><span aria-hidden="true">/</span><a href="../../../subjects/math/">Math</a></nav>
+  <div class="eyebrow">Grade 6 · Algebra · Chapter 4</div>
+  <h1>Graphs of <span>Functions</span></h1>
+  <p class="sub">Reading straight-line graphs, matching x and y values, and using a graphed line to solve word problems.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="reference">Reference</button>
+  <button class="tab-btn" data-tab="practice">Practice</button>
+</nav>
+
+<main>
+
+  <!-- ============ REFERENCE ============ -->
+  <section class="panel active" id="reference">
+
+    <div class="section-title">Two Kinds of Lines</div>
+    <p class="section-note">Every line in this chapter comes from an equation shaped like y = mx (starts at zero) or y = mx + b (starts somewhere else).</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-tag">Type 1 — y = mx</div>
+        <h3>Starts at the origin</h3>
+        <p>No number added on. The line always passes through (0, 0) — when x is 0, y is 0 too.</p>
+        <svg class="graph" viewBox="0 0 200 160">
+          <line class="grid-line" x1="30" y1="10" x2="30" y2="140"/>
+          <line class="axis-line" x1="30" y1="140" x2="190" y2="140"/>
+          <line class="axis-line" x1="30" y1="10" x2="30" y2="140"/>
+          <line class="fn-line" x1="30" y1="140" x2="150" y2="20"/>
+          <circle class="pt" cx="30" cy="140" r="3"/>
+          <text class="axis-label" x="14" y="150">0</text>
+          <text class="axis-label" x="170" y="153">x</text>
+          <text class="axis-label" x="8" y="20">y</text>
+        </svg>
+        <p class="eq">y = 4x</p>
+      </div>
+      <div class="card">
+        <div class="card-tag">Type 2 — y = mx + b</div>
+        <h3>Starts above or below zero</h3>
+        <p>The "+ b" shifts the whole line up. When x is 0, y is already b — not zero.</p>
+        <svg class="graph" viewBox="0 0 200 160">
+          <line class="grid-line" x1="30" y1="10" x2="30" y2="140"/>
+          <line class="axis-line" x1="30" y1="140" x2="190" y2="140"/>
+          <line class="axis-line" x1="30" y1="10" x2="30" y2="140"/>
+          <line class="fn-line" x1="30" y1="120" x2="170" y2="20"/>
+          <circle class="pt" cx="30" cy="120" r="3"/>
+          <text class="axis-label" x="14" y="150">0</text>
+          <text class="axis-label" x="170" y="153">x</text>
+          <text class="axis-label" x="8" y="20">y</text>
+        </svg>
+        <p class="eq">y = 3x + 1</p>
+      </div>
+    </div>
+
+    <div class="section-title">Reading the Graph</div>
+    <div class="card">
+      <div class="card-tag">Pattern A</div>
+      <h3>Given x, find y</h3>
+      <p>Start at your x-value on the bottom axis. Go straight <b>up</b> until you hit the line. Then go straight <b>across</b> to the y-axis and read the number.</p>
+      <svg class="graph" viewBox="0 0 200 160">
+        <line class="grid-line" x1="30" y1="10" x2="30" y2="140"/>
+        <line class="axis-line" x1="30" y1="140" x2="190" y2="140"/>
+        <line class="axis-line" x1="30" y1="10" x2="30" y2="140"/>
+        <line class="fn-line" x1="30" y1="140" x2="150" y2="20"/>
+        <line class="guide" x1="90" y1="140" x2="90" y2="80"/>
+        <line class="guide" x1="90" y1="80" x2="30" y2="80"/>
+        <circle class="pt" cx="90" cy="80" r="3.5"/>
+        <text class="axis-label" x="84" y="152">x=2</text>
+        <text class="axis-label" x="6" y="84">y=8</text>
+      </svg>
+      <p>Example: on y = 4x, starting at x = 2 and tracing up-then-across lands at y = 8. Check it algebraically too: 4 × 2 = 8. ✓</p>
+    </div>
+    <div class="card">
+      <div class="card-tag">Pattern B</div>
+      <h3>Given y, find x</h3>
+      <p>Start at your y-value on the side axis. Go straight <b>across</b> until you hit the line. Then go straight <b>down</b> to the x-axis and read the number.</p>
+      <p>This is the reverse trace of Pattern A — same line, opposite starting point.</p>
+    </div>
+
+    <div class="section-title">Watch out — always double-check with the equation</div>
+    <div class="card watch">
+      <div class="card-tag">Watch Out</div>
+      <h3>Graphs can be hard to read exactly</h3>
+      <p>A point that looks like it's at 3.3 might really be at 3 1/3. Whenever a graph reading isn't a clean whole number, plug your x back into the equation to confirm the exact value — don't just eyeball it.</p>
+    </div>
+
+    <div class="section-title">Word Problems from Graphs</div>
+    <div class="card">
+      <div class="card-tag">Applying the line</div>
+      <h3>The line can represent a real situation</h3>
+      <p>Sometimes x and y stand for real quantities — like the width and length of a rectangle. The equation of the line (e.g. y = 3x + 1) still works exactly the same way; just remember what x and y represent.</p>
+      <p><span class="eq">Width = x, Length = y = 3x + 1</span></p>
+      <p><b>Find length from width:</b> plug the width in for x, solve for y.<br>
+      <b>Find width from length:</b> set y equal to the given length, solve the equation for x.<br>
+      <b>Find perimeter:</b> once you have both x and y, use P = 2(length + width).</p>
+    </div>
+
+    <div class="section-title">Quick Refresher — earlier trouble spots</div>
+    <p class="section-note">These patterns showed up on the Chapter 1 &amp; 2 tests and are worth a fast review since they still come up inside word problems here.</p>
+    <div class="card watch">
+      <div class="card-tag">Watch Out</div>
+      <h3>Division direction</h3>
+      <p>"How much butter per cake, if 10 kg makes q cakes" is <span class="eq">10 ÷ q</span>, not <span class="eq">10 × q</span>. The total gets split <i>by</i> the number of groups — the variable goes on the bottom.</p>
+    </div>
+    <div class="card watch">
+      <div class="card-tag">Watch Out</div>
+      <h3>Two-equal-groups: divide before you subtract</h3>
+      <p>If a total is split evenly between two people and one has a known amount more, subtract that extra first, <i>then</i> divide by 2 — don't subtract straight from the total.<br>
+      Example: total = n, Sherry made 18 fewer cranes than Ling → Ling's amount is <span class="eq">(n + 18) ÷ 2</span>, not n − 18.</p>
+    </div>
+    <div class="card watch">
+      <div class="card-tag">Watch Out</div>
+      <h3>Expression vs. equation</h3>
+      <p>"Patrick has y quarters and 8 more dimes than quarters" asks for two separate expressions (quarters = y, dimes = y + 8) — not one equation joining them with an equals sign.</p>
+    </div>
+    <div class="card watch">
+      <div class="card-tag">Watch Out</div>
+      <h3>= means equals, not "greater than"</h3>
+      <p>When solving 2a + 3 = 11, the answer is a = 4. Keep the equals sign all the way through — don't switch to a > symbol partway through your work.</p>
+    </div>
+
+  </section>
+
+  <!-- ============ PRACTICE ============ -->
+  <section class="panel" id="practice">
+    <div class="score-bar">
+      <div>Score: <b id="scoreText">0 / 0</b></div>
+      <button class="reset-link" id="resetBtn">Reset progress</button>
+    </div>
+
+    <div class="qcard">
+      <div class="qmeta" id="qMeta">Question 1</div>
+      <div class="qtext" id="qText"></div>
+      <div id="qBody"></div>
+      <div class="btn-row" id="btnRow">
+        <button class="btn primary" id="checkBtn">Check</button>
+        <button class="btn ghost" id="skipBtn">Skip</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// ---------- Tabs ----------
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- Quiz bank ----------
+// type: 'num' (text input, accepts list of valid strings) or 'mc' (multiple choice)
+const quiz = [
+  // --- Pattern A: given x find y (y=mx) ---
+  {type:'num', meta:'Reading y = mx', text:'The graph shows the line <span class="eq">y = 5x</span>. When x = 3, y = ____.', a:['15']},
+  {type:'num', meta:'Reading y = mx', text:'The graph shows the line <span class="eq">y = 6x</span>. When x = 0, y = ____.', a:['0']},
+  {type:'num', meta:'Reading y = mx', text:'The graph shows the line <span class="eq">y = 2x</span>. When x = 7, y = ____.', a:['14']},
+
+  // --- Pattern B: given y find x (y=mx) ---
+  {type:'num', meta:'Reading y = mx', text:'The graph shows the line <span class="eq">y = 5x</span>. When 5x = 20, x = ____.', a:['4']},
+  {type:'num', meta:'Reading y = mx', text:'The graph shows the line <span class="eq">y = 8x</span>. When 8x = 40, x = ____.', a:['5']},
+
+  // --- y = mx + b, given x find y ---
+  {type:'num', meta:'Reading y = mx + b', text:'The graph shows the line <span class="eq">y = 2x + 3</span>. When x = 4, y = ____.', a:['11']},
+  {type:'num', meta:'Reading y = mx + b', text:'The graph shows the line <span class="eq">y = 5x + 2</span>. When x = 0, y = ____.', a:['2']},
+
+  // --- y = mx+b given y find x ---
+  {type:'num', meta:'Reading y = mx + b', text:'The graph shows the line <span class="eq">y = 2x + 3</span>. When 2x + 3 = 3, x = ____.', a:['0']},
+  {type:'num', meta:'Reading y = mx + b', text:'The graph shows the line <span class="eq">y = 15 − 3x</span>. When 15 − 3x = 0, x = ____.', a:['5']},
+  {type:'num', meta:'Reading y = mx + b', text:'The graph shows the line <span class="eq">y = 15 − 3x</span>. When 15 − 3x = 6, x = ____.', a:['3']},
+  {type:'num', meta:'Reading y = mx + b', text:'The graph shows the line <span class="eq">y = 20 − 4x</span>. When 20 − 4x = 8, x = ____ (may not be a whole number — check your work with the equation).', a:['3']},
+
+  // --- Word problem: rectangle from a graph ---
+  {type:'num', meta:'Word Problem', text:'A graph shows the line <span class="eq">y = 2x + 4</span>, where x is the width (ft) and y is the length (ft) of a rectangle. If the width is 5 ft, the length is ____ ft.', a:['14']},
+  {type:'num', meta:'Word Problem', text:'Using the same rectangle rule <span class="eq">y = 2x + 4</span>, if the length is 10 ft, the width is ____ ft.', a:['3']},
+  {type:'num', meta:'Word Problem', text:'Using the same rectangle rule <span class="eq">y = 2x + 4</span> with width 5 ft and length 14 ft, the perimeter is ____ ft. (P = 2(length + width))', a:['38']},
+  {type:'num', meta:'Word Problem', text:'A graph shows <span class="eq">y = 4x + 2</span>, width x and length y. If the perimeter is 34 ft, then x + y = 17. Solve: x = ____ ft.', a:['3']},
+
+  // --- MC: line type recognition ---
+  {type:'mc', meta:'Line Types', text:'Which equation describes a line that passes through the origin (0,0)?',
+    opts:['y = 3x','y = 3x + 5','y = 5x − 2','y = x + 1'], correct:0},
+  {type:'mc', meta:'Line Types', text:'For the line y = 7x + 4, what is y when x = 0?',
+    opts:['0','4','7','11'], correct:1},
+
+  // --- Refresher: division direction ---
+  {type:'mc', meta:'Refresher — Division Direction', text:'A 12 kg bag of rice is shared evenly among c containers. How much rice per container?',
+    opts:['12 × c','12 ÷ c','c ÷ 12','12 + c'], correct:1},
+  {type:'num', meta:'Refresher — Division Direction', text:'24 stickers are shared evenly among b friends. Each friend gets ____ (in terms of b — type just the expression using ÷, e.g. "24÷b").', a:['24÷b','24/b']},
+
+  // --- Refresher: two-equal-groups ---
+  {type:'mc', meta:'Refresher — Two Equal Groups', text:'A rope of length t is cut so that Ana\'s piece is 6 cm longer than Ben\'s. If they share the rope evenly split... total length is t, Ana has 6 more than Ben. Ben\'s piece is:',
+    opts:['t − 6','(t − 6) ÷ 2','(t + 6) ÷ 2','t ÷ 2 − 6'], correct:1},
+
+  // --- Refresher: expression vs equation ---
+  {type:'mc', meta:'Refresher — Expression vs Equation', text:'Maria has j jars. She has 5 more lids than jars. Which correctly expresses the number of lids?',
+    opts:['j + 5 = lids','lids = j','j − 5','j + 5'], correct:3},
+];
+
+let order = [];
+let idx = 0;
+let score = {correct:0, attempted:0};
+let answered = false;
+
+function loadProgress(){
+  const saved = localStorage.getItem('graphsFnScore');
+  if(saved){ score = JSON.parse(saved); }
+}
+function saveProgress(){
+  localStorage.setItem('graphsFnScore', JSON.stringify(score));
+}
+function updateScoreText(){
+  document.getElementById('scoreText').textContent = `${score.correct} / ${score.attempted}`;
+}
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function normalize(s){
+  return s.trim().toLowerCase().replace(/\s+/g,'');
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = quiz[order[idx]];
+  document.getElementById('qMeta').textContent = `${q.meta} · Question ${idx+1} of ${quiz.length}`;
+  document.getElementById('qText').innerHTML = q.text;
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').innerHTML = '';
+
+  const body = document.getElementById('qBody');
+  body.innerHTML = '';
+  const btnRow = document.getElementById('btnRow');
+  btnRow.innerHTML = `<button class="btn primary" id="checkBtn">Check</button><button class="btn ghost" id="skipBtn">Skip</button>`;
+
+  if(q.type === 'num'){
+    body.innerHTML = `<div class="input-row"><input type="text" id="answerInput" placeholder="Type your answer" autocomplete="off"></div>`;
+    document.getElementById('answerInput').focus();
+  } else if(q.type === 'mc'){
+    const row = document.createElement('div');
+    row.className = 'mc-row';
+    q.opts.forEach((opt,i)=>{
+      const b = document.createElement('button');
+      b.className = 'mc-opt';
+      b.textContent = opt;
+      b.dataset.idx = i;
+      b.addEventListener('click', ()=>{
+        row.querySelectorAll('.mc-opt').forEach(o=>o.classList.remove('selected'));
+        b.classList.add('selected');
+        row.dataset.selected = i;
+      });
+      row.appendChild(b);
+    });
+    body.appendChild(row);
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+  document.getElementById('skipBtn').addEventListener('click', nextQuestion);
+}
+
+function checkAnswer(){
+  if(answered) return;
+  const q = quiz[order[idx]];
+  let correct = false;
+
+  if(q.type === 'num'){
+    const input = document.getElementById('answerInput');
+    const val = normalize(input.value);
+    correct = q.a.some(a => normalize(a) === val);
+    input.disabled = true;
+  } else if(q.type === 'mc'){
+    const row = document.querySelector('.mc-row');
+    const sel = row.dataset.selected;
+    if(sel === undefined){ return; }
+    correct = parseInt(sel) === q.correct;
+    row.querySelectorAll('.mc-opt').forEach((o,i)=>{
+      o.disabled = true;
+      if(i === q.correct) o.classList.add('correct');
+      else if(i === parseInt(sel)) o.classList.add('wrong');
+    });
+  }
+
+  answered = true;
+  score.attempted++;
+  if(correct) score.correct++;
+  saveProgress();
+  updateScoreText();
+
+  const fb = document.getElementById('feedback');
+  fb.classList.add('show');
+  if(correct){
+    fb.classList.add('good');
+    fb.innerHTML = 'Correct!';
+  } else {
+    fb.classList.add('bad');
+    const answerText = q.type === 'num' ? q.a[0] : q.opts[q.correct];
+    fb.innerHTML = `Not quite. Correct answer: <span class="ans">${answerText}</span>`;
+  }
+
+  document.getElementById('btnRow').innerHTML = `<button class="btn primary" id="nextBtn">Next →</button>`;
+  document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+}
+
+function nextQuestion(){
+  idx = (idx+1) % order.length;
+  if(idx === 0){ order = shuffle([...Array(quiz.length).keys()]); }
+  renderQuestion();
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key !== 'Enter') return;
+  if(document.getElementById('practice').classList.contains('active') === false) return;
+  if(!answered){
+    document.getElementById('checkBtn').click();
+  } else {
+    const nb = document.getElementById('nextBtn');
+    if(nb) nb.click();
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  score = {correct:0, attempted:0};
+  saveProgress();
+  updateScoreText();
+});
+
+order = shuffle([...Array(quiz.length).keys()]);
+loadProgress();
+updateScoreText();
+renderQuestion();
+</script>
+
+</body>
+</html>

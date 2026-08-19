@@ -85,6 +85,16 @@ test("Grade 6 multi-variable expressions is linked under Math", () => {
   assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
 });
 
+test("Grade 6 graphs of functions is linked under Math", () => {
+  const page = fs.readFileSync(path.join(projectRoot, "tools", "math", "graphs-of-functions-grade-6", "index.html"), "utf8");
+  const catalog = fs.readFileSync(path.join(projectRoot, "assets", "catalog.js"), "utf8");
+  const scripts = [...page.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+  assert.match(page, /href="\.\.\/\.\.\/\.\.\/subjects\/math\/"/);
+  assert.match(catalog, /tools\/math\/graphs-of-functions-grade-6\//);
+  assert.equal(scripts.length, 1);
+  assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
+});
+
 test("claim, evidence, and reasoning lab is linked under Science", () => {
   const page = fs.readFileSync(path.join(projectRoot, "tools", "science", "claim-evidence-reasoning-lab", "index.html"), "utf8");
   const catalog = fs.readFileSync(path.join(projectRoot, "assets", "catalog.js"), "utf8");
