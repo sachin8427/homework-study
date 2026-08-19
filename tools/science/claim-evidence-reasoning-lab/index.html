@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claim, Evidence &amp; Reasoning — Study Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1B2A4A;
+    --navy-light: #2C4270;
+    --teal: #2A9D8F;
+    --teal-light: #6FC3B8;
+    --coral: #E76F51;
+    --gold: #E9C46A;
+    --cream: #FBF8F1;
+    --paper-line: #E4DCC8;
+    --ink: #26324A;
+    --muted: #6B7690;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--ink);
+    background-color: var(--cream);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 34px,
+      var(--paper-line) 34px,
+      var(--paper-line) 35px
+    );
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  header {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 28px 20px 24px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 5px solid var(--coral);
+  }
+
+  header::after {
+    content: "\2234";
+    position: absolute;
+    right: -10px;
+    top: -30px;
+    font-family: 'Fraunces', serif;
+    font-size: 180px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 18px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .breadcrumb a {
+    color: var(--cream);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .breadcrumb a:hover,
+  .breadcrumb a:focus-visible {
+    color: var(--gold);
+  }
+
+  .breadcrumb span {
+    color: rgba(251,248,241,0.6);
+  }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 6px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 30px;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: rgba(251,248,241,0.75);
+    margin: 8px 0 0;
+    max-width: 34em;
+  }
+
+  nav.tabs {
+    display: flex;
+    gap: 0;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--cream);
+    border-bottom: 2px solid var(--navy);
+  }
+
+  nav.tabs button {
+    flex: 1;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 14px 8px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  nav.tabs button.active {
+    color: var(--navy);
+    border-bottom-color: var(--coral);
+    font-weight: 600;
+  }
+
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  section.block {
+    margin-bottom: 34px;
+  }
+
+  h2.section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 4px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  h2.section-title .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: var(--teal);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.03em;
+  }
+
+  p.section-note {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+
+  /* Flashcards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .flip-card {
+    perspective: 1000px;
+    height: 128px;
+    cursor: pointer;
+  }
+
+  .flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+
+  .flip-card.flipped .flip-inner {
+    transform: rotateY(180deg);
+  }
+
+  .flip-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(27,42,74,0.12);
+  }
+
+  .flip-front {
+    background: white;
+    border: 2px solid var(--navy);
+  }
+
+  .flip-front .term {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 19px;
+    color: var(--navy);
+  }
+
+  .flip-front .hint {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    margin-top: 8px;
+    letter-spacing: 0.03em;
+  }
+
+  .flip-back {
+    background: var(--navy);
+    color: var(--cream);
+    transform: rotateY(180deg);
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .flip-back .example {
+    display: block;
+    margin-top: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--gold);
+  }
+
+  /* Steps chain */
+  .steps-chain {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step-item {
+    display: flex;
+    gap: 14px;
+    position: relative;
+    padding-bottom: 22px;
+  }
+
+  .step-item:last-child { padding-bottom: 0; }
+
+  .step-item::before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 34px;
+    bottom: 0;
+    width: 2px;
+    background: var(--teal-light);
+  }
+
+  .step-item:last-child::before { display: none; }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 1;
+  }
+
+  .step-text {
+    background: white;
+    border: 1.5px solid var(--paper-line);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 14px;
+    flex: 1;
+  }
+
+  .step-text strong { color: var(--navy); }
+
+  /* Compare card (hypothesis vs conclusion mapping) */
+  .compare-wrap {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .compare-card {
+    background: white;
+    border: 1.5px solid var(--paper-line);
+    border-left: 4px solid var(--coral);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .compare-card .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--coral);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .compare-card .example {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--muted);
+    display: block;
+    margin-top: 6px;
+  }
+
+  /* Practice */
+  .progress-bar-wrap {
+    background: white;
+    border: 1.5px solid var(--navy);
+    border-radius: 20px;
+    padding: 4px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 10px;
+    background: var(--paper-line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--teal);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .progress-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--navy);
+    padding-right: 8px;
+    white-space: nowrap;
+  }
+
+  .score-pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: var(--navy);
+    color: var(--gold);
+    padding: 6px 12px;
+    border-radius: 14px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+
+  .q-card {
+    background: white;
+    border: 2px solid var(--navy);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 4px 4px 0 rgba(27,42,74,0.1);
+  }
+
+  .q-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--teal);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .q-prompt {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    margin-bottom: 14px;
+    color: var(--navy);
+  }
+
+  .q-prompt .scenario {
+    display: block;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--ink);
+    background: #F6F2E7;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-top: 8px;
+    border-left: 3px solid var(--gold);
+    white-space: pre-line;
+  }
+
+  .mc-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mc-option {
+    text-align: left;
+    padding: 11px 14px;
+    border: 1.5px solid var(--paper-line);
+    background: var(--cream);
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .mc-option:hover { border-color: var(--teal); }
+
+  .mc-option.correct {
+    background: #E4F4EA;
+    border-color: #4CAF7D;
+    font-weight: 600;
+  }
+
+  .mc-option.incorrect {
+    background: #FBE8E4;
+    border-color: var(--coral);
+  }
+
+  .mc-option:disabled { cursor: default; }
+
+  .text-answer-area textarea {
+    width: 100%;
+    min-height: 90px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    padding: 10px;
+    border: 1.5px solid var(--paper-line);
+    border-radius: 8px;
+    resize: vertical;
+    background: var(--cream);
+  }
+
+  .reveal-btn, .next-btn, .self-grade button {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .reveal-btn {
+    background: var(--navy);
+    color: white;
+  }
+
+  .sample-answer {
+    display: none;
+    margin-top: 12px;
+    background: #EFF7F5;
+    border: 1px solid var(--teal-light);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13.5px;
+    white-space: pre-line;
+  }
+
+  .sample-answer strong { color: var(--teal); }
+
+  .self-grade {
+    display: none;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .self-grade button.correct-btn { background: #4CAF7D; color: white; }
+  .self-grade button.incorrect-btn { background: var(--coral); color: white; }
+
+  .q-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+  }
+
+  .next-btn {
+    background: var(--coral);
+    color: white;
+    display: none;
+  }
+
+  .done-card {
+    text-align: center;
+    padding: 40px 20px;
+    background: white;
+    border: 2px solid var(--navy);
+    border-radius: 12px;
+  }
+
+  .done-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    color: var(--navy);
+  }
+
+  .restart-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 22px;
+    font-size: 13px;
+    margin-top: 14px;
+    cursor: pointer;
+  }
+
+  @media (min-width: 560px) {
+    .card-grid { grid-template-columns: 1fr 1fr; }
+    .compare-wrap { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../../">Home</a>
+    <span aria-hidden="true">/</span>
+    <a href="../../../subjects/science/">Science</a>
+  </nav>
+  <p class="eyebrow">Chapter 2 · Scientific Reasoning</p>
+  <h1>Claim, Evidence &amp; Reasoning</h1>
+  <p class="subtitle">Writing hypotheses with If / Then / Because and conclusions with Claim, Evidence, Reasoning — study lab.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-panel="reference">Reference</button>
+  <button class="tab-btn" data-panel="practice">Practice</button>
+</nav>
+
+<main>
+
+  <!-- REFERENCE PANEL -->
+  <div class="panel active" id="reference">
+
+    <section class="block">
+      <h2 class="section-title">Writing a Hypothesis <span class="tag">before the test</span></h2>
+      <p class="section-note">A strong hypothesis has three parts — most students stop after the first one.</p>
+      <div class="steps-chain" id="hypoChain"></div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Writing a Conclusion <span class="tag">CER</span></h2>
+      <p class="section-note">This is the section that loses the most points. Every claim needs a number to back it up.</p>
+      <div class="steps-chain" id="cerChain"></div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Claim vs. Evidence vs. Reasoning <span class="tag">tell them apart</span></h2>
+      <p class="section-note">These three get mixed up constantly. Compare them side by side.</p>
+      <div class="compare-wrap" id="compareWrap"></div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Key Vocabulary <span class="tag">12 terms</span></h2>
+      <p class="section-note">Tap a card to flip it.</p>
+      <div class="card-grid" id="cardGrid"></div>
+    </section>
+
+  </div>
+
+  <!-- PRACTICE PANEL -->
+  <div class="panel" id="practice">
+    <div class="score-pill" id="scorePill">Score: 0 / 0</div>
+    <div class="progress-bar-wrap">
+      <span class="progress-label" id="progressLabel">Q1 / 20</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div id="quizArea"></div>
+  </div>
+
+</main>
+
+<script>
+/* ---------- DATA ---------- */
+
+const hypoSteps = [
+  "<strong>If</strong> — name the independent variable and how it changes.",
+  "<strong>Then</strong> — predict what will happen to the dependent variable.",
+  "<strong>Because</strong> — explain WHY, using a science reason (not just a guess).",
+  "Check the direction — does the prediction actually make logical sense?"
+];
+
+const cerSteps = [
+  "<strong>Claim</strong> — one sentence stating whether the hypothesis was supported.",
+  "<strong>Evidence</strong> — specific numbers from your data table that back up the claim.",
+  "<strong>Reasoning</strong> — explain WHY that evidence supports the claim, tied to the science.",
+  "<strong>Reflection</strong> — what would you change or measure more precisely next time?"
+];
+
+const compareItems = [
+  { label: "Claim", text: "The one-sentence answer to the question. States whether the hypothesis was supported — no numbers needed here.", example: "\"My hypothesis was supported.\"" },
+  { label: "Evidence", text: "The specific data that proves the claim. Always includes numbers pulled straight from the data table.", example: "\"Beaker 1 (hot) took 12s; beaker 3 (cold) took 48s.\"" },
+  { label: "Reasoning", text: "The science explanation connecting the evidence to the claim. Answers \"why does that data make sense?\"", example: "\"...because warmer molecules move faster, spreading the color sooner.\"" }
+];
+
+const terms = [
+  { term: "Claim", hint: "the answer", def: "A statement that answers the question — whether the hypothesis was supported by the data or not.", ex: "e.g. \"My hypothesis was supported.\"" },
+  { term: "Evidence", hint: "the proof", def: "Specific data or numbers from the experiment used to back up a claim. Never just an opinion.", ex: "e.g. \"Trial 1: 12s, Trial 2: 48s\"" },
+  { term: "Reasoning", hint: "the why", def: "The explanation connecting evidence to a claim, using a real science concept — not just \"because I tested it.\"" },
+  { term: "If/Then Statement", hint: "hypothesis format", def: "The structure for a hypothesis: predicts what happens to the dependent variable when the independent variable changes." },
+  { term: "Because Clause", hint: "hypothesis reasoning", def: "The part of a hypothesis that explains the scientific reason behind the prediction — often missing from student work." },
+  { term: "Quantitative Data", hint: "numbers", def: "Data expressed as measurements — time, mass, length, temperature. Can be averaged and compared exactly." },
+  { term: "Qualitative Data", hint: "descriptions", def: "Data described in words rather than numbers — color, texture, smell. Useful, but can't be measured precisely." },
+  { term: "Trend", hint: "the pattern", def: "A pattern in data showing how the dependent variable changes as the independent variable changes.", ex: "e.g. \"As angle increased, distance increased.\"" },
+  { term: "Supported Hypothesis", hint: "prediction matched", def: "When the data collected matches what the hypothesis predicted would happen." },
+  { term: "Refuted Hypothesis", hint: "prediction didn't match", def: "When the data contradicts the original prediction. This is still a valid, useful science result." },
+  { term: "Data Table", hint: "organized results", def: "A chart used to record and organize measurements so trends are easy to spot and compare." },
+  { term: "Average (Mean)", hint: "combining trials", def: "A single value found by adding up results from multiple trials and dividing by the number of trials." }
+];
+
+/* Practice questions — fresh scenarios, never lifted from a worksheet */
+const questions = [
+  { type: "mc", prompt: "A student's hypothesis reads: \"The plant will grow taller.\" What's missing?",
+    options: ["Nothing is missing", "The independent variable and the If/Then structure", "Units of measurement", "A control group"], correct: 1 },
+  { type: "mc", prompt: "A student writes: \"If a paper airplane has bigger wings, then it will fly farther, because...\" and stops there. Which part is missing?",
+    options: ["The claim", "The reasoning (because clause)", "The evidence", "The data table"], correct: 1 },
+  { type: "mc", prompt: "A student's entire conclusion reads: \"My hypothesis was correct.\" What's missing?",
+    options: ["Nothing", "Evidence from the data and reasoning explaining why", "Just reasoning", "Just a claim"], correct: 1 },
+  { type: "mc", prompt: "Which sentence is evidence, not a claim?",
+    options: ["\"My hypothesis was supported.\"", "\"At 45°, the catapult launched the ball 82 cm — farther than the 20° trial's 41 cm.\"", "\"Angle affects distance.\"", "\"I think my data is good.\""], correct: 1 },
+  { type: "mc", prompt: "A student grows bread mold in light vs. in a dark cupboard. Which is the independent variable?",
+    options: ["Amount of mold growth", "Whether the bread is in light or dark", "The type of bread", "Room temperature"], correct: 1 },
+  { type: "mc", prompt: "Same bread mold experiment — which is the dependent variable?",
+    options: ["Light exposure", "Amount of mold growth, measured in mm", "Bread brand", "Time of day"], correct: 1 },
+  { type: "mc", prompt: "Which sentence is reasoning, not evidence?",
+    options: ["\"Trial 1 (light) grew 3mm of mold; trial 2 (dark) grew 11mm.\"", "\"Mold likely grew faster in the dark because light can damage mold spores and slow their growth.\"", "\"I recorded my results in a table.\"", "\"The experiment ran for 5 days.\""], correct: 1 },
+  { type: "mc", prompt: "A student writes: \"My data supports my claim because I did the experiment carefully.\" What's wrong with this reasoning?",
+    options: ["Nothing", "It explains carefulness, not WHY the evidence supports the claim scientifically", "It's too short", "It's actually a hypothesis, not a conclusion"], correct: 1 },
+  { type: "mc", prompt: "A hypothesis states: \"If a magnet is closer to a pile of paperclips, then it will pick up fewer paperclips.\" What's likely backwards?",
+    options: ["Nothing, it's correct", "Distance and pickup amount — closer magnets should pick up MORE paperclips, not fewer", "Paperclips can't be a dependent variable", "Magnets aren't testable"], correct: 1 },
+  { type: "mc", prompt: "Which of these is quantitative data?",
+    options: ["\"The water felt warm.\"", "\"The plant grew 6.5 cm in one week.\"", "\"The mold looked fuzzy.\"", "\"The rubber band was stretchy.\""], correct: 1 },
+  { type: "mc", prompt: "Which of these is qualitative data?",
+    options: ["\"12.3 seconds\"", "\"45 degrees\"", "\"The leaf's color was pale yellow.\"", "\"8.2 cm\""], correct: 2 },
+  { type: "mc", prompt: "A student tests a hypothesis and the data does NOT match the prediction. What should they do?",
+    options: ["Change the data to match the hypothesis", "Report that the hypothesis was refuted and explain what the data actually showed", "Throw out the experiment", "Never test that idea again"], correct: 1 },
+  { type: "mc", prompt: "A student's claim reads: \"The catapult experiment worked.\" Why is this a weak claim?",
+    options: ["It's not weak", "It doesn't say whether the hypothesis was supported or refuted", "It's too long", "It needs a data table instead"], correct: 1 },
+  { type: "mc", prompt: "Which sentence correctly links evidence to a claim with reasoning?",
+    options: ["\"The plant grew 8 cm. I think that's good.\"", "\"The plant with more sunlight grew 8 cm, taller than the shaded plant's 3 cm — supporting my hypothesis, because more light allows more photosynthesis and energy for growth.\"", "\"Plants need sunlight.\"", "\"I measured the plant with a ruler.\""], correct: 1 },
+  { type: "mc", prompt: "A student's conclusion never mentions what they would do differently next time. Which part did they skip?",
+    options: ["Claim", "Evidence", "Reasoning", "Reflection (what would you change)"], correct: 3 },
+  { type: "text", prompt: "Write an If / Then / Because hypothesis for this purpose:",
+    scenario: "Does wing size affect how far a paper airplane flies?",
+    sample: "If a paper airplane has larger wings, then it will fly farther, because more wing surface creates more lift to keep it in the air longer." },
+  { type: "text", prompt: "Write an If / Then / Because hypothesis for this purpose:",
+    scenario: "Does the launch angle of a catapult affect how far a ball travels?",
+    sample: "If a catapult is set at a higher launch angle (up to about 45°), then the ball will travel farther, because that angle gives the best balance of height and forward distance." },
+  { type: "text", prompt: "Write an If / Then / Because hypothesis for this purpose:",
+    scenario: "Does the amount a rubber band is stretched affect how far it shoots an object?",
+    sample: "If a rubber band is stretched farther, then the object will shoot farther, because more stretch stores more elastic (potential) energy that converts into motion." },
+  { type: "text", prompt: "Write a full CER conclusion (Claim, Evidence, Reasoning) using this data:",
+    scenario: "Purpose: Does light exposure affect bread mold growth?\nData: Light sample = 3mm of mold after 5 days. Dark sample = 11mm of mold after 5 days.",
+    sample: "Claim: My hypothesis was supported — mold grew more in the dark.\nEvidence: The bread kept in the dark grew 11mm of mold, while the bread in light only grew 3mm — over three times as much.\nReasoning: This supports the claim because light, especially UV light, can damage mold spores and slow their growth, so the dark sample had ideal conditions to grow undisturbed." },
+  { type: "text", prompt: "Write a full CER conclusion (Claim, Evidence, Reasoning) using this data:",
+    scenario: "Purpose: Does the number of stacked magnets affect how many paperclips they can pick up?\nData: 1 magnet = 6 paperclips. 2 stacked magnets = 14 paperclips. 3 stacked magnets = 23 paperclips.",
+    sample: "Claim: My hypothesis was supported — more stacked magnets picked up more paperclips.\nEvidence: One magnet picked up 6 paperclips, but three stacked magnets picked up 23 — almost four times as many.\nReasoning: This makes sense because stacking magnets combines their magnetic fields into one stronger field, so more paperclips can be attracted and held at once." }
+];
+
+/* ---------- REFERENCE: HYPOTHESIS STEPS ---------- */
+const hypoChain = document.getElementById('hypoChain');
+hypoSteps.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'step-item';
+  div.innerHTML = `<div class="step-num">${i+1}</div><div class="step-text">${s}</div>`;
+  hypoChain.appendChild(div);
+});
+
+/* ---------- REFERENCE: CER STEPS ---------- */
+const cerChain = document.getElementById('cerChain');
+cerSteps.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'step-item';
+  div.innerHTML = `<div class="step-num">${i+1}</div><div class="step-text">${s}</div>`;
+  cerChain.appendChild(div);
+});
+
+/* ---------- REFERENCE: COMPARE CARDS ---------- */
+const compareWrap = document.getElementById('compareWrap');
+compareItems.forEach(c => {
+  const div = document.createElement('div');
+  div.className = 'compare-card';
+  div.innerHTML = `<span class="label">${c.label}</span>${c.text}<span class="example">${c.example}</span>`;
+  compareWrap.appendChild(div);
+});
+
+/* ---------- REFERENCE: FLASHCARDS ---------- */
+const cardGrid = document.getElementById('cardGrid');
+terms.forEach(t => {
+  const card = document.createElement('div');
+  card.className = 'flip-card';
+  card.innerHTML = `
+    <div class="flip-inner">
+      <div class="flip-face flip-front">
+        <div class="term">${t.term}</div>
+        <div class="hint">${t.hint}</div>
+      </div>
+      <div class="flip-face flip-back">
+        ${t.def}
+        ${t.ex ? `<span class="example">${t.ex}</span>` : ''}
+      </div>
+    </div>
+  `;
+  card.addEventListener('click', () => card.classList.toggle('flipped'));
+  cardGrid.appendChild(card);
+});
+
+/* ---------- TABS ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  });
+});
+
+/* ---------- PRACTICE QUIZ ENGINE ---------- */
+const STORAGE_KEY = 'cerLabQuizProgress';
+let qIndex = 0;
+let score = 0;
+let answered = new Array(questions.length).fill(null); // null | true | false
+
+function loadProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (saved && saved.answered && saved.answered.length === questions.length) {
+      answered = saved.answered;
+      score = answered.filter(a => a === true).length;
+      qIndex = answered.findIndex(a => a === null);
+      if (qIndex === -1) qIndex = questions.length; // all done
+    }
+  } catch (e) {}
+}
+
+function saveProgress() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ answered }));
+  } catch (e) {}
+}
+
+function updateScoreUI() {
+  const totalAnswered = answered.filter(a => a !== null).length;
+  document.getElementById('scorePill').textContent = `Score: ${score} / ${totalAnswered}`;
+  document.getElementById('progressLabel').textContent = `Q${Math.min(qIndex+1, questions.length)} / ${questions.length}`;
+  const pct = (Math.min(qIndex, questions.length) / questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function renderQuiz() {
+  const area = document.getElementById('quizArea');
+  updateScoreUI();
+
+  if (qIndex >= questions.length) {
+    area.innerHTML = `
+      <div class="done-card">
+        <h3>Nice work! 🎉</h3>
+        <p>You scored ${score} / ${questions.length}.</p>
+        <button class="restart-btn" id="restartBtn">Restart practice</button>
+      </div>
+    `;
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      answered = new Array(questions.length).fill(null);
+      score = 0;
+      qIndex = 0;
+      saveProgress();
+      renderQuiz();
+    });
+    return;
+  }
+
+  const q = questions[qIndex];
+  const card = document.createElement('div');
+  card.className = 'q-card';
+
+  if (q.type === 'mc') {
+    card.innerHTML = `
+      <span class="q-type">Multiple choice</span>
+      <div class="q-prompt">${q.prompt}</div>
+      <div class="mc-options">
+        ${q.options.map((opt, i) => `<button class="mc-option" data-i="${i}">${opt}</button>`).join('')}
+      </div>
+      <div class="q-footer"><button class="next-btn" id="nextBtn">Next →</button></div>
+    `;
+    area.innerHTML = '';
+    area.appendChild(card);
+
+    card.querySelectorAll('.mc-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const chosen = parseInt(btn.dataset.i);
+        card.querySelectorAll('.mc-option').forEach(b => b.disabled = true);
+        if (chosen === q.correct) {
+          btn.classList.add('correct');
+          if (answered[qIndex] === null) { score++; answered[qIndex] = true; }
+        } else {
+          btn.classList.add('incorrect');
+          card.querySelector(`.mc-option[data-i="${q.correct}"]`).classList.add('correct');
+          if (answered[qIndex] === null) { answered[qIndex] = false; }
+        }
+        saveProgress();
+        updateScoreUI();
+        card.querySelector('#nextBtn').style.display = 'inline-block';
+      });
+    });
+
+  } else if (q.type === 'text') {
+    card.innerHTML = `
+      <span class="q-type">Short answer — self-check</span>
+      <div class="q-prompt">${q.prompt}${q.scenario ? `<span class="scenario">${q.scenario}</span>` : ''}</div>
+      <div class="text-answer-area">
+        <textarea placeholder="Type your answer here..."></textarea>
+        <button class="reveal-btn" id="revealBtn">Reveal answer</button>
+        <div class="sample-answer" id="sampleAnswer"><strong>Sample answer:</strong>
+${q.sample}</div>
+        <div class="self-grade" id="selfGrade">
+          <button class="correct-btn" id="gotItRight">I got it right</button>
+          <button class="incorrect-btn" id="gotItWrong">I missed it</button>
+        </div>
+      </div>
+      <div class="q-footer"><button class="next-btn" id="nextBtn">Next →</button></div>
+    `;
+    area.innerHTML = '';
+    area.appendChild(card);
+
+    card.querySelector('#revealBtn').addEventListener('click', () => {
+      card.querySelector('#sampleAnswer').style.display = 'block';
+      card.querySelector('#selfGrade').style.display = 'flex';
+      card.querySelector('#revealBtn').style.display = 'none';
+    });
+
+    card.querySelector('#gotItRight').addEventListener('click', () => {
+      if (answered[qIndex] === null) { score++; answered[qIndex] = true; }
+      finishSelfGrade();
+    });
+    card.querySelector('#gotItWrong').addEventListener('click', () => {
+      if (answered[qIndex] === null) { answered[qIndex] = false; }
+      finishSelfGrade();
+    });
+
+    function finishSelfGrade() {
+      card.querySelector('#selfGrade').querySelectorAll('button').forEach(b => b.disabled = true);
+      saveProgress();
+      updateScoreUI();
+      card.querySelector('#nextBtn').style.display = 'inline-block';
+    }
+  }
+
+  card.querySelector('#nextBtn').addEventListener('click', () => {
+    qIndex++;
+    saveProgress();
+    renderQuiz();
+  });
+}
+
+loadProgress();
+renderQuiz();
+</script>
+
+</body>
+</html>
