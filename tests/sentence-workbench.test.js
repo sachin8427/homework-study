@@ -105,6 +105,16 @@ test("claim, evidence, and reasoning lab is linked under Science", () => {
   assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
 });
 
+test("sentence types lab is linked under Writing", () => {
+  const page = fs.readFileSync(path.join(projectRoot, "tools", "writing", "sentence-types-lab", "index.html"), "utf8");
+  const catalog = fs.readFileSync(path.join(projectRoot, "assets", "catalog.js"), "utf8");
+  const scripts = [...page.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+  assert.match(page, /href="\.\.\/\.\.\/\.\.\/subjects\/writing\/"/);
+  assert.match(catalog, /tools\/writing\/sentence-types-lab\//);
+  assert.equal(scripts.length, 1);
+  assert.doesNotThrow(() => new vm.Script(scripts[0][1]));
+});
+
 test("history pages and the Grade 6 hub are registered under Social Science", () => {
   const catalog = fs.readFileSync(path.join(projectRoot, "assets", "catalog.js"), "utf8");
   const grade5 = fs.readFileSync(path.join(projectRoot, "tools", "social-science", "us-history-grade-5", "index.html"), "utf8");

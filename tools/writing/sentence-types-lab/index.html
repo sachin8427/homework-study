@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentence Types Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1b2a45;
+    --navy-deep:#101c30;
+    --paper:#f6f1e4;
+    --paper-line:#e2d9c3;
+    --teal:#2c7a76;
+    --teal-deep:#1f5c58;
+    --coral:#e2653f;
+    --gold:#cf9a34;
+    --ink:#25262b;
+    --good:#2c7a4e;
+    --bad:#c04b3b;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--ink);
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 34px, var(--paper-line) 34px 35px),
+      var(--paper);
+    min-height:100vh;
+  }
+  header{
+    background:var(--navy);
+    background-image:linear-gradient(160deg, var(--navy), var(--navy-deep));
+    color:var(--paper);
+    padding:26px 20px 20px;
+    text-align:center;
+    border-bottom:4px solid var(--gold);
+  }
+  header .eyebrow{
+    font-family:'Space Grotesk',sans-serif;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:.68rem;
+    color:var(--gold);
+    margin-bottom:6px;
+  }
+  header h1{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:1.7rem;
+    margin:0 0 6px;
+  }
+  header p{
+    margin:0;
+    font-size:.85rem;
+    opacity:.85;
+    max-width:520px;
+    margin:0 auto;
+  }
+  .breadcrumb{
+    display:flex;
+    gap:8px;
+    max-width:640px;
+    margin:0 auto 18px;
+    color:rgba(246,241,228,.75);
+    font-size:.8rem;
+    font-weight:600;
+    text-align:left;
+  }
+  .breadcrumb a{color:var(--paper);text-decoration:none;}
+  .breadcrumb a:hover,.breadcrumb a:focus-visible{text-decoration:underline;}
+  .tabs{
+    display:flex;
+    max-width:640px;
+    margin:16px auto 0;
+    padding:0 16px;
+    gap:8px;
+  }
+  .tab-btn{
+    flex:1;
+    padding:11px 8px;
+    border:2px solid var(--navy);
+    background:var(--paper);
+    color:var(--navy);
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:.85rem;
+    border-radius:10px 10px 0 0;
+    cursor:pointer;
+  }
+  .tab-btn.active{
+    background:var(--navy);
+    color:var(--paper);
+  }
+  main{
+    max-width:640px;
+    margin:0 auto;
+    padding:16px 16px 60px;
+  }
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .formula-card{
+    background:#fffdf8;
+    border:2px solid var(--navy);
+    border-radius:var(--radius);
+    padding:16px 16px 14px;
+    margin-bottom:16px;
+    position:relative;
+    box-shadow:4px 4px 0 var(--paper-line);
+  }
+  .formula-card.compound{border-color:var(--teal);box-shadow:4px 4px 0 #cfe6e3;}
+  .formula-card.complex{border-color:var(--coral);box-shadow:4px 4px 0 #f6d9cd;}
+  .formula-card.cc{border-color:var(--gold);box-shadow:4px 4px 0 #f1e0b8;}
+
+  .formula-card h2{
+    font-family:'Fraunces',serif;
+    font-size:1.15rem;
+    margin:0 0 4px;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+  }
+  .formula-card .tag{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.62rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:var(--navy);
+    color:var(--paper);
+    padding:2px 8px;
+    border-radius:20px;
+  }
+  .compound .tag{background:var(--teal);}
+  .complex .tag{background:var(--coral);}
+  .cc .tag{background:var(--gold);color:var(--navy-deep);}
+
+  .formula-eq{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:1.05rem;
+    background:var(--navy);
+    color:#fff;
+    padding:10px 12px;
+    border-radius:8px;
+    margin:10px 0;
+    text-align:center;
+    letter-spacing:.02em;
+  }
+  .compound .formula-eq{background:var(--teal-deep);}
+  .complex .formula-eq{background:#9c3d24;}
+  .cc .formula-eq{background:#8a6416;}
+
+  .formula-card p{font-size:.86rem;line-height:1.5;margin:6px 0;}
+  .example{
+    font-style:italic;
+    font-family:'Fraunces',serif;
+    font-size:.92rem;
+    background:var(--paper);
+    border-left:3px solid var(--navy);
+    padding:8px 10px;
+    margin-top:8px;
+    border-radius:0 6px 6px 0;
+  }
+  .compound .example{border-left-color:var(--teal);}
+  .complex .example{border-left-color:var(--coral);}
+  .cc .example{border-left-color:var(--gold);}
+
+  .mnemonic-box{
+    background:var(--navy);
+    color:var(--paper);
+    border-radius:var(--radius);
+    padding:16px;
+    margin:20px 0;
+  }
+  .mnemonic-box h3{
+    font-family:'Fraunces',serif;
+    margin:0 0 8px;
+    font-size:1.05rem;
+    color:var(--gold);
+  }
+  .mnemonic-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:8px;
+  }
+  .mnemonic-letter{
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.3);
+    border-radius:6px;
+    padding:5px 8px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.75rem;
+  }
+  .mnemonic-letter b{color:var(--gold);}
+
+  section.tip{
+    background:#fff9ec;
+    border:1.5px dashed var(--gold);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:.82rem;
+    margin:18px 0;
+  }
+  section.tip b{color:var(--coral);}
+
+  /* Practice tab */
+  .score-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#fffdf8;
+    border:2px solid var(--navy);
+    border-radius:10px;
+    padding:8px 12px;
+    margin-bottom:14px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.8rem;
+  }
+  .score-bar b{color:var(--teal-deep);}
+
+  .game-card{
+    background:#fffdf8;
+    border:2px solid var(--navy);
+    border-radius:var(--radius);
+    padding:16px;
+    box-shadow:4px 4px 0 var(--paper-line);
+  }
+  .game-card h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.72rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--teal-deep);
+    margin:0 0 8px;
+  }
+  .drill-word{
+    font-family:'Fraunces',serif;
+    font-size:1.05rem;
+    margin-bottom:10px;
+    line-height:1.5;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .chip{
+    border:2px solid var(--navy);
+    background:var(--paper);
+    color:var(--navy);
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:.82rem;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  .chip.used{opacity:.25;pointer-events:none;}
+  .built-row{
+    min-height:38px;
+    border:2px dashed var(--paper-line);
+    border-radius:8px;
+    padding:6px 8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .built-row span.piece{
+    background:var(--teal);
+    color:#fff;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.78rem;
+    font-weight:600;
+    padding:5px 9px;
+    border-radius:6px;
+  }
+
+  .quiz-sentence{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:1.05rem;
+    line-height:1.5;
+    margin-bottom:14px;
+  }
+  .opt-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .opt-btn{
+    border:2px solid var(--navy);
+    background:var(--paper);
+    color:var(--navy);
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:.82rem;
+    padding:11px 6px;
+    border-radius:8px;
+    cursor:pointer;
+    text-align:center;
+  }
+  .opt-btn.correct{background:var(--good);border-color:var(--good);color:#fff;}
+  .opt-btn.incorrect{background:var(--bad);border-color:var(--bad);color:#fff;}
+  .opt-btn.dim{opacity:.45;}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{
+    font-size:.85rem;
+    padding:10px 12px;
+    border-radius:8px;
+    margin-bottom:12px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.good{background:#e3f2e7;border:1.5px solid var(--good);color:#1c5a35;}
+  .feedback.bad{background:#fbe6e1;border:1.5px solid var(--bad);color:#8c3324;}
+
+  .next-btn{
+    display:none;
+    width:100%;
+    padding:12px;
+    background:var(--coral);
+    color:#fff;
+    border:none;
+    border-radius:9px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:.9rem;
+    cursor:pointer;
+  }
+  .next-btn.show{display:block;}
+
+  .restart-btn{
+    width:100%;
+    padding:12px;
+    margin-top:14px;
+    background:var(--navy);
+    color:var(--paper);
+    border:none;
+    border-radius:9px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:.85rem;
+    cursor:pointer;
+    display:none;
+  }
+  .restart-btn.show{display:block;}
+
+  .done-screen{display:none;text-align:center;padding:20px 10px;}
+  .done-screen.show{display:block;}
+  .done-screen .big{
+    font-family:'Fraunces',serif;
+    font-size:2rem;
+    color:var(--teal-deep);
+    margin-bottom:4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../">Home</a><span aria-hidden="true">/</span><a href="../../../subjects/writing/">Writing</a></nav>
+  <div class="eyebrow">Grammar &amp; Writing · Sentence Structure</div>
+  <h1>Sentence Types Lab</h1>
+  <p>Four formulas, two magic words, and a game to lock them into memory — built around your Amelia &amp; Babe paragraph.</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="argument">🎯 Argument</button>
+  <button class="tab-btn" data-tab="reference">📖 Sentences</button>
+  <button class="tab-btn" data-tab="practice">🎮 Practice</button>
+</div>
+
+<main>
+
+  <!-- ARGUMENT TAB -->
+  <div class="panel active" id="argument">
+
+    <section class="tip" style="margin-top:0;">
+      Every argument paragraph is really 3 moves, repeated twice: <b>Claim → Evidence → Reasoning</b> (the same CER pattern from your science labs — it works for writing too).
+    </section>
+
+    <div class="formula-card">
+      <h2>Claim <span class="tag">the argument</span></h2>
+      <div class="formula-eq">WHO + SHOULD BE HONORED + STRONGEST REASON</div>
+      <p>Your topic sentence. Name the person and give the single biggest reason she deserves recognition — this is the promise the rest of the paragraph has to keep.</p>
+      <div class="example">"Amelia Earhart deserves to be remembered because she proved women could achieve things the world said only men could do."</div>
+    </div>
+
+    <div class="formula-card compound">
+      <h2>Evidence &amp; Quotes <span class="tag">the proof</span></h2>
+      <div class="formula-eq">SIGNAL PHRASE + "EXACT QUOTE" + (CITATION)</div>
+      <p>Three parts, every time:</p>
+      <p>1. <b>Signal phrase</b> — tell the reader a quote is coming: "According to the text," "The author explains," "In the passage, it says…"<br>
+      2. <b>Exact quote</b> — copy the words precisely, inside quotation marks. Keep it short (under 15 words is plenty).<br>
+      3. <b>Citation</b> — show where it came from, the way your teacher wants it formatted (page number, author, etc.).</p>
+      <div class="example">Model (general example, not from your book): According to the article, cheetahs can "reach speeds of over sixty miles per hour in just a few seconds" (Smith, p. 12).</div>
+      <p style="margin-top:8px;"><b>Your job:</b> find the exact matching quote inside your own <i>Amelia to Zora</i> pages and drop it into this same 3-part formula.</p>
+    </div>
+
+    <div class="formula-card complex">
+      <h2>Reasoning <span class="tag">the "so what"</span></h2>
+      <div class="formula-eq">"THIS SHOWS / PROVES / DEMONSTRATES THAT…" + LINK BACK TO CLAIM</div>
+      <p>Don't just drop the quote and move on — explain <i>why it matters</i>. Pull a specific detail or number out of the quote and connect it directly back to your claim.</p>
+      <div class="example">"This shows that Amelia didn't just fly — she flew farther and more dangerously than anyone had attempted before, proving her courage matched her skill."</div>
+    </div>
+
+    <div class="mnemonic-box">
+      <h3>🔑 The Paragraph Formula</h3>
+      <p style="font-size:.82rem;margin:0 0 8px;opacity:.9;">Stack these 5 moves in order and you've hit Claim, Evidence, and Reasoning on the rubric:</p>
+      <div class="mnemonic-row">
+        <span class="mnemonic-letter"><b>1.</b> Claim</span>
+        <span class="mnemonic-letter"><b>2.</b> Evidence #1 (quote)</span>
+        <span class="mnemonic-letter"><b>3.</b> Reasoning #1</span>
+        <span class="mnemonic-letter"><b>4.</b> Evidence #2 (quote)</span>
+        <span class="mnemonic-letter"><b>5.</b> Reasoning #2</span>
+      </div>
+    </div>
+
+    <section class="tip">
+      <b>Weave in the sentence-level stuff:</b> your <b>dress-ups</b> and <b>openers</b> can go anywhere in these 5 moves — a strong opener works great on the claim, and a who/which clause dress-up fits naturally right after a quote. Your <b>compound</b> and <b>complex</b> sentences (next tab) work especially well inside your Reasoning sentences.
+    </section>
+
+  </div>
+
+  <!-- REFERENCE TAB -->
+  <div class="panel" id="reference">
+
+    <div class="formula-card simple">
+      <h2>Simple <span class="tag">1 clause</span></h2>
+      <div class="formula-eq">IC</div>
+      <p><b>One independent clause</b> — one subject + one verb that makes a complete thought, standing all by itself. No helper words needed.</p>
+      <div class="example">"Babe played golf."</div>
+    </div>
+
+    <div class="formula-card compound">
+      <h2>Compound <span class="tag">2 clauses</span></h2>
+      <div class="formula-eq">IC , FANBOYS IC</div>
+      <p><b>Two independent clauses</b>, joined by a comma + a FANBOYS word. Both halves could stand alone as their own sentence.</p>
+      <div class="example">"Babe won three gold medals, but judges denied her a fourth."</div>
+    </div>
+
+    <div class="mnemonic-box">
+      <h3>🔑 FANBOYS — the compound connector word</h3>
+      <div class="mnemonic-row">
+        <span class="mnemonic-letter"><b>F</b>or</span>
+        <span class="mnemonic-letter"><b>A</b>nd</span>
+        <span class="mnemonic-letter"><b>N</b>or</span>
+        <span class="mnemonic-letter"><b>B</b>ut</span>
+        <span class="mnemonic-letter"><b>O</b>r</span>
+        <span class="mnemonic-letter"><b>Y</b>et</span>
+        <span class="mnemonic-letter"><b>S</b>o</span>
+      </div>
+    </div>
+
+    <div class="formula-card complex">
+      <h2>Complex <span class="tag">1 main + 1 support</span></h2>
+      <div class="formula-eq">AAAWWUBBIS-word, IC &nbsp;·&nbsp; IC AAAWWUBBIS-word</div>
+      <p><b>One dependent clause</b> (starts with an AAAWWUBBIS word and can't stand alone) + <b>one independent clause</b>. If the dependent clause comes first, put a comma after it.</p>
+      <div class="example">"After she left the Olympics, Babe became a professional golfer."</div>
+      <div class="example">"Amelia went flying through the air because the cab hit a rock."</div>
+    </div>
+
+    <div class="mnemonic-box">
+      <h3>🔑 AAAWWUBBIS — the complex connector word</h3>
+      <div class="mnemonic-row">
+        <span class="mnemonic-letter"><b>A</b>fter</span>
+        <span class="mnemonic-letter"><b>A</b>lthough</span>
+        <span class="mnemonic-letter"><b>A</b>s</span>
+        <span class="mnemonic-letter"><b>W</b>hen</span>
+        <span class="mnemonic-letter"><b>W</b>hile</span>
+        <span class="mnemonic-letter"><b>U</b>ntil</span>
+        <span class="mnemonic-letter"><b>B</b>ecause</span>
+        <span class="mnemonic-letter"><b>B</b>efore</span>
+        <span class="mnemonic-letter"><b>I</b>f</span>
+        <span class="mnemonic-letter"><b>S</b>ince</span>
+      </div>
+    </div>
+
+    <div class="formula-card cc">
+      <h2>Compound-Complex <span class="tag">3+ clauses</span></h2>
+      <div class="formula-eq">AAAWWUBBIS-word IC , IC FANBOYS IC</div>
+      <p>Mix both formulas: at least <b>2 independent clauses</b> (joined with a FANBOYS word) <b>+ 1 dependent clause</b> (starting with an AAAWWUBBIS word).</p>
+      <div class="example">"When Amelia turned twenty-four, she bought her own plane, and she quit her old job."</div>
+    </div>
+
+    <section class="tip">
+      <b>Quick test:</b> Cover up everything before the comma. If what's left could be its own sentence, and what's covered could ALSO be its own sentence → it's <b>compound</b>. If what's covered trails off and needs the rest → it's <b>complex</b>.
+    </section>
+
+    <section class="tip">
+      <b>For your paragraph:</b> the rubric wants at least 1 compound sentence and 1 complex sentence. Fastest path — open with an AAAWWUBBIS word for your complex sentence, and use "and" or "but" to link two related facts for your compound sentence.
+    </section>
+
+  </div>
+
+  <!-- PRACTICE TAB -->
+  <div class="panel" id="practice">
+
+    <div class="score-bar">
+      <span>Score: <b id="scoreDisplay">0</b> / <span id="totalDisplay">10</span></span>
+      <span id="progressDisplay">Question 1 of 10</span>
+    </div>
+
+    <div class="game-card" id="drillCard">
+      <h3 id="drillTitle">Warm-up · Build the mnemonic</h3>
+      <div class="drill-word" id="drillPrompt"></div>
+      <div class="built-row" id="builtRow"></div>
+      <div class="chip-row" id="chipRow"></div>
+      <div class="feedback" id="drillFeedback"></div>
+      <button class="next-btn" id="drillNext">Next →</button>
+    </div>
+
+    <div class="game-card" id="quizCard" style="display:none;">
+      <h3 id="quizTitle">Identify the sentence type</h3>
+      <div class="quiz-sentence" id="quizSentence"></div>
+      <div class="opt-grid" id="quizOptions"></div>
+      <div class="feedback" id="quizFeedback"></div>
+      <button class="next-btn" id="quizNext">Next →</button>
+    </div>
+
+    <div class="done-screen" id="doneScreen">
+      <div class="big" id="doneScore"></div>
+      <p id="doneMsg" style="font-size:.85rem;"></p>
+      <button class="restart-btn show" id="restartBtn">Play Again</button>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+// ---------- Tabs ----------
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- Data ----------
+const drills = [
+  { title:"Warm-up · Build FANBOYS", prompt:"Tap the words in order to spell out the compound-sentence connector:", answer:["For","And","Nor","But","Or","Yet","So"] },
+  { title:"Warm-up · Build AAAWWUBBIS", prompt:"Tap the words in order to spell out the complex-sentence connector:", answer:["After","Although","As","When","While","Until","Because","Before","If","Since"] }
+];
+
+const sentTypes = ["Simple","Compound","Complex","Compound-Complex"];
+const cerTypes = ["Claim","Evidence","Reasoning"];
+
+const sentenceQuiz = [
+  { s:"Babe played golf.", t:"Simple", options:sentTypes },
+  { s:"Amelia flew across the ocean.", t:"Simple", options:sentTypes },
+  { s:"Babe won three gold medals, but judges denied her a fourth.", t:"Compound", options:sentTypes },
+  { s:"Amelia bought a plane, and she began taking lessons.", t:"Compound", options:sentTypes },
+  { s:"Reporters doubted her, but Babe proved them wrong.", t:"Compound", options:sentTypes },
+  { s:"After she left the Olympics, Babe became a professional golfer.", t:"Complex", options:sentTypes },
+  { s:"Amelia went flying through the air because the cab hit a rock.", t:"Complex", options:sentTypes },
+  { s:"Since Babe loved every sport, she tried javelin as well.", t:"Complex", options:sentTypes },
+  { s:"Since she loved every sport, Babe tried javelin, and she broke a record.", t:"Compound-Complex", options:sentTypes },
+  { s:"When Amelia turned twenty-four, she bought her own plane, and she quit her old job.", t:"Compound-Complex", options:sentTypes }
+];
+
+const cerQuiz = [
+  { s:"Amelia Earhart deserves to be remembered because she proved women could achieve anything men could.", t:"Claim", options:cerTypes },
+  { s:"According to the text, Amelia \u201cflew solo across the United States at a time when few pilots dared to attempt it.\u201d", t:"Evidence", options:cerTypes },
+  { s:"This shows that Amelia broke barriers other pilots hadn't even attempted, proving her exceptional skill.", t:"Reasoning", options:cerTypes },
+  { s:"Babe Didrikson Zaharias should be honored for her unmatched versatility as an athlete.", t:"Claim", options:cerTypes },
+  { s:"According to the text, Babe \u201centered the 1932 Olympics and won medals in three completely different events.\u201d", t:"Evidence", options:cerTypes },
+  { s:"This detail proves that Babe wasn't just talented in one sport \u2014 she mastered nearly every sport she tried.", t:"Reasoning", options:cerTypes }
+];
+
+const quiz = sentenceQuiz.concat(cerQuiz);
+
+const TOTAL = drills.length + quiz.length;
+document.getElementById('totalDisplay').textContent = TOTAL;
+
+let step = 0;      // overall step index (drills then quiz)
+let score = 0;
+let locked = false;
+
+function updateProgress(){
+  document.getElementById('progressDisplay').textContent = `Question ${Math.min(step+1,TOTAL)} of ${TOTAL}`;
+  document.getElementById('scoreDisplay').textContent = score;
+}
+
+// ---------- Drill (mnemonic builder) ----------
+let drillIdx = 0;
+let builtSoFar = [];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function loadDrill(){
+  locked = false;
+  const d = drills[drillIdx];
+  document.getElementById('drillTitle').textContent = d.title;
+  document.getElementById('drillPrompt').textContent = d.prompt;
+  builtSoFar = [];
+  document.getElementById('builtRow').innerHTML = '<span style="color:#999;font-size:.78rem;">tap words below…</span>';
+  document.getElementById('drillFeedback').className = 'feedback';
+  document.getElementById('drillFeedback').textContent = '';
+  document.getElementById('drillNext').classList.remove('show');
+
+  const chipRow = document.getElementById('chipRow');
+  chipRow.innerHTML = '';
+  shuffle(d.answer).forEach(word=>{
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.addEventListener('click', ()=> pickDrillWord(word, chip));
+    chipRow.appendChild(chip);
+  });
+  updateProgress();
+}
+
+function pickDrillWord(word, chipEl){
+  if(locked) return;
+  const d = drills[drillIdx];
+  const expected = d.answer[builtSoFar.length];
+  if(word === expected){
+    builtSoFar.push(word);
+    chipEl.classList.add('used');
+    const builtRow = document.getElementById('builtRow');
+    if(builtSoFar.length===1) builtRow.innerHTML = '';
+    const span = document.createElement('span');
+    span.className = 'piece';
+    span.textContent = word[0].toUpperCase();
+    span.title = word;
+    builtRow.appendChild(span);
+    if(builtSoFar.length === d.answer.length){
+      locked = true;
+      score++;
+      const fb = document.getElementById('drillFeedback');
+      fb.className = 'feedback good show';
+      fb.textContent = `✓ ${d.answer.join(', ')} — locked in!`;
+      document.getElementById('drillNext').classList.add('show');
+      updateProgress();
+    }
+  }else{
+    // wrong tap: brief shake via feedback, doesn't lock
+    const fb = document.getElementById('drillFeedback');
+    fb.className = 'feedback bad show';
+    fb.textContent = `Not quite — look for "${expected}" next.`;
+  }
+}
+
+document.getElementById('drillNext').addEventListener('click', ()=>{
+  step++;
+  drillIdx++;
+  if(drillIdx < drills.length){
+    loadDrill();
+  }else{
+    document.getElementById('drillCard').style.display = 'none';
+    document.getElementById('quizCard').style.display = 'block';
+    loadQuizQ();
+  }
+});
+
+// ---------- Quiz ----------
+let quizIdx = 0;
+
+function loadQuizQ(){
+  locked = false;
+  const q = quiz[quizIdx];
+  document.getElementById('quizTitle').textContent =
+    q.options === cerTypes ? "Claim, Evidence, or Reasoning?" : "Identify the sentence type";
+  document.getElementById('quizSentence').textContent = `"${q.s}"`;
+  const optGrid = document.getElementById('quizOptions');
+  optGrid.innerHTML = '';
+  q.options.forEach(type=>{
+    const b = document.createElement('button');
+    b.className = 'opt-btn';
+    b.textContent = type;
+    b.addEventListener('click', ()=> answerQuiz(type, q.t, b));
+    optGrid.appendChild(b);
+  });
+  document.getElementById('quizFeedback').className = 'feedback';
+  document.getElementById('quizFeedback').textContent = '';
+  document.getElementById('quizNext').classList.remove('show');
+  updateProgress();
+}
+
+function answerQuiz(picked, correct, btnEl){
+  if(locked) return;
+  locked = true;
+  const buttons = document.querySelectorAll('#quizOptions .opt-btn');
+  buttons.forEach(b=>{
+    b.disabled = true;
+    if(b.textContent === correct) b.classList.add('correct');
+    else if(b === btnEl) b.classList.add('incorrect');
+    else b.classList.add('dim');
+  });
+  const fb = document.getElementById('quizFeedback');
+  if(picked === correct){
+    score++;
+    fb.className = 'feedback good show';
+    fb.textContent = `✓ Correct — that's ${correct}.`;
+  }else{
+    fb.className = 'feedback bad show';
+    fb.textContent = `✗ That's ${correct}, not ${picked}. Check the formula card if you want a refresher.`;
+  }
+  document.getElementById('quizNext').classList.add('show');
+  updateProgress();
+}
+
+document.getElementById('quizNext').addEventListener('click', ()=>{
+  step++;
+  quizIdx++;
+  if(quizIdx < quiz.length){
+    loadQuizQ();
+  }else{
+    finishGame();
+  }
+});
+
+function finishGame(){
+  document.getElementById('quizCard').style.display = 'none';
+  const done = document.getElementById('doneScreen');
+  done.classList.add('show');
+  document.getElementById('doneScore').textContent = `${score} / ${TOTAL}`;
+  let msg = "Nice work! Review any missed cards on the Argument or Sentences tabs.";
+  if(score === TOTAL) msg = "Perfect score! You've got Claim/Evidence/Reasoning, FANBOYS, AAAWWUBBIS, and all 4 sentence types down.";
+  else if(score < TOTAL/2) msg = "Good first pass — hop back to the Argument and Sentences tabs and try the game again.";
+  document.getElementById('doneMsg').textContent = msg;
+  try{ localStorage.setItem('sentenceTypesLabBest', Math.max(score, +(localStorage.getItem('sentenceTypesLabBest')||0))); }catch(e){}
+}
+
+document.getElementById('restartBtn').addEventListener('click', ()=>{
+  step = 0; score = 0; drillIdx = 0; quizIdx = 0;
+  document.getElementById('doneScreen').classList.remove('show');
+  document.getElementById('drillCard').style.display = 'block';
+  document.getElementById('quizCard').style.display = 'none';
+  loadDrill();
+});
+
+// init
+loadDrill();
+</script>
+
+</body>
+</html>
